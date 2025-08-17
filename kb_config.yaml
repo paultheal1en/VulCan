@@ -1,0 +1,14 @@
+embedding_model_type: local
+embedding_model_name: maidalun1020/bce-embedding-base_v1
+embedding_ollama_base_url: http://localhost:11434
+rerank_model_name: maidalun1020/bce-reranker-base_v1
+default_vs_type: milvus
+milvus:
+  uri: http://127.0.0.1:19530
+  user: ''
+  password: ''
+chunk_size: 750
+overlap_size: 150
+top_k: 3
+top_n: 1
+score_threshold: 0.5

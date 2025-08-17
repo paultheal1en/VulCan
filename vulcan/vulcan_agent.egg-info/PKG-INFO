@@ -1,0 +1,65 @@
+Metadata-Version: 2.4
+Name: vulcan-agent
+Version: 1.0.0
+Summary: An autonomous penetration testing agent with metacognitive capabilities and persistent state management.
+Author: VulCan Project Team
+License: MIT
+Keywords: cybersecurity,penetration-testing,autonomous,ai-agent,metacognition
+Classifier: Development Status :: 3 - Alpha
+Classifier: Intended Audience :: Information Technology
+Classifier: License :: OSI Approved :: MIT License
+Classifier: Operating System :: OS Independent
+Classifier: Programming Language :: Python :: 3
+Classifier: Programming Language :: Python :: 3.11
+Classifier: Topic :: Security
+Requires-Python: >=3.11
+Description-Content-Type: text/markdown
+Requires-Dist: strands-agents[ollama]>=1.0.0
+Requires-Dist: strands-agents-tools==0.2.0
+Requires-Dist: mem0ai
+Requires-Dist: faiss-cpu
+Requires-Dist: pymilvus
+Requires-Dist: langchain
+Requires-Dist: langchain-community
+Requires-Dist: langchain-core
+Requires-Dist: langchain-huggingface
+Requires-Dist: langchain-milvus
+Requires-Dist: langchain-openai
+Requires-Dist: langchain-text-splitters
+Requires-Dist: sentence-transformers
+Requires-Dist: SQLAlchemy
+Requires-Dist: PyMySQL
+Requires-Dist: fastapi
+Requires-Dist: uvicorn[standard]
+Requires-Dist: streamlit
+Requires-Dist: streamlit-antd-components
+Requires-Dist: streamlit-aggrid
+Requires-Dist: pydantic
+Requires-Dist: pydantic-settings
+Requires-Dist: boto3
+Requires-Dist: botocore
+Requires-Dist: ollama>=0.1.0
+Requires-Dist: requests
+Requires-Dist: httpx
+Requires-Dist: click
+Requires-Dist: rich
+Requires-Dist: paramiko
+Requires-Dist: ruamel.yaml
+Requires-Dist: loguru
+Requires-Dist: tenacity
+Requires-Dist: python-docx
+Requires-Dist: python-pptx
+Requires-Dist: PyMuPDF
+Requires-Dist: opencv-python
+Requires-Dist: unstructured
+Requires-Dist: rapidocr-onnxruntime
+Requires-Dist: strenum
+Requires-Dist: memoization
+Provides-Extra: dev
+Requires-Dist: pytest; extra == "dev"
+Requires-Dist: pytest-cov; extra == "dev"
+Requires-Dist: pytest-mock; extra == "dev"
+Requires-Dist: pylint; extra == "dev"
+Requires-Dist: black; extra == "dev"
+Requires-Dist: isort; extra == "dev"
+Requires-Dist: mypy; extra == "dev"

@@ -1,0 +1,9 @@
+server: local
+aws_region: us-east-1
+bedrock_model_id: us.anthropic.claude-sonnet-4-20250514-v1:0
+ollama_host: https://2209b2c04188.ngrok-free.app
+ollama_model_id: gpt-oss:20b
+ollama_embedding_model_id: mxbai-embed-large
+temperature: 0.5
+history_len: 10
+timeout: 600

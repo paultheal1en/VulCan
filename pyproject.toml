@@ -1,0 +1,95 @@
+[build-system]
+requires = ["setuptools>=42", "wheel"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "vulcan-agent"
+version = "1.0.0"
+description = "An autonomous penetration testing agent with metacognitive capabilities and persistent state management."
+readme = "README.md"
+authors = [
+    {name = "VulCan Project Team"}
+]
+license = {text = "MIT"}
+keywords = ["cybersecurity", "penetration-testing", "autonomous", "ai-agent", "metacognition"]
+classifiers = [
+    "Development Status :: 3 - Alpha",
+    "Intended Audience :: Information Technology",
+    "License :: OSI Approved :: MIT License",
+    "Operating System :: OS Independent",
+    "Programming Language :: Python :: 3",
+    "Programming Language :: Python :: 3.11",
+    "Topic :: Security",
+]
+requires-python = ">=3.11"
+dependencies = [
+    # Core Agent Framework (from CAA)
+    "strands-agents[ollama]>=1.0.0",
+    "strands-agents-tools==0.2.0",
+
+    # Memory Systems (CAA & VulnBot)
+    "mem0ai",
+    "faiss-cpu",
+    "pymilvus",
+    "langchain",
+    "langchain-community",
+    "langchain-core",
+    "langchain-huggingface",
+    "langchain-milvus",
+    "langchain-openai",
+    "langchain-text-splitters",
+    "sentence-transformers",
+
+    # Database & Persistence (from VulnBot)
+    "SQLAlchemy",
+    "PyMySQL",
+
+    # API & Web Frameworks (from VulnBot)
+    "fastapi",
+    "uvicorn[standard]",
+    "streamlit",
+    "streamlit-antd-components",
+    "streamlit-aggrid",
+
+    # Utilities
+    "pydantic",
+    "pydantic-settings",
+    "boto3",
+    "botocore",
+    "ollama>=0.1.0",
+    "requests",
+    "httpx",
+    "click",
+    "rich",
+    "paramiko", # For SSH shell management
+    "ruamel.yaml",
+    "loguru",
+    "tenacity",
+    "python-docx",
+    "python-pptx",
+    "PyMuPDF", # Fitz
+    "opencv-python",
+    "unstructured", # For document parsing
+    "rapidocr-onnxruntime", # For OCR
+    "strenum",
+    "memoization",
+    "opensearch-py",
+]
+
+[project.optional-dependencies]
+dev = [
+    "pytest",
+    "pytest-cov",
+    "pytest-mock",
+    "pylint",
+    "black",
+    "isort",
+    "mypy"
+]
+
+[project.scripts]
+vulcan = "vulcan.cli:main"
+
+[tool.setuptools]
+package-dir = {"" = "."}
+packages = ["vulcan"]
