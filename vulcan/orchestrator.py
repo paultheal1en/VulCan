@@ -56,13 +56,19 @@ def main(mission: str, iterations: int):
         console.rule("[bold blue]Agent Execution Log[/bold blue]")
 
         while True:
-            result = agent(current_message, messages=messages)
+            # Sửa logic gọi agent để phân biệt lần đầu và các lần sau
+            if not messages:
+                # Lần gọi đầu tiên, không truyền messages
+                result = agent(current_message)
+            else:
+                # Các lần sau, truyền cả messages
+                result = agent(current_message, messages=messages)
+
             messages.append({"role": "user", "content": [{"text": current_message}]})
             if hasattr(result, 'content') and isinstance(result.content, list):
                 messages.append({"role": "assistant", "content": result.content})
             else:
                 messages.append({"role": "assistant", "content": [{"text": str(result)}]})
-
             is_complete, _, _ = analyze_objective_completion(messages)
             if is_complete:
                 console.print("[bold green]Agent has determined the mission is complete.[/bold green]")

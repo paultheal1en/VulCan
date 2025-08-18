@@ -61,12 +61,11 @@ class ReasoningHandler(PrintingCallbackHandler):
         print()
 
     def __call__(self, **kwargs):
-        """Process callback events with proper step limiting and clean formatting"""
         
         # Immediately return if step limit has been reached
         if self.step_limit_reached:
             return
-
+            
         # Handle streaming text data (reasoning/thinking)
         if "data" in kwargs:
             text = kwargs.get("data", "")
@@ -76,6 +75,7 @@ class ReasoningHandler(PrintingCallbackHandler):
         # Handle message events (tool uses and results)
         if "message" in kwargs:
             message = kwargs["message"]
+
             if isinstance(message, dict):
                 content = message.get("content", [])
 
@@ -214,13 +214,22 @@ class ReasoningHandler(PrintingCallbackHandler):
 
     def _handle_text_block(self, text):
         """Handle text blocks (reasoning/thinking) with proper formatting"""
-        if text and not text.isspace():
+        
+        # Loại bỏ \r và khoảng trắng ở đầu chuỗi
+        cleaned_text = text.replace('\r', '')
+        
+        # Xử lý từng dòng để loại bỏ khoảng trắng thừa ở đầu dòng
+        lines = cleaned_text.split('\n')
+        cleaned_lines = [line.lstrip() for line in lines]
+        cleaned_text = '\n'.join(cleaned_lines)
+        
+        if cleaned_text and not cleaned_text.isspace():
             # Add spacing before reasoning if last was a tool
             if self.last_was_tool:
                 print()  # Add spacing
                 self.last_was_tool = False
 
-            print(text, end="", flush=True)
+            print(cleaned_text, end="", flush=True)
             self.last_was_reasoning = True
 
     def _show_tool_execution(self, tool_use):

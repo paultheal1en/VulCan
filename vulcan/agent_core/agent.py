@@ -128,7 +128,12 @@ def create_agent(
             }
         }
     else:  # remote
-        memory_config["embedder"] = {"provider": "aws_bedrock", "config": {"model": "amazon.titan-embed-text-v2:0"}}
+        memory_config["embedder"] = {
+            "provider": "aws_bedrock", 
+            "config": {
+                "model": "amazon.titan-embed-text-v2:0",
+            }
+        }
 
     # Build internal LLM config for Mem0
     if llm_config.server == "local":
@@ -144,13 +149,16 @@ def create_agent(
             "provider": "aws_bedrock",
             "config": {
                 "model": "us.anthropic.claude-3-5-sonnet-20241022-v2:0",
-                "temperature": 0.1
+                "temperature": 0.1,
             }
         }
 
     # Build vector store config
     faiss_path = f"./mem0_faiss_{session.id or 'default'}"
     memory_config["vector_store"] = {"provider": "faiss", "config": {"path": faiss_path}}
+    if server_type == "remote":
+        print(f"[+] Setting AWS_REGION for Mem0: {llm_config.aws_region}")
+        os.environ["AWS_REGION"] = llm_config.aws_region
 
     # Initialize the memory system with the built config
     initialize_memory_system(config=memory_config, operation_id=session.id)
