@@ -22,7 +22,6 @@ from .system_prompts import get_system_prompt
 from .agent_handlers import ReasoningHandler
 from .utils import Colors
 from .memory_tools import mem0_memory, initialize_memory_system
-from .tools.planning_tools import update_plan_db
 
 warnings.filterwarnings("ignore", category=DeprecationWarning)
 
@@ -197,7 +196,6 @@ def create_agent(
             mem0_memory,
             stop,
             http_request,
-            update_plan_db,
         ],
         system_prompt=system_prompt,
         callback_handler=callback_handler,

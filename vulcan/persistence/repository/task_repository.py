@@ -23,3 +23,12 @@ def add_tasks_to_db(session, tasks: List[Task]):
         new_tasks.append(new_task)
 
     session.add_all(new_tasks)
+@with_session
+def update_task_status(session, task_id: str, is_finished: bool, is_success: bool, result: str):
+    """Updates the status of a specific task by its ID."""
+    task = session.query(TaskModel).filter(TaskModel.id == task_id).first()
+    if task:
+        task.is_finished = is_finished
+        task.is_success = is_success
+        task.result = result[:8192] if result else ""
+        session.commit()

@@ -255,25 +255,34 @@ class ReasoningHandler(PrintingCallbackHandler):
         print("%s" % ("─" * 80))
 
         # Show detailed tool information
-                # THAY THẾ TOÀN BỘ KHỐI NÀY
         if tool_name == "shell":
-            command_input = tool_input.get("command")
-            # Xử lý trường hợp có nhiều lệnh
-            if isinstance(command_input, list):
-                is_parallel = tool_input.get("parallel", False)
-                mode = "parallel" if is_parallel else "sequential"
-                print(f"↳ Executing {len(command_input)} commands ({mode}):")
-                for i, cmd in enumerate(command_input):
+            command = tool_input.get("command", "")
+            parallel = tool_input.get("parallel", False)
+            
+            # Handle different command formats
+            if isinstance(command, list):
+                mode = "parallel" if parallel else "sequential"
+                # Deduplicate commands while preserving order
+                seen = set()
+                unique_commands = []
+                for cmd in command:
                     cmd_str = cmd if isinstance(cmd, str) else cmd.get("command", str(cmd))
-                    print(f"  {i+1}. {Colors.GREEN}{cmd_str}{Colors.RESET}")
-                self.tools_used.append(f"shell: {len(command_input)} commands ({mode})")
-            # Xử lý trường hợp chỉ có một lệnh
-            elif isinstance(command_input, str):
-                print(f"↳ Running: {Colors.GREEN}{command_input}{Colors.RESET}")
-                self.tools_used.append(f"shell: {command_input}")
-            # Xử lý các trường hợp không mong muốn khác
+                    if cmd_str not in seen:
+                        seen.add(cmd_str)
+                        unique_commands.append((cmd, cmd_str))
+                
+                if len(unique_commands) < len(command):
+                    print("↳ Executing %d unique commands (%s) [%d duplicates removed]:" % 
+                          (len(unique_commands), mode, len(command) - len(unique_commands)))
+                else:
+                    print("↳ Executing %d commands (%s):" % (len(unique_commands), mode))
+                
+                for i, (cmd, cmd_str) in enumerate(unique_commands):
+                    print("  %d. %s%s%s" % (i+1, Colors.GREEN, cmd_str, Colors.RESET))
+                self.tools_used.append(f"shell: {len(unique_commands)} commands ({mode})")
             else:
-                print(f"↳ Unknown shell command format: {command_input}")
+                print("↳ Running: %s%s%s" % (Colors.GREEN, command, Colors.RESET))
+                self.tools_used.append(f"shell: {command}")
 
         elif tool_name == "file_write":
             path = tool_input.get("path", "")
@@ -664,7 +673,6 @@ class ReasoningHandler(PrintingCallbackHandler):
         # Always save report to file, regardless of content type
         self._save_report_to_file(report_content, target, objective)
 
-        # THAY THẾ TOÀN BỘ HÀM NÀY
     def _retrieve_evidence(self) -> List[Dict]:
         """Retrieve all collected evidence from the memory system."""
         evidence = []
@@ -675,12 +683,11 @@ class ReasoningHandler(PrintingCallbackHandler):
             print(f"{Colors.RED}Error: Memory client not initialized. Cannot retrieve evidence.{Colors.RESET}")
             return evidence
         
-        agent_user_id = "vulcan_agent" # Tên nhất quán
+        agent_user_id = "vulcan_agent"
         
         try:
             logger.info("Attempting to retrieve memories for user_id: %s", agent_user_id)
             
-            # SỬA LỖI CHÍNH: Thay 'list_memories' bằng 'get_all'
             memories_response = memory_client.get_all(user_id=agent_user_id)
             
             logger.debug("Memory response: %s", memories_response)
@@ -703,13 +710,21 @@ class ReasoningHandler(PrintingCallbackHandler):
                         'id': mem.get('id', 'N/A')
                     })
 
-            print(f"{Colors.DIM}Retrieved {len(evidence)} items from memory for the final report.{Colors.RESET}")
+            print(
+                "%sRetrieved %d items from memory for final report.%s"
+                % (Colors.DIM, len(evidence), Colors.RESET)
+            )
             
         except Exception as e:
             logger.error("Error retrieving evidence from mem0_memory: %s", str(e), exc_info=True)
-            print(f"{Colors.YELLOW}Warning: Failed to retrieve evidence from memory (user_id: {agent_user_id}). Report may be incomplete.{Colors.RESET}")
-            print(f"{Colors.DIM}Error details: {str(e)}{Colors.RESET}")
-            evidence = []
+            print(
+                "%sWarning: Failed to retrieve evidence from memory (user_id: %s). Report may be incomplete.%s"
+                % (Colors.YELLOW, agent_user_id, Colors.RESET)
+            )
+            print(
+                "%sError details: %s%s" % (Colors.DIM, str(e), Colors.RESET)
+            )
+            evidence = [] # Ensure empty list on error
 
         return evidence
 
