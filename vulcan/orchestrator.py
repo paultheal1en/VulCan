@@ -16,10 +16,21 @@ console = Console()
 @click.command(help="Start a new or continue a previous penetration testing session.")
 @click.option("--mission", "-m", help="Full mission description, including target and objective.")
 @click.option("--iterations", "-i", type=int, help="Override max iterations from config.")
-def main(mission: str, iterations: int):
+@click.option(
+    "--no-parallel",
+    is_flag=True,
+    default=False,
+    help="Forcefully disable parallel execution for all tools."
+)
+def main(mission: str, iterations: int, no_parallel: bool):
     """Hàm chính điều phối hoạt động của VulCan."""
-    load_dotenv() 
     os.environ["BYPASS_TOOL_CONSENT"] = "true"
+    if no_parallel:
+        os.environ["VULCAN_DISABLE_PARALLEL"] = "true"
+        console.print("[yellow][CONFIG] Parallel execution has been forcefully disabled by the user.[/yellow]")
+    else:
+        # Đảm bảo biến môi trường không tồn tại nếu không dùng cờ
+        os.environ.pop("VULCAN_DISABLE_PARALLEL", None)
     console.rule("[bold red]VulCan Autonomous Agent[/bold red]")
 
     # 1. Tải hoặc tạo session, truyền vào lời nhắc từ CLI

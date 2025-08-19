@@ -39,11 +39,37 @@ def get_system_prompt(
     max_steps: int,
     tools_context: str = "",
     has_persisted_plan: bool = False,
+    is_parallel_disabled: bool = False
 ) -> str:
     """Generate enhanced system prompt using metacognitive architecture."""
     swarm_guidance = _get_swarm_model_guidance()
     full_tools_context = f"{tools_context}\n{swarm_guidance}" if tools_context else swarm_guidance
     
+    if is_parallel_disabled:
+        parallel_execution_protocol = """
+**[Protocol: Parallel Execution] - DISABLED BY USER**
+**CRITICAL RULE:** For this session, the parallel execution feature has been disabled. You **MUST NOT** attempt to run shell commands in parallel.
+All commands **MUST** be run sequentially, one at a time. Omit the `parallel=True` argument from all `shell` tool calls.
+"""
+    else:
+        parallel_execution_protocol = """
+**[Protocol: Parallel Execution]**
+You can execute multiple shell commands in parallel to be more efficient, BUT you must be strategic about it.
+
+**- DO run in parallel:** Quick, non-interactive commands with concise output.
+  - Good examples: `ping -c 4 target`, `whois target`, multiple `curl -I` requests, simple `grep` commands.
+  - `shell(commands=["curl -I target.com/robots.txt", "curl -I target.com/sitemap.xml"], parallel=True)`
+
+**- CRITICAL: DO NOT run in parallel:** Any tool that produces long, continuous, or verbose output. Their outputs will be mixed and become unreadable, preventing you from analyzing the results.
+  - **Bad examples (run these sequentially):**
+    - `nikto -h target`
+    - `gobuster dir -u target ...`
+    - `sqlmap -u target ...`
+    - Intensive `nmap` scans (e.g., `nmap -sV -p- target`)
+
+To ensure you can properly analyze the results, you **MUST run verbose tools sequentially** (one at a time, in separate steps). Failure to do so will result in useless, jumbled output.
+"""
+
     mission_details = session.init_description
     operation_id = session.id
     
@@ -110,21 +136,7 @@ MANDATORY: Each agent MUST call mem0_memory first to retrieve past findings
 Always include: tools=["shell", "editor", "load_tool", "http_request", "mem0_memory"]
 Use when: uncertainty exists, complex target, multiple valid approaches
 
-**[Protocol: Parallel Execution]**
-You can execute multiple shell commands in parallel to be more efficient, BUT you must be strategic about it.
-
-**- DO run in parallel:** Quick, non-interactive commands with concise output.
-  - Good examples: `ping -c 4 target`, `whois target`, multiple `curl -I` requests, simple `grep` commands.
-  - `shell(commands=["curl -I target.com/robots.txt", "curl -I target.com/sitemap.xml"], parallel=True)`
-
-**- CRITICAL: DO NOT run in parallel:** Any tool that produces long, continuous, or verbose output. Their outputs will be mixed and become unreadable, preventing you from analyzing the results.
-  - **Bad examples (run these sequentially):**
-    - `nikto -h target`
-    - `gobuster dir -u target ...`
-    - `sqlmap -u target ...`
-    - Intensive `nmap` scans (e.g., `nmap -sV -p- target`)
-
-To ensure you can properly analyze the results, you **MUST run verbose tools sequentially** (one at a time, in separate steps). Failure to do so will result in useless, jumbled output.
+{parallel_execution_protocol}
 </critical_protocols>
 
 <dynamic_execution>

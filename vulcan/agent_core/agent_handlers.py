@@ -28,7 +28,7 @@ class ReasoningHandler(PrintingCallbackHandler):
     def __init__(self, max_steps=100, operation_id=None):
         super().__init__()
         self.current_reasoning_buffer = ""
-        self.reasoning_has_started_this_cycle = False
+        self.reasoning_header_printed = False
         self.steps = 0
         self.max_steps = max_steps
         self.memory_operations = 0
@@ -216,26 +216,40 @@ class ReasoningHandler(PrintingCallbackHandler):
 
     def _handle_text_block(self, text):
         """
-        Gom, dọn dẹp và in suy nghĩ của agent một cách an toàn,
-        tránh lỗi lệch dòng và trộn lẫn output.
+        Gom, dọn dẹp và in suy nghĩ của agent với định dạng nổi bật,
+        xử lý trực tiếp trong khi stream.
         """
+        # Gom các mẩu văn bản và loại bỏ ký tự '\r'
         self.current_reasoning_buffer += text.replace('\r', '')
 
+        # Xử lý từng dòng hoàn chỉnh trong buffer
         while '\n' in self.current_reasoning_buffer:
-            # Tách dòng đầu tiên ra để xử lý
             line, self.current_reasoning_buffer = self.current_reasoning_buffer.split('\n', 1)
 
-            if not self.reasoning_has_started_this_cycle:
+            # Nếu dòng trống thì bỏ qua, không in
+            if not line.strip():
+                continue
+
+            if not self.reasoning_header_printed:
+                # Nếu hành động trước đó là một công cụ, thêm dòng trống để tách biệt
                 if self.last_was_tool:
-                    print() 
-                # Đánh dấu rằng chúng ta đã bắt đầu in suy nghĩ
-                self.reasoning_has_started_this_cycle = True
-            print("\r" + line.lstrip())
+                    print()
+                
+                print(f"{Colors.MAGENTA}╭─ 🤔 Agent Reasoning {'─' * (80 - 20)}{Colors.RESET}")
+                
+                self.reasoning_header_printed = True
+                self.last_was_tool = False 
+            
+            print(f"{Colors.MAGENTA}│{Colors.RESET}  {Colors.DIM}{line.lstrip()}{Colors.RESET}")
         self.last_was_reasoning = True
-        self.last_was_tool = False
 
     def _show_tool_execution(self, tool_use):
         """Display tool execution with clean formatting based on working implementation"""
+        if self.reasoning_header_printed:
+            print(f"{Colors.MAGENTA}╰{'─' * (80 - 1)}{Colors.RESET}")
+        
+        # Reset cờ để chuẩn bị cho lượt suy nghĩ tiếp theo
+        self.reasoning_header_printed = False
         # Check step limit BEFORE incrementing to prevent execution beyond limit
         if self.steps >= self.max_steps and not self.step_limit_reached:
             self.step_limit_reached = True
@@ -265,8 +279,17 @@ class ReasoningHandler(PrintingCallbackHandler):
         )
         self._print_separator()
 
-        # Show detailed tool information
+            # Show detailed tool information
         if tool_name == "shell":
+            is_parallel_disabled = os.environ.get("VULCAN_DISABLE_PARALLEL", "false").lower() == "true"
+            
+            # Lấy giá trị parallel từ input của agent
+            is_parallel_requested = tool_input.get("parallel", False)
+            
+            # Nếu người dùng đã tắt, GHI ĐÈ quyết định của agent
+            if is_parallel_disabled and is_parallel_requested:
+                print(f"{Colors.YELLOW}[NOTICE] User disabled parallel execution. Running commands sequentially.{Colors.RESET}")
+                tool_input["parallel"] = False
             command = tool_input.get("command", "")
             parallel = tool_input.get("parallel", False)
             
@@ -518,7 +541,6 @@ class ReasoningHandler(PrintingCallbackHandler):
         print()
         self.last_was_tool = True
         self.last_was_reasoning = False
-        self.reasoning_has_started_this_cycle = False
 
     def _show_tool_result(self, tool_id, tool_result):
         """Display tool execution results if they contain meaningful output"""

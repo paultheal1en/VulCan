@@ -39,6 +39,12 @@ def auto_setup(skip_mem0_cleanup: bool = False) -> List[str]:
 
     # Just check which tools are available
     cyber_tools = {
+        'nuclei': 'Fast, template-based vulnerability scanner',
+        'subfinder': 'Subdomain discovery tool',
+        'httpx': 'Fast HTTP probe to check for live web servers',
+        'katana': 'Web crawler and spider',
+        'ffuf': 'Fast web fuzzer for directory/file discovery',
+        'arjun': 'HTTP parameter discovery suite',
         'nmap': 'Network discovery and security auditing',
         'nikto': 'Web server scanner',
         'sqlmap': 'SQL injection detection and exploitation',
@@ -46,8 +52,6 @@ def auto_setup(skip_mem0_cleanup: bool = False) -> List[str]:
         'netcat': 'Network utility for reading/writing data',
         'curl': 'HTTP client for web requests',
         'metasploit': 'Penetration testing framework',
-        'iproute2': 'Provides modern networking tools (ip, ss, tc, etc.)',
-        'net-tools': 'Provides classic networking utilities (netstat, ifconfig, route, etc.)',
     }
 
     available_tools = []
