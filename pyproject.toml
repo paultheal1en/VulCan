@@ -28,7 +28,7 @@ dependencies = [
     "strands-agents-tools==0.2.0",
 
     # Memory Systems (CAA & VulnBot)
-    "mem0ai",
+    "mem0ai==0.1.110",
     "faiss-cpu",
     "pymilvus",
     "langchain",

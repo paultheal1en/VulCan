@@ -23,9 +23,12 @@ FALLBACK_EVIDENCE_PREVIEW_LENGTH = 200
 
 class ReasoningHandler(PrintingCallbackHandler):
     """Callback handler for cyber security assessment operations with step tracking and reporting."""
-
+    def _print_separator(self): 
+        print("\n\r" + Colors.DIM + "─" * 80 + Colors.RESET + "\n\r", end="")
     def __init__(self, max_steps=100, operation_id=None):
         super().__init__()
+        self.current_reasoning_buffer = ""
+        self.reasoning_has_started_this_cycle = False
         self.steps = 0
         self.max_steps = max_steps
         self.memory_operations = 0
@@ -50,16 +53,14 @@ class ReasoningHandler(PrintingCallbackHandler):
         timestamp = datetime.now().strftime("%H:%M:%S")
 
         # Clean header with full-width break lines
-        print("\n%s%s%s" % (Colors.DIM, "─" * 80, Colors.RESET))
+        self._print_separator()
         print(
             "🔐 %s%sCyber Security Assessment%s"
             % (Colors.CYAN, Colors.BOLD, Colors.RESET)
         )
         print("   Operation: %s%s%s" % (Colors.DIM, self.operation_id, Colors.RESET))
         print("   Started:   %s%s%s" % (Colors.DIM, timestamp, Colors.RESET))
-        print("%s%s%s" % (Colors.DIM, "─" * 80, Colors.RESET))
-        print()
-
+        self._print_separator()
     def __call__(self, **kwargs):
         
         # Immediately return if step limit has been reached
@@ -212,25 +213,26 @@ class ReasoningHandler(PrintingCallbackHandler):
             # For other tools, assume valid if there's any input
             return bool(tool_input)
 
-    def _handle_text_block(self, text):
-        """Handle text blocks (reasoning/thinking) with proper formatting"""
-        
-        # Loại bỏ \r và khoảng trắng ở đầu chuỗi
-        cleaned_text = text.replace('\r', '')
-        
-        # Xử lý từng dòng để loại bỏ khoảng trắng thừa ở đầu dòng
-        lines = cleaned_text.split('\n')
-        cleaned_lines = [line.lstrip() for line in lines]
-        cleaned_text = '\n'.join(cleaned_lines)
-        
-        if cleaned_text and not cleaned_text.isspace():
-            # Add spacing before reasoning if last was a tool
-            if self.last_was_tool:
-                print()  # Add spacing
-                self.last_was_tool = False
 
-            print(cleaned_text, end="", flush=True)
-            self.last_was_reasoning = True
+    def _handle_text_block(self, text):
+        """
+        Gom, dọn dẹp và in suy nghĩ của agent một cách an toàn,
+        tránh lỗi lệch dòng và trộn lẫn output.
+        """
+        self.current_reasoning_buffer += text.replace('\r', '')
+
+        while '\n' in self.current_reasoning_buffer:
+            # Tách dòng đầu tiên ra để xử lý
+            line, self.current_reasoning_buffer = self.current_reasoning_buffer.split('\n', 1)
+
+            if not self.reasoning_has_started_this_cycle:
+                if self.last_was_tool:
+                    print() 
+                # Đánh dấu rằng chúng ta đã bắt đầu in suy nghĩ
+                self.reasoning_has_started_this_cycle = True
+            print("\r" + line.lstrip())
+        self.last_was_reasoning = True
+        self.last_was_tool = False
 
     def _show_tool_execution(self, tool_use):
         """Display tool execution with clean formatting based on working implementation"""
@@ -256,12 +258,12 @@ class ReasoningHandler(PrintingCallbackHandler):
             print()  # Add line after reasoning
 
         # Print step header with exact format from working version
-        print("%s" % ("─" * 80))
+        self._print_separator()
         print(
             "Step %d/%d: %s%s%s"
             % (self.steps, self.max_steps, Colors.CYAN, tool_name, Colors.RESET)
         )
-        print("%s" % ("─" * 80))
+        self._print_separator()
 
         # Show detailed tool information
         if tool_name == "shell":
@@ -281,22 +283,29 @@ class ReasoningHandler(PrintingCallbackHandler):
                         unique_commands.append((cmd, cmd_str))
                 
                 if len(unique_commands) < len(command):
-                    print("↳ Executing %d unique commands (%s) [%d duplicates removed]:" % 
-                          (len(unique_commands), mode, len(command) - len(unique_commands)))
+                    # Ensure we're at start of line before printing arrow
+                    print("\n↳ Executing %d unique commands (%s) [%d duplicates removed]:" % 
+                        (len(unique_commands), mode, len(command) - len(unique_commands)), end="")
                 else:
-                    print("↳ Executing %d commands (%s):" % (len(unique_commands), mode))
+                    # Ensure we're at start of line before printing arrow  
+                    print("\n↳ Executing %d commands (%s):" % (len(unique_commands), mode), end="")
                 
+                # Print commands with proper indentation
                 for i, (cmd, cmd_str) in enumerate(unique_commands):
-                    print("  %d. %s%s%s" % (i+1, Colors.GREEN, cmd_str, Colors.RESET))
+                    print("\n                                    %d. %s%s%s" % 
+                        (i+1, Colors.GREEN, cmd_str, Colors.RESET), end="")
+                print()  # Final newline
                 self.tools_used.append(f"shell: {len(unique_commands)} commands ({mode})")
             else:
-                print("↳ Running: %s%s%s" % (Colors.GREEN, command, Colors.RESET))
+                # Ensure we're at start of line before printing arrow
+                print("\n↳ Running: %s%s%s" % (Colors.GREEN, command, Colors.RESET))
                 self.tools_used.append(f"shell: {command}")
 
         elif tool_name == "file_write":
             path = tool_input.get("path", "")
             content_preview = str(tool_input.get("content", ""))[:50]
-            print("↳ Writing: %s%s%s" % (Colors.YELLOW, path, Colors.RESET))
+            # Ensure we're at start of line before printing arrow
+            print("\n↳ Writing: %s%s%s" % (Colors.YELLOW, path, Colors.RESET))
             if content_preview:
                 print(
                     "  Content: %s%s...%s" % (Colors.DIM, content_preview, Colors.RESET)
@@ -313,7 +322,8 @@ class ReasoningHandler(PrintingCallbackHandler):
             path = tool_input.get("path", "")
             file_text = tool_input.get("file_text", "")
 
-            print("↳ Editor: %s%s%s" % (Colors.CYAN, command, Colors.RESET))
+            # Ensure we're at start of line before printing arrow
+            print("\n↳ Editor: %s%s%s" % (Colors.CYAN, command, Colors.RESET))
             print("  Path: %s%s%s" % (Colors.YELLOW, path, Colors.RESET))
 
             # Show content for any file creation
@@ -321,14 +331,13 @@ class ReasoningHandler(PrintingCallbackHandler):
                 # Track tools specifically
                 if path and path.startswith("tools/") and path.endswith(".py"):
                     self.created_tools.append(path.replace("tools/", "").replace(".py", ""))
-                    print("\n%s" % ("─" * 70))
+                    self._print_separator()
                     print("📄 %sMETA-TOOL CODE:%s" % (Colors.YELLOW, Colors.RESET))
                 else:
-                    print("\n%s" % ("─" * 70))
+                    self._print_separator()
                     print("📄 %sFILE CONTENT:%s" % (Colors.CYAN, Colors.RESET))
                 
-                print("%s" % ("─" * 70))
-                
+                self._print_separator()
                 # Display the file content with syntax highlighting
                 lines = file_text.split("\n")
                 for i, line in enumerate(lines[:MAX_TOOL_CODE_LINES]):
@@ -353,18 +362,20 @@ class ReasoningHandler(PrintingCallbackHandler):
                         "%s... (%d more lines)%s"
                         % (Colors.DIM, len(lines) - MAX_TOOL_CODE_LINES, Colors.RESET)
                     )
-                print("%s" % ("─" * 70))
+                self._print_separator()
 
             self.tools_used.append(f"editor: {command} {path}")
 
         elif tool_name == "load_tool":
             path = tool_input.get("path", "")
-            print("↳ Loading: %s%s%s" % (Colors.GREEN, path, Colors.RESET))
+            # Ensure we're at start of line before printing arrow
+            print("\n↳ Loading: %s%s%s" % (Colors.GREEN, path, Colors.RESET))
             self.tools_used.append(f"load_tool: {path}")
 
         elif tool_name == "stop":
             reason = tool_input.get("reason", "No reason provided")
-            print("↳ Stopping: %s%s%s" % (Colors.RED, reason, Colors.RESET))
+            # Ensure we're at start of line before printing arrow
+            print("\n↳ Stopping: %s%s%s" % (Colors.RED, reason, Colors.RESET))
             self.stop_tool_used = True  # Set the flag when stop tool is used
             self.tools_used.append(f"stop: {reason}")
 
@@ -374,8 +385,9 @@ class ReasoningHandler(PrintingCallbackHandler):
                 content = str(tool_input.get("content", ""))[:CONTENT_PREVIEW_LENGTH]
                 metadata = tool_input.get("metadata", {})
                 category = metadata.get("category", "general") if metadata else "general"
+                # Ensure we're at start of line before printing arrow
                 print(
-                    "↳ Storing [%s%s%s]: %s%s%s%s"
+                    "\n↳ Storing [%s%s%s]: %s%s%s%s"
                     % (
                         Colors.CYAN,
                         category,
@@ -391,7 +403,7 @@ class ReasoningHandler(PrintingCallbackHandler):
                 )
                 if metadata:
                     print(
-                        "  Metadata: %s%s%s%s"
+                        "                          Metadata: %s%s%s%s"
                         % (
                             Colors.DIM,
                             str(metadata)[:METADATA_PREVIEW_LENGTH],
@@ -403,18 +415,23 @@ class ReasoningHandler(PrintingCallbackHandler):
                     )
             elif action == "retrieve":
                 query = tool_input.get("query", "")
-                print('↳ Searching: %s"%s"%s' % (Colors.CYAN, query, Colors.RESET))
+                # Ensure we're at start of line before printing arrow
+                print('\n↳ Searching: %s"%s"%s' % (Colors.CYAN, query, Colors.RESET))
             elif action == "list":
-                print("↳ Listing evidence")
+                # Ensure we're at start of line before printing arrow
+                print("\n↳ Listing evidence")
             elif action == "delete":
                 memory_id = tool_input.get("memory_id", "unknown")
-                print("↳ Deleting memory: %s%s%s" % (Colors.RED, memory_id, Colors.RESET))
+                # Ensure we're at start of line before printing arrow
+                print("\n↳ Deleting memory: %s%s%s" % (Colors.RED, memory_id, Colors.RESET))
             elif action == "get":
                 memory_id = tool_input.get("memory_id", "unknown")
-                print("↳ Getting memory: %s%s%s" % (Colors.CYAN, memory_id, Colors.RESET))
+                # Ensure we're at start of line before printing arrow
+                print("\n↳ Getting memory: %s%s%s" % (Colors.CYAN, memory_id, Colors.RESET))
             elif action == "history":
                 memory_id = tool_input.get("memory_id", "unknown")
-                print("↳ Getting history for: %s%s%s" % (Colors.CYAN, memory_id, Colors.RESET))
+                # Ensure we're at start of line before printing arrow
+                print("\n↳ Getting history for: %s%s%s" % (Colors.CYAN, memory_id, Colors.RESET))
 
             self.tools_used.append(f"mem0_memory: {action}")
 
@@ -428,7 +445,8 @@ class ReasoningHandler(PrintingCallbackHandler):
                 tools = tool_input.get("tools", [])
                 model_provider = tool_input.get("model_provider", "default")
                 
-                print("↳ %sOrchestrating Swarm Intelligence%s" % (Colors.BOLD, Colors.RESET))
+                # Ensure we're at start of line before printing arrow
+                print("\n↳ %sOrchestrating Swarm Intelligence%s" % (Colors.BOLD, Colors.RESET))
                 
                 # Parse task structure if possible
                 task_parts = task.split(". ")
@@ -461,13 +479,15 @@ class ReasoningHandler(PrintingCallbackHandler):
                 # Special handling for http_request - show full URL
                 method = tool_input.get("method", "GET")
                 url = tool_input.get("url", "")
-                print("↳ HTTP Request: %s%s %s%s" % (Colors.MAGENTA, method, url, Colors.RESET))
+                # Ensure we're at start of line before printing arrow
+                print("\n↳ HTTP Request: %s%s %s%s" % (Colors.MAGENTA, method, url, Colors.RESET))
                 self.tools_used.append(f"http_request: {method} {url}")
             elif tool_name == "think":
                 # Special handling for think tool - show full thought
                 thought = tool_input.get("thought", "")
                 cycle_count = tool_input.get("cycle_count", 1)
-                print("↳ Thinking (%s%d cycles%s):" % (Colors.CYAN, cycle_count, Colors.RESET))
+                # Ensure we're at start of line before printing arrow
+                print("\n↳ Thinking (%s%d cycles%s):" % (Colors.CYAN, cycle_count, Colors.RESET))
                 print("  Thought: %s%s%s" % (Colors.DIM, thought[:500] + "..." if len(thought) > 500 else thought, Colors.RESET))
                 self.tools_used.append(f"think: {cycle_count} cycles")
             elif tool_input:
@@ -478,23 +498,27 @@ class ReasoningHandler(PrintingCallbackHandler):
                         f"{k}={str(tool_input[k])[:50]}{'...' if len(str(tool_input[k])) > 50 else ''}"
                         for k in key_params
                     )
+                    # Ensure we're at start of line before printing arrow
                     print(
-                        "↳ Parameters: %s%s%s" % (Colors.DIM, params_str, Colors.RESET)
+                        "\n↳ Parameters: %s%s%s" % (Colors.DIM, params_str, Colors.RESET)
                     )
                 else:
+                    # Ensure we're at start of line before printing arrow
                     print(
-                        "↳ Executing: %s%s%s"
+                        "\n↳ Executing: %s%s%s"
                         % (Colors.MAGENTA, tool_name, Colors.RESET)
                     )
                 self.tools_used.append(f"{tool_name}: {list(tool_input.keys())}")
             else:
-                print("↳ Executing: %s%s%s" % (Colors.MAGENTA, tool_name, Colors.RESET))
+                # Ensure we're at start of line before printing arrow
+                print("\n↳ Executing: %s%s%s" % (Colors.MAGENTA, tool_name, Colors.RESET))
                 self.tools_used.append(f"{tool_name}: no params")
 
         # Add blank line for readability
         print()
         self.last_was_tool = True
         self.last_was_reasoning = False
+        self.reasoning_has_started_this_cycle = False
 
     def _show_tool_result(self, tool_id, tool_result):
         """Display tool execution results if they contain meaningful output"""
@@ -507,37 +531,78 @@ class ReasoningHandler(PrintingCallbackHandler):
 
         # Process tool output based on tool type
         if tool_name == "shell" and result_content:
+            full_output_text = ""
             for content_block in result_content:
                 if isinstance(content_block, dict) and "text" in content_block:
-                    output_text = content_block.get("text", "")
-                    if output_text.strip():
-                        # Filter out execution summary lines
-                        lines = output_text.strip().split("\n")
-                        filtered_lines = []
-                        skip_summary = False
-                        for line in lines:
-                            if "Execution Summary:" in line:
-                                skip_summary = True
-                                continue
-                            if skip_summary and (
-                                "Total commands:" in line
-                                or "Successful:" in line
-                                or "Failed:" in line
-                            ):
-                                continue
-                            if skip_summary and line.strip() == "":
-                                skip_summary = False
-                                continue
-                            if not skip_summary:
-                                filtered_lines.append(line)
+                    full_output_text += content_block.get("text", "") + "\n"  # Add newline between blocks if multiple
 
-                        # Only show output if there's content after filtering
-                        if filtered_lines and any(
-                            line.strip() for line in filtered_lines
-                        ):
-                            for line in filtered_lines:
-                                print(line)
-                    break
+            if full_output_text.strip():
+                # Split into lines for filtering
+                lines = full_output_text.split("\n")
+                filtered_lines = []
+                in_output_section = False
+                current_command_status = None
+                skip_summary = False
+
+                for line in lines:
+                    line_stripped = line.strip()
+
+                    # Detect start of a command block
+                    if line_stripped.startswith("Error: Command:") or line_stripped.startswith("Command:"):
+                        # Reset for new command
+                        in_output_section = False
+                        current_command_status = None
+                        # Skip the "Command:" line itself
+                        continue
+
+                    # Detect status
+                    if line_stripped.startswith("Status:"):
+                        current_command_status = line_stripped.split(":", 1)[1].strip()
+                        continue
+
+                    # Skip Exit Code if not needed
+                    if line_stripped.startswith("Exit Code:"):
+                        continue
+
+                    # Start collecting output when "Output:" is found
+                    if line_stripped.startswith("Output:"):
+                        in_output_section = True
+                        continue  # Skip the "Output:" line
+
+                    # Stop collecting if we hit a blank line or next section after output
+                    if in_output_section and (line_stripped == "" or line_stripped.startswith("Error:") or line_stripped.startswith("Command:")):
+                        in_output_section = False
+
+                    # Filter out execution summary if present
+                    if "Execution Summary:" in line:
+                        skip_summary = True
+                        continue
+                    if skip_summary and (
+                        "Total commands:" in line
+                        or "Successful:" in line
+                        or "Failed:" in line
+                    ):
+                        continue
+                    if skip_summary and line_stripped == "":
+                        skip_summary = False
+                        continue
+
+                    # Only append lines if in output section or if it's an error message
+                    if in_output_section or (current_command_status == "error" and line_stripped):
+                        filtered_lines.append(line)
+
+                # Join filtered lines and clean
+                cleaned_output = "\n".join(filtered_lines).strip()
+
+                if cleaned_output:
+                    # For errors, print with red color if status is error
+                    if status == "error" or "error" in cleaned_output.lower():
+                        print("%sError: %s%s" % (Colors.RED, cleaned_output, Colors.RESET))
+                    else:
+                        print(cleaned_output)
+                    if not cleaned_output.endswith("\n"):
+                        print()
+
         elif status == "error":
             # Show errors for any tool, but filter out empty error messages
             for content_block in result_content:
@@ -545,6 +610,10 @@ class ReasoningHandler(PrintingCallbackHandler):
                     error_text = content_block.get("text", "").strip()
                     if error_text and error_text != "Error:":
                         print("%sError: %s%s" % (Colors.RED, error_text, Colors.RESET))
+                        if not error_text.endswith("\n"):
+                            print()
+                        break  # Only show first error block
+
         else:
             # Show output for other tools (like swarm, mem0_memory, etc.)
             if result_content and tool_name not in ["shell"]:  # Shell already handled above
@@ -570,10 +639,13 @@ class ReasoningHandler(PrintingCallbackHandler):
                                     )
                                 else:
                                     print(output_text)
-                            break  # Only show first text block
+                            # Ensure newline after output
+                            if not output_text.endswith("\n"):
+                                print()
+                        break  # Only show first text block
 
-        # Add separator line after tool result
-        print("%s%s%s" % (Colors.DIM, "─" * 80, Colors.RESET))
+        # Add separator line after tool result (always, even if no output)
+        self._print_separator()
 
     def _track_tool_effectiveness(self, tool_id, tool_result):
         """Track tool effectiveness for analysis"""
@@ -849,14 +921,14 @@ Format this as a professional penetration testing report."""
 
     def _display_final_report(self, report_content: str) -> None:
         """Display the final assessment report."""
-        print("\n%s%s%s" % (Colors.DIM, "─" * 80, Colors.RESET))
+        self._print_separator()
         print(
             "📋 %s%sFINAL ASSESSMENT REPORT%s"
             % (Colors.GREEN, Colors.BOLD, Colors.RESET)
         )
-        print("%s%s%s" % (Colors.DIM, "─" * 80, Colors.RESET))
+        self._print_separator()
         print("\n%s" % report_content)
-        print("\n%s%s%s" % (Colors.DIM, "─" * 80, Colors.RESET))
+        self._print_separator()
 
     def _save_report_to_file(
         self, report_content: str, target: str, objective: str

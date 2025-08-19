@@ -9,6 +9,7 @@ from vulcan.agent_core.agent import create_agent
 from vulcan.agent_core.system_prompts import get_initial_prompt, get_continuation_prompt
 from vulcan.agent_core.utils import analyze_objective_completion
 from vulcan.agent_core.environment import auto_setup
+from dotenv import load_dotenv
 
 console = Console()
 
@@ -17,8 +18,8 @@ console = Console()
 @click.option("--iterations", "-i", type=int, help="Override max iterations from config.")
 def main(mission: str, iterations: int):
     """Hàm chính điều phối hoạt động của VulCan."""
+    load_dotenv() 
     os.environ["BYPASS_TOOL_CONSENT"] = "true"
-    
     console.rule("[bold red]VulCan Autonomous Agent[/bold red]")
 
     # 1. Tải hoặc tạo session, truyền vào lời nhắc từ CLI

@@ -2,9 +2,11 @@ pyproject.toml
 ./vulcan/__init__.py
 ./vulcan/cli.py
 ./vulcan/orchestrator.py
+./vulcan/session_manager.py
 vulcan/__init__.py
 vulcan/cli.py
 vulcan/orchestrator.py
+vulcan/session_manager.py
 vulcan_agent.egg-info/PKG-INFO
 vulcan_agent.egg-info/SOURCES.txt
 vulcan_agent.egg-info/dependency_links.txt

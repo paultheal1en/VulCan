@@ -16,7 +16,7 @@ Requires-Python: >=3.11
 Description-Content-Type: text/markdown
 Requires-Dist: strands-agents[ollama]>=1.0.0
 Requires-Dist: strands-agents-tools==0.2.0
-Requires-Dist: mem0ai
+Requires-Dist: mem0ai==0.1.110
 Requires-Dist: faiss-cpu
 Requires-Dist: pymilvus
 Requires-Dist: langchain

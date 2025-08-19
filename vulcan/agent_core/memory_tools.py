@@ -11,6 +11,7 @@ from rich.panel import Panel
 from rich.table import Table
 from rich.text import Text
 from strands import tool
+from .utils import Colors
 
 # Set up logging
 logger = logging.getLogger(__name__)
@@ -379,7 +380,8 @@ def mem0_memory(
             raise ValueError(f"Invalid action: {action}")
 
     except Exception as e:
-        error_msg = f"Error in memory tool: {str(e)}"
+        error_msg_for_agent = f"Error in memory tool: [{type(e).__name__}] {str(e)}"
+
         if not strands_dev:
             error_panel = Panel(
                 Text(str(e), style="red"),
@@ -387,4 +389,5 @@ def mem0_memory(
                 border_style="red",
             )
             console.print(error_panel)
-        return error_msg
+            
+        return error_msg_for_agent

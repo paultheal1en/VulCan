@@ -22,6 +22,7 @@ from .system_prompts import get_system_prompt
 from .agent_handlers import ReasoningHandler
 from .utils import Colors
 from .memory_tools import mem0_memory, initialize_memory_system
+from pathlib import Path
 
 warnings.filterwarnings("ignore", category=DeprecationWarning)
 
@@ -80,9 +81,25 @@ def _validate_server_requirements() -> None:
             raise ConnectionError(f"Could not verify Ollama models: {e}")
 
     elif server_type == "remote":
-        if not (os.getenv("AWS_ACCESS_KEY_ID") or os.getenv("AWS_PROFILE")):
+        aws_access_key = os.getenv("AWS_ACCESS_KEY_ID")
+        aws_profile = os.getenv("AWS_PROFILE")
+        
+        # Kiểm tra sự tồn tại của file credentials mặc định
+        aws_credentials_file = Path.home() / ".aws" / "credentials"
+        
+        credentials_found = False
+        if aws_access_key:
+            credentials_found = True
+        elif aws_profile:
+            credentials_found = True
+        elif aws_credentials_file.is_file():
+            credentials_found = True
+            
+        if not credentials_found:
             raise EnvironmentError(
-                "AWS credentials not configured for remote mode. Set AWS_ACCESS_KEY_ID/AWS_SECRET_ACCESS_KEY or configure AWS_PROFILE"
+                "AWS credentials not configured for remote mode. "
+                "Please set AWS_ACCESS_KEY_ID/AWS_SECRET_ACCESS_KEY environment variables, "
+                "or run 'aws configure' to set up a credentials file."
             )
 
 def _handle_model_creation_error(error: Exception) -> None:
@@ -132,6 +149,7 @@ def create_agent(
             "provider": "aws_bedrock", 
             "config": {
                 "model": "amazon.titan-embed-text-v2:0",
+                "aws_region": llm_config.aws_region 
             }
         }
 
@@ -150,16 +168,19 @@ def create_agent(
             "config": {
                 "model": "us.anthropic.claude-3-5-sonnet-20241022-v2:0",
                 "temperature": 0.1,
+                "aws_region": llm_config.aws_region
             }
         }
 
     # Build vector store config
     faiss_path = f"./mem0_faiss_{session.id or 'default'}"
-    memory_config["vector_store"] = {"provider": "faiss", "config": {"path": faiss_path}}
-    if server_type == "remote":
-        print(f"[+] Setting AWS_REGION for Mem0: {llm_config.aws_region}")
-        os.environ["AWS_REGION"] = llm_config.aws_region
-
+    memory_config["vector_store"] = {
+        "provider": "faiss",
+        "config": {
+            "embedding_model_dims": 1024,
+            "path": faiss_path
+        }
+    }
     # Initialize the memory system with the built config
     initialize_memory_system(config=memory_config, operation_id=session.id)
     logger.info(f"Memory system initialized for operation: {session.id}")

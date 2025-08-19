@@ -1,2 +1,0 @@
-# Nmap 7.95 scan initiated Sun Aug 17 20:18:20 2025 as: /usr/lib/nmap/nmap --privileged -sV -p- -T4 -m vulcan.cli python start
-# Nmap done at Sun Aug 17 20:18:28 2025 -- 0 IP addresses (0 hosts up) scanned in 7.71 seconds
