@@ -116,7 +116,8 @@ def create_agent(
     session: Session,
     max_steps: int,
     available_tools: List[str],
-    has_persisted_plan: bool = False,
+    has_persisted_plan: bool = False, 
+    is_parallel_disabled: bool = False 
 ) -> Tuple[Agent, ReasoningHandler]:
     """
     Creates an autonomous agent based on a Session object and global configurations.
@@ -189,7 +190,8 @@ def create_agent(
         session=session,
         max_steps=max_steps,
         tools_context=", ".join(available_tools),
-        has_persisted_plan=has_persisted_plan
+        has_persisted_plan=has_persisted_plan, 
+        is_parallel_disabled=is_parallel_disabled
     )
 
     callback_handler = ReasoningHandler(max_steps=max_steps, operation_id=session.id)

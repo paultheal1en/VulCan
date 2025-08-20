@@ -249,7 +249,24 @@ def mem0_memory(
     metadata: Optional[Dict] = None,
 ) -> str:
     """
-    Memory management tool for storing, retrieving, and managing memories in Mem0.
+    Manages the agent's long-term memory. Use this for EVERYTHING you need to remember.
+
+    **CRITICAL USAGE:**
+    1.  **To Store Discoveries (Findings):**
+        - Use `action="store"` with `metadata={"category": "finding"}`.
+        - The 'content' should be a concise fact or observation.
+        - Example: `mem0_memory(action="store", content="Port 80 is open running Apache/2.4", metadata={"category": "finding"})`
+
+    2.  **To Store Your STRATEGIC PLANS:**
+        - Use `action="store"` with `metadata={"category": "plan", "status": "active"}`.
+        - The 'content' must be a JSON string representing your step-by-step plan.
+        - Example: `mem0_memory(action="store", content='{"goal": "Recon", "steps": [{"id": 1, "instruction": "Run nmap"}], "status": "active"}', metadata={"category": "plan"})`
+
+    3.  **To Retrieve Information (Findings or Plans):**
+        - Use `action="retrieve"` with a natural language `query`.
+        - To get your current plan, always use the query: "my active strategic plan".
+        - Example: `mem0_memory(action="retrieve", query="What is my current active plan?")`
+        - Example: `mem0_memory(action="retrieve", query="What findings are related to the web server?")`
     """
     global _MEMORY_CLIENT
 

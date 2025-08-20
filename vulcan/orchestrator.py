@@ -48,12 +48,13 @@ def main(mission: str, iterations: int, no_parallel: bool):
     agent = None
     try:
         available_tools = auto_setup()
+        has_plan = session.current_planner_id is not None and session.current_planner_id != ""
         
         agent, callback_handler = create_agent(
             session=session,
             max_steps=max_iterations,
             available_tools=available_tools,
-            has_persisted_plan=(session.current_planner_id is not None and session.current_planner_id != "")
+            has_persisted_plan=has_plan,
         )
         console.print("[green]Agent Core initialized successfully.[/green]")
 
