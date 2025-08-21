@@ -5,8 +5,10 @@ from langchain_core.documents import Document
 
 from sqlalchemy import Column, Integer, String, DateTime, func
 
-from utils.session import Base
+from vulcan.persistence.db_session import Base
 
+import warnings
+warnings.filterwarnings("ignore", category=DeprecationWarning)
 
 class MatchDocument(Document):
     id: Optional[str] = None

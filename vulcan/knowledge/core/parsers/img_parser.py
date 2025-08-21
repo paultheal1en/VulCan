@@ -2,7 +2,7 @@ from typing import List
 
 from langchain_community.document_loaders.unstructured import UnstructuredFileLoader
 
-from rag.parsers.ocr import get_ocr
+from vulcan.knowledge.core.parsers.ocr import get_ocr
 
 
 class RapidOCRLoader(UnstructuredFileLoader):

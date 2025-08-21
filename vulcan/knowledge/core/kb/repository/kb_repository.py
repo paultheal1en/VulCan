@@ -1,6 +1,6 @@
-from rag.kb.models.kb_document_model import KnowledgeBaseModel, KnowledgeBaseSchema
-from utils.session import with_session
-from utils.log_common import build_logger
+from vulcan.knowledge.core.kb.models.kb_document_model import KnowledgeBaseModel, KnowledgeBaseSchema
+from vulcan.persistence.db_session import with_session
+from vulcan.utils.log_common import build_logger
 
 logger = build_logger()
 

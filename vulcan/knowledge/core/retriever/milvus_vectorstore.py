@@ -13,7 +13,7 @@ from langchain_core.callbacks.manager import (
 
 from typing import List
 
-from rag.retriever.base import BaseRetrieverService
+from vulcan.knowledge.core.retriever.base import BaseRetrieverService
 
 
 class MilvusRetriever(VectorStoreRetriever):

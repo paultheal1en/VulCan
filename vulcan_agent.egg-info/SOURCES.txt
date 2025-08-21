@@ -1,8 +1,10 @@
+README.md
 pyproject.toml
 ./vulcan/__init__.py
 ./vulcan/cli.py
 ./vulcan/orchestrator.py
 ./vulcan/session_manager.py
+tests/test_bedrock.py
 vulcan/__init__.py
 vulcan/cli.py
 vulcan/orchestrator.py

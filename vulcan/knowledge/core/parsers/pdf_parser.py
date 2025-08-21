@@ -6,7 +6,7 @@ import tqdm
 from langchain_community.document_loaders.unstructured import UnstructuredFileLoader
 from PIL import Image
 
-from rag.parsers.ocr import get_ocr
+from vulcan.knowledge.core.parsers.ocr import get_ocr
 
 
 class RapidOCRPDFLoader(UnstructuredFileLoader):

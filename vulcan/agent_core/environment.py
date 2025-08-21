@@ -146,7 +146,7 @@ def setup_logging(log_file: str = "cyber_operations.log", verbose: bool = False)
     # Create header in log file
     with open(log_file, 'a', encoding='utf-8') as f:
         f.write("\n" + "="*80 + "\n")
-        f.write(f"CYBER-AUTOAGENT SESSION STARTED: {datetime.now().strftime('%Y-%m-%d %H:%M:%S')}\n")
+        f.write(f"VulCan SESSION STARTED: {datetime.now().strftime('%Y-%m-%d %H:%M:%S')}\n")
         f.write("="*80 + "\n\n")
     
     # Set up stdout and stderr redirection to capture ALL terminal output

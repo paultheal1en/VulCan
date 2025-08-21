@@ -10,11 +10,11 @@ import chardet
 from langchain.docstore.document import Document
 from langchain.text_splitter import TextSplitter
 from langchain_community.document_loaders import JSONLoader, TextLoader
-from config.config import Configs
+from vulcan.config.config import Configs
 
 from typing import Dict, List, Union, Generator, Callable, Tuple
 
-from utils.log_common import build_logger
+from vulcan.utils.log_common import build_logger
 
 logger = build_logger()
 
@@ -172,7 +172,7 @@ def get_loader(loader_name: str, file_path: str, loader_kwargs: Dict = None):
             "RapidOCRPPTLoader",
         ]:
             document_loaders_module = importlib.import_module(
-                "rag.parsers"
+                "vulcan.knowledge.core.parsers"
             )
         else:
             document_loaders_module = importlib.import_module(

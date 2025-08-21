@@ -1,5 +1,9 @@
 strands-agents[ollama]>=1.0.0
 strands-agents-tools==0.2.0
+PyPDF2
+pdfplumber
+tqdm
+chardet
 mem0ai==0.1.110
 faiss-cpu
 pymilvus
@@ -49,3 +53,4 @@ pylint
 black
 isort
 mypy
+jupyterlab

@@ -1,14 +1,23 @@
-embedding_model_type: local
-embedding_model_name: maidalun1020/bce-embedding-base_v1
-embedding_ollama_base_url: http://localhost:11434
+embedding_model: all-MiniLM-L6-v2
 rerank_model_name: maidalun1020/bce-reranker-base_v1
 default_vs_type: milvus
 milvus:
-  uri: http://127.0.0.1:19530
-  user: ''
-  password: ''
+  uri: https://in03-44216dd9c8d7f1e.serverless.gcp-us-west1.cloud.zilliz.com
+  user: 'root'
+  password: 'b5647f84a814f9886144ed037d7fed740c3281a0e89e1d2faae35d4dccc4be0e0af6c05f8d7f0e667c9154fabd093ee2236974fe'
 chunk_size: 750
 overlap_size: 150
 top_k: 3
 top_n: 1
 score_threshold: 0.5
+kb_name: 'vulcan_rag'
+search_params: 
+  metric_type: "COSINE"
+  params: 
+    nprobe: 16
+index_params: 
+  field_name: "embedding"
+  index_type: "IVF_FLAT" # Changed from AUTOINDEX
+  metric_type: "COSINE"
+  params: 
+    nlist: 128  # Lower nlist for small datasets

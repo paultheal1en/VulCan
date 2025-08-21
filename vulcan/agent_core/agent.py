@@ -22,6 +22,7 @@ from .system_prompts import get_system_prompt
 from .agent_handlers import ReasoningHandler
 from .utils import Colors
 from .memory_tools import mem0_memory, initialize_memory_system
+from .tools.knowledge_tools import query_knowledge_base
 from pathlib import Path
 
 warnings.filterwarnings("ignore", category=DeprecationWarning)
@@ -227,6 +228,7 @@ def create_agent(
             mem0_memory,
             stop,
             http_request,
+            query_knowledge_base,
         ],
         system_prompt=system_prompt,
         callback_handler=callback_handler,

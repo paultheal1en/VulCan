@@ -26,6 +26,11 @@ dependencies = [
     # Core Agent Framework (from CAA)
     "strands-agents[ollama]>=1.0.0",
     "strands-agents-tools==0.2.0",
+    # Document & PDF
+    "PyPDF2",
+    "pdfplumber",
+    "tqdm",
+    "chardet",
 
     # Memory Systems (CAA & VulnBot)
     "mem0ai==0.1.110",
@@ -84,7 +89,8 @@ dev = [
     "pylint",
     "black",
     "isort",
-    "mypy"
+    "mypy",
+    "jupyterlab",
 ]
 
 [project.scripts]

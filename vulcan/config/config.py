@@ -25,6 +25,8 @@ class BasicConfig(BaseFileSettings):
     confirmations: bool = False
     keep_memory: bool = False
 
+    KB_ROOT_PATH: str = str(VULCAN_ROOT / "knowledge_base_data")
+
     target_shell: dict = {
         "hostname": "127.0.0.1",
         "port": 22,
@@ -76,21 +78,32 @@ class LLMConfig(BaseFileSettings):
     history_len: int = 10
     timeout: int = 600
 
-# --- Lớp Cấu hình Knowledge Base ---
 class KBConfig(BaseFileSettings):
     model_config = SettingsConfigDict(yaml_file=VULCAN_ROOT / "kb_config.yaml")
     
-    embedding_model_type: str = "local"
-    embedding_model_name: str = "maidalun1020/bce-embedding-base_v1"
-    embedding_ollama_base_url: str = "http://localhost:11434"
-    rerank_model_name: str = "maidalun1020/bce-reranker-base_v1"
+    # --- Cấu hình KB & Vector Store ---
+    kb_name: str = "default_rag"
+    KB_ROOT_PATH: str = str(VULCAN_ROOT / "knowledge_base_data")
     default_vs_type: str = "milvus"
-    milvus: dict = { "uri": "http://127.0.0.1:19530", "user": "", "password": "" }
+    milvus: dict = { "uri": "", "user": "", "password": "" }
+
+    # --- Cấu hình Embedding & Reranker ---
+    embedding_model: str = "all-MiniLM-L6-v2"
+    rerank_model_name: str = "maidalun1020/bce-reranker-base_v1"
+    
     chunk_size: int = 750
     overlap_size: int = 150
-    top_k: int = 3
-    top_n: int = 1
+    top_k: int = 3 # Số kết quả lấy từ Milvus
+    top_n: int = 1 # Số kết quả lấy sau khi rerank
     score_threshold: float = 0.5
+    
+    search_params: dict = {"metric_type": "COSINE", "params": {"nprobe": 10}}
+    index_params: dict = { "index_type": "AUTOINDEX", "metric_type": "COSINE", "params": {} }
+    
+    text_splitter_dict: dict = {
+        "RecursiveCharacterTextSplitter": { "source": "tiktoken", "tokenizer_name_or_path": "cl100k_base" },
+    }
+    text_splitter_name: str = "RecursiveCharacterTextSplitter"
 
 # --- Container chính để truy cập tất cả cấu hình ---
 class ConfigsContainer:
@@ -108,9 +121,5 @@ class ConfigsContainer:
         self.llm_config.create_template_file(write_file=True, file_format="yaml")
         self.kb_config.create_template_file(write_file=True, file_format="yaml")
         # Đổi tên các tệp mẫu cho đúng
-        if os.path.exists(VULCAN_ROOT / "basic_config.yaml"):
-            os.rename(VULCAN_ROOT / "basic_config.yaml", VULCAN_ROOT / "config.yaml")
-        if os.path.exists(VULCAN_ROOT / "model_config.yaml"):
-            os.rename(VULCAN_ROOT / "model_config.yaml", VULCAN_ROOT / "llm_config.yaml")
 
 Configs = ConfigsContainer()

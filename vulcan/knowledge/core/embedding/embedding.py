@@ -1,31 +1,26 @@
-
-from langchain_huggingface import HuggingFaceEmbeddings
 from langchain_core.embeddings import Embeddings
 
-from langchain_community.embeddings import OllamaEmbeddings
-from langchain_openai import OpenAIEmbeddings
+from langchain_huggingface import HuggingFaceEmbeddings
 
-from config.config import Configs
+from vulcan.config.config import Configs
+from vulcan.utils.log_common import build_logger
 
+logger = build_logger("RAGEmbedding")
 
-from utils.log_common import build_logger
+def get_embeddings(embed_model_name: str = None) -> Embeddings:
+    """
+    Creates and returns a HuggingFace embedding model instance.
+    This ensures consistency between data ingestion and querying.
+    """
+    # Luôn sử dụng model embedding được định nghĩa trong RAG config
+    model_name = embed_model_name or Configs.kb_config.embedding_model
 
-logger = build_logger()
-
-def get_embeddings(
-        embed_model: str = None,
-) -> Embeddings:
+    logger.info(f"Creating HuggingFace embeddings with model: '{model_name}'")
 
     try:
-        if Configs.llm_config.embedding_type == "openai":
-            # TODO
-            return OpenAIEmbeddings()
-        elif Configs.llm_config.embedding_type == "ollama":
-            return OllamaEmbeddings(
-                base_url=Configs.llm_config.embedding_url,
-                model=embed_model,
-            )
-        else:
-            return HuggingFaceEmbeddings(model_name=embed_model)
+        # Luôn tạo HuggingFaceEmbeddings, bất kể chế độ remote hay local
+        # Điều này đảm bảo kích thước vector luôn khớp với dữ liệu đã nạp.
+        return HuggingFaceEmbeddings(model_name=model_name)
     except Exception as e:
-        logger.exception(f"failed to create Embeddings for model: {embed_model}.")
+        logger.error(f"Failed to create HuggingFace Embeddings for model '{model_name}': {e}")
+        raise

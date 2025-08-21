@@ -5,15 +5,13 @@ from typing import Dict, List, Tuple, Union
 
 from langchain.docstore.document import Document
 
-from config.config import Configs
+from vulcan.config.config import Configs
 
-from rag.kb.models.kb_document_model import MatchDocument, KnowledgeBaseSchema
-from rag.kb.repository.kb_repository import add_kb_to_db, load_kb_from_db, list_kbs_from_db, kb_exists, \
-    delete_kb_from_db
-from rag.kb.repository.knowledge_file_repository import get_file_detail, list_docs_from_db, list_files_from_db, \
+from vulcan.knowledge.core.kb.models.kb_document_model import MatchDocument, KnowledgeBaseSchema
+from vulcan.knowledge.core.kb.repository.knowledge_file_repository import get_file_detail, list_docs_from_db, list_files_from_db, \
     count_files_from_db, file_exists_in_db, delete_files_from_db, add_file_to_db, delete_file_from_db
-from rag.kb.utils.kb_utils import get_kb_path, get_doc_path, list_files_from_folder, KnowledgeFile, list_kbs_from_folder
-from utils.log_common import build_logger
+from vulcan.knowledge.core.kb.utils.kb_utils import get_kb_path, get_doc_path, list_files_from_folder, KnowledgeFile, list_kbs_from_folder
+from vulcan.utils.log_common import build_logger
 
 logger = build_logger()
 
@@ -26,7 +24,7 @@ class KBService(ABC):
             self,
             knowledge_base_name: str,
             kb_info: str = None,
-            embed_model: str = Configs.llm_config.embedding_models,
+            embed_model: str = Configs.kb_config.embedding_model,
     ):
         self.kb_name = knowledge_base_name
         self.kb_info = kb_info
@@ -294,16 +292,27 @@ class KBServiceFactory:
             "kb_info": kb_info,
         }
         if SupportedVSType.MILVUS == vector_store_type:
-            from rag.kb.service.milvus_kb_service import MilvusKBService
+            from vulcan.knowledge.core.kb.service.milvus_kb_service import MilvusKBService
             return MilvusKBService(**params)
 
     @staticmethod
     def get_service_by_name(kb_name: str) -> KBService:
-        _, vs_type, embed_model = load_kb_from_db(kb_name)
-        if _ is None:  # kb not in db, just return None
+        """
+        Gets a KB service instance by name, reading configuration directly from YAML files.
+        """
+        # Kiểm tra xem tên được yêu cầu có khớp với tên trong config không
+        configured_kb_name = Configs.kb_config.kb_name
+        if kb_name != configured_kb_name:
+            # Trả về None nếu không khớp, vì chúng ta chỉ hỗ trợ 1 KB mặc định
+            print(f"Warning: Requested KB '{kb_name}' does not match configured KB '{configured_kb_name}'.")
             return None
-        return KBServiceFactory.get_service(kb_name, vs_type, embed_model)
+        
+        # Lấy các thông tin còn lại từ config
+        vs_type = Configs.kb_config.default_vs_type
+        embed_model = Configs.kb_config.embedding_model
 
+        # Gọi hàm get_service để tạo instance
+        return KBServiceFactory.get_service(kb_name, vs_type, embed_model)
 
 
 def get_kb_details() -> List[Dict]:

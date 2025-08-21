@@ -8,14 +8,14 @@ from fastapi import Body, File, Form, Query, UploadFile
 from fastapi.responses import FileResponse
 from langchain.docstore.document import Document
 
-from config.config import Configs
-from rag.kb.base import KBServiceFactory, get_kb_file_details
-from rag.kb.models.kb_document_model import MatchDocument
-from rag.kb.repository.knowledge_file_repository import get_file_detail
-from rag.kb.utils.kb_utils import validate_kb_name, KnowledgeFile, get_file_path, run_in_thread_pool, \
+from vulcan.config.config import Configs
+from vulcan.knowledge.core.kb.base import KBServiceFactory, get_kb_file_details
+from vulcan.knowledge.core.kb.models.kb_document_model import MatchDocument
+from vulcan.knowledge.core.kb.repository.knowledge_file_repository import get_file_detail
+from vulcan.knowledge.core.kb.utils.kb_utils import validate_kb_name, KnowledgeFile, get_file_path, run_in_thread_pool, \
     files2docs_in_thread
-from server.utils.utils import BaseResponse, ListResponse
-from utils.log_common import build_logger
+from vulcan.utils.server_utils import BaseResponse, ListResponse
+from vulcan.utils.log_common import build_logger
 from io import BytesIO
 
 

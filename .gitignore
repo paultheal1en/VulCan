@@ -1,3 +1,4 @@
 .env
 mem0_*
 __pycache__
+evidence/
