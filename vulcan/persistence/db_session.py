@@ -1,5 +1,3 @@
-# Nội dung mới cho tệp VulCan/vulcan/persistence/db_session.py
-
 from contextlib import contextmanager
 from functools import wraps
 

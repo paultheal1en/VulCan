@@ -2,3 +2,5 @@
 mem0_*
 __pycache__
 evidence/
+tools/
+knowledge_base_data/

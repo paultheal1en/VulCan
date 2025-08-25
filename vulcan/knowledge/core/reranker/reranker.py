@@ -14,7 +14,6 @@ class LangchainReranker:
     device: str
     max_length: int
     batch_size: int
-    num_workers: int
 
     def __init__(
             self,
@@ -23,18 +22,16 @@ class LangchainReranker:
             device: str = "cpu",
             max_length: int = 512,
             batch_size: int = 32,
-            num_workers: int = 0,
     ):
 
         self._model = CrossEncoder(
-            model_name=name_or_path, max_length=max_length, device=device
+            model_name_or_path=name_or_path, max_length=max_length, device=device
         )
         self.top_n = top_n
         self.name_or_path = name_or_path
         self.device = device
         self.max_length = max_length
         self.batch_size = batch_size
-        self.num_workers = num_workers
 
     def compress_documents(
             self,
@@ -60,7 +57,6 @@ class LangchainReranker:
         results = self._model.predict(
             sentences=sentence_pairs,
             batch_size=self.batch_size,
-            num_workers=self.num_workers,
             convert_to_tensor=True,
         )
         top_k = self.top_n if self.top_n < len(results) else len(results)

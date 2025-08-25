@@ -7,7 +7,6 @@ vulcan/persistence/session_manager.py
 vulcan/persistence/models/__init__.py
 vulcan/persistence/models/conversation_model.py
 vulcan/persistence/models/message_model.py
-vulcan/persistence/models/plan_model.py
 vulcan/persistence/models/session_model.py
 vulcan/persistence/models/session_summary.py
 vulcan/persistence/models/task_model.py
