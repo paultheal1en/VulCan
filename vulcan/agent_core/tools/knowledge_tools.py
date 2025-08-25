@@ -6,6 +6,7 @@ from rich.console import Console
 from vulcan.config.config import Configs
 from vulcan.knowledge.core.kb.base import KBServiceFactory
 from vulcan.knowledge.core.reranker.reranker import LangchainReranker
+from langchain_core.documents import Document
 
 console = Console()
 
@@ -65,7 +66,6 @@ def query_knowledge_base(
         console.print(f"  Step 2: Reranking results to find top {Configs.kb_config.top_n}...")
         if _reranker_model_cache is None:
             # Thêm import ở đây để tránh lỗi import không tìm thấy
-            from langchain_core.documents import Document # Thêm import
             _reranker_model_cache = LangchainReranker(
                 name_or_path=Configs.kb_config.rerank_model_name,
                 top_n=Configs.kb_config.top_n

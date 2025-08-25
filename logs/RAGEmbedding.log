@@ -14,3 +14,42 @@
 2025-08-21 03:58:50.626 | INFO     | vulcan.knowledge.core.embedding.embedding:get_embeddings:18 - Creating HuggingFace embeddings with model: 'all-MiniLM-L6-v2'
 2025-08-21 04:02:31.148 | INFO     | vulcan.knowledge.core.kb.service.milvus_kb_service:do_init:19 - Successfully connected to Zilliz Cloud.
 2025-08-21 04:02:31.151 | INFO     | vulcan.knowledge.core.embedding.embedding:get_embeddings:18 - Creating HuggingFace embeddings with model: 'all-MiniLM-L6-v2'
+2025-08-21 18:55:53.297 | INFO     | vulcan.knowledge.core.kb.service.milvus_kb_service:do_init:19 - Successfully connected to Zilliz Cloud.
+2025-08-21 18:55:53.299 | INFO     | vulcan.knowledge.core.embedding.embedding:get_embeddings:18 - Creating HuggingFace embeddings with model: 'all-MiniLM-L6-v2'
+2025-08-21 18:56:04.149 | ERROR    | vulcan.knowledge.core.kb.service.milvus_kb_service:do_search:53 - Error during Milvus search: 'text'
+2025-08-21 18:59:58.984 | INFO     | vulcan.knowledge.core.embedding.embedding:get_embeddings:18 - Creating HuggingFace embeddings with model: 'all-MiniLM-L6-v2'
+2025-08-21 19:50:55.016 | INFO     | vulcan.knowledge.core.kb.service.milvus_kb_service:do_init:19 - Successfully connected to Zilliz Cloud.
+2025-08-21 19:50:55.022 | INFO     | vulcan.knowledge.core.embedding.embedding:get_embeddings:18 - Creating HuggingFace embeddings with model: 'all-MiniLM-L6-v2'
+2025-08-21 19:51:02.861 | ERROR    | vulcan.knowledge.core.kb.service.milvus_kb_service:do_search:53 - Error during Milvus search: 'text'
+2025-08-21 19:57:12.181 | INFO     | vulcan.knowledge.core.kb.service.milvus_kb_service:do_init:19 - Successfully connected to Zilliz Cloud.
+2025-08-21 19:57:12.183 | INFO     | vulcan.knowledge.core.embedding.embedding:get_embeddings:18 - Creating HuggingFace embeddings with model: 'all-MiniLM-L6-v2'
+2025-08-21 19:57:19.294 | ERROR    | vulcan.knowledge.core.kb.service.milvus_kb_service:do_search:53 - Error during Milvus search: 'text'
+2025-08-21 20:00:28.551 | INFO     | vulcan.knowledge.core.embedding.embedding:get_embeddings:18 - Creating HuggingFace embeddings with model: 'all-MiniLM-L6-v2'
+2025-08-21 20:31:31.041 | INFO     | vulcan.knowledge.core.kb.service.milvus_kb_service:do_init:19 - Successfully connected to Zilliz Cloud.
+2025-08-21 20:31:31.045 | INFO     | vulcan.knowledge.core.embedding.embedding:get_embeddings:18 - Creating HuggingFace embeddings with model: 'all-MiniLM-L6-v2'
+2025-08-24 19:33:55.408 | INFO     | vulcan.knowledge.core.kb.service.milvus_kb_service:do_init:19 - Successfully connected to Zilliz Cloud.
+2025-08-24 19:33:55.411 | INFO     | vulcan.knowledge.core.embedding.embedding:get_embeddings:18 - Creating HuggingFace embeddings with model: 'all-MiniLM-L6-v2'
+2025-08-24 19:39:28.024 | INFO     | vulcan.knowledge.core.kb.service.milvus_kb_service:do_init:19 - Successfully connected to Zilliz Cloud.
+2025-08-24 19:39:28.025 | INFO     | vulcan.knowledge.core.embedding.embedding:get_embeddings:18 - Creating HuggingFace embeddings with model: 'all-MiniLM-L6-v2'
+2025-08-24 19:39:32.666 | ERROR    | vulcan.knowledge.core.kb.service.milvus_kb_service:do_search:53 - Error during Milvus search: 'text'
+2025-08-24 19:47:30.986 | INFO     | vulcan.knowledge.core.kb.service.milvus_kb_service:do_init:19 - Successfully connected to Zilliz Cloud.
+2025-08-24 19:47:30.988 | INFO     | vulcan.knowledge.core.embedding.embedding:get_embeddings:18 - Creating HuggingFace embeddings with model: 'all-MiniLM-L6-v2'
+2025-08-24 19:50:53.145 | INFO     | vulcan.knowledge.core.kb.service.milvus_kb_service:do_init:19 - Successfully connected to Zilliz Cloud.
+2025-08-24 19:50:53.146 | INFO     | vulcan.knowledge.core.embedding.embedding:get_embeddings:18 - Creating HuggingFace embeddings with model: 'all-MiniLM-L6-v2'
+2025-08-24 19:50:57.726 | INFO     | vulcan.knowledge.core.kb.service.milvus_kb_service:do_search:61 - Found 3 relevant documents after filtering.
+2025-08-24 19:52:44.289 | INFO     | vulcan.knowledge.core.embedding.embedding:get_embeddings:18 - Creating HuggingFace embeddings with model: 'all-MiniLM-L6-v2'
+2025-08-24 19:52:48.893 | INFO     | vulcan.knowledge.core.kb.service.milvus_kb_service:do_search:61 - Found 3 relevant documents after filtering.
+2025-08-24 19:52:51.909 | INFO     | vulcan.knowledge.core.embedding.embedding:get_embeddings:18 - Creating HuggingFace embeddings with model: 'all-MiniLM-L6-v2'
+2025-08-24 19:52:57.534 | INFO     | vulcan.knowledge.core.kb.service.milvus_kb_service:do_search:61 - Found 3 relevant documents after filtering.
+2025-08-24 19:57:58.684 | INFO     | vulcan.knowledge.core.kb.service.milvus_kb_service:do_init:19 - Successfully connected to Zilliz Cloud.
+2025-08-24 19:57:58.687 | INFO     | vulcan.knowledge.core.embedding.embedding:get_embeddings:18 - Creating HuggingFace embeddings with model: 'all-MiniLM-L6-v2'
+2025-08-24 19:58:03.386 | INFO     | vulcan.knowledge.core.kb.service.milvus_kb_service:do_search:61 - Found 3 relevant documents after filtering.
+2025-08-24 19:58:17.512 | INFO     | vulcan.knowledge.core.embedding.embedding:get_embeddings:18 - Creating HuggingFace embeddings with model: 'all-MiniLM-L6-v2'
+2025-08-24 19:58:22.252 | INFO     | vulcan.knowledge.core.kb.service.milvus_kb_service:do_search:61 - Found 3 relevant documents after filtering.
+2025-08-24 19:58:48.293 | INFO     | vulcan.knowledge.core.embedding.embedding:get_embeddings:18 - Creating HuggingFace embeddings with model: 'all-MiniLM-L6-v2'
+2025-08-24 19:58:53.633 | INFO     | vulcan.knowledge.core.kb.service.milvus_kb_service:do_search:61 - Found 3 relevant documents after filtering.
+2025-08-24 20:02:53.598 | INFO     | vulcan.knowledge.core.kb.service.milvus_kb_service:do_init:19 - Successfully connected to Zilliz Cloud.
+2025-08-24 20:02:53.601 | INFO     | vulcan.knowledge.core.embedding.embedding:get_embeddings:18 - Creating HuggingFace embeddings with model: 'all-MiniLM-L6-v2'
+2025-08-24 20:02:58.047 | INFO     | vulcan.knowledge.core.kb.service.milvus_kb_service:do_search:61 - Found 3 relevant documents after filtering.
+2025-08-24 20:03:16.094 | INFO     | vulcan.knowledge.core.embedding.embedding:get_embeddings:18 - Creating HuggingFace embeddings with model: 'all-MiniLM-L6-v2'
+2025-08-24 20:03:20.541 | INFO     | vulcan.knowledge.core.kb.service.milvus_kb_service:do_search:61 - Found 3 relevant documents after filtering.

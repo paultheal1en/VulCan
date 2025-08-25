@@ -42,12 +42,23 @@ class MilvusKBService(KBService):
             docs = []
             if results and results[0]:
                 for hit in results[0]:
-                    similarity = 1 - hit.distance
-                    if similarity >= score_threshold:
-                        metadata = hit.entity.to_dict() if hasattr(hit.entity, 'to_dict') else hit.entity
-                        metadata['relevance_score'] = similarity
-                        metadata.pop("embedding", None)
-                        docs.append(Document(page_content=metadata.pop('text', ''), metadata=metadata))
+                    try:
+                        similarity = 1 - hit.distance
+                        if similarity >= score_threshold:
+                            entity_data = hit.data.get('entity', {})
+                            
+                            # Lấy page_content và các metadata khác từ entity_data
+                            page_content = entity_data.pop('text', '')
+                            metadata = entity_data # Phần còn lại của entity_data là metadata
+                            metadata['relevance_score'] = similarity
+                            metadata['id'] = hit.id # Lấy ID từ cấp cao hơn
+
+                            docs.append(Document(page_content=page_content, metadata=metadata))
+                    except Exception as e:
+                        logger.error(f"Error processing a Milvus search hit: {e}")
+                        continue # Bỏ qua hit bị lỗi và tiếp tục
+
+            logger.info(f"Found {len(docs)} relevant documents after filtering.")
             return docs
         except Exception as e:
             logger.error(f"Error during Milvus search: {e}")
