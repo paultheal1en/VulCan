@@ -2,9 +2,9 @@ embedding_model: all-MiniLM-L6-v2
 rerank_model_name: maidalun1020/bce-reranker-base_v1
 default_vs_type: milvus
 milvus:
-  uri: https://in03-44216dd9c8d7f1e.serverless.gcp-us-west1.cloud.zilliz.com
+  uri: ""
   user: 'root'
-  password: 'b5647f84a814f9886144ed037d7fed740c3281a0e89e1d2faae35d4dccc4be0e0af6c05f8d7f0e667c9154fabd093ee2236974fe'
+  password: ''
 chunk_size: 750
 overlap_size: 150
 top_k: 3

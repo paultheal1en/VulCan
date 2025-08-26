@@ -38,7 +38,6 @@ def get_system_prompt(
     session: Session,
     max_steps: int,
     tools_context: str = "",
-    has_persisted_plan: bool = False,
     is_parallel_disabled: bool = False
 ) -> str:
     """Generate enhanced system prompt using metacognitive architecture."""
@@ -75,7 +74,7 @@ To ensure you can properly analyze the results, you **MUST run verbose tools seq
     
     memory_instruction = """
 - FIRST ACTION: Retrieve past findings with mem0_memory(action="list", user_id="vulcan_agent")
-- Build upon previous discoveries and avoid repeating completed work""" if has_persisted_plan else """
+- Build upon previous discoveries and avoid repeating completed work
 - Begin with reconnaissance - do NOT check memory on fresh operations
 - Focus first step on target information gathering"""
     

@@ -10,6 +10,10 @@ from strands.handlers import PrintingCallbackHandler
 from strands import Agent
 from .utils import Colors, get_data_path
 from .memory_tools import get_memory_client
+from rich.console import Console
+import json
+console = Console()
+
 
 logger = logging.getLogger("VulCan.handlers")
 
@@ -727,109 +731,90 @@ class ReasoningHandler(PrintingCallbackHandler):
 
     def generate_final_report(self, agent, target: str, objective: str) -> None:
         """
-        Generate comprehensive final assessment report using LLM analysis.
-
-        Args:
-            agent: The agent instance for generating the report
-            target: Target system being assessed
-            objective: Assessment objective/goals
+        Generates a comprehensive final assessment report using LLM analysis.
         """
-        # Prevent duplicate report generation
         if self.report_generated:
             return
         self.report_generated = True
 
-        print("\n%s%s%s" % (Colors.DIM, "═" * 80, Colors.RESET))
-        print(
-            "%s%sGenerating Final Assessment Report%s"
-            % (Colors.CYAN, Colors.BOLD, Colors.RESET)
-        )
-        print("%s%s%s" % (Colors.DIM, "═" * 80, Colors.RESET))
+        # Retrieve categorized evidence from the memory system
+        all_evidence = self._retrieve_evidence()
+        findings = all_evidence.get("findings", [])
+        plans = all_evidence.get("plans", [])
 
-        # Retrieve evidence from memory system
-        evidence = self._retrieve_evidence()
-
-        # Always generate some form of report, even if no evidence or LLM fails
         report_content = ""
 
-        if not evidence:
+        if not findings:
             self._display_no_evidence_message()
-            report_content = self._generate_no_evidence_report(target, objective)
+            # Vẫn có thể có kế hoạch, nên ta có thể đưa nó vào báo cáo
+            report_content = self._generate_no_evidence_report(target, objective, plans)
         else:
-            # Generate LLM-based assessment report
             try:
                 report_content = self._generate_llm_report(
-                    agent, target, objective, evidence
+                    agent=agent, 
+                    target=target, 
+                    objective=objective, 
+                    findings=findings, 
+                    plans=plans
                 )
-                self._display_final_report(report_content)
-
             except Exception as e:
-                print(
-                    "%sError generating final report: %s%s"
-                    % (Colors.RED, str(e), Colors.RESET)
-                )
-                self._display_fallback_evidence(evidence)
-                report_content = self._generate_fallback_report(
-                    target, objective, evidence
-                )
+                console.print(f"[{'bold red'}]Error generating final report: {e}[/{'bold red'}]")
+                self._display_fallback_evidence(findings)
+                report_content = self._generate_fallback_report(target, objective, findings)
 
-        # Always save report to file, regardless of content type
         self._save_report_to_file(report_content, target, objective)
 
-    def _retrieve_evidence(self) -> List[Dict]:
-        """Retrieve all collected evidence from the memory system."""
-        evidence = []
-        
+    def _retrieve_evidence(self) -> Dict[str, List[Dict]]:
+        """
+        Retrieves all collected evidence (findings and plans) from the memory system.
+        Returns a dictionary with 'findings' and 'plans' keys.
+        """
+        all_evidence = {"findings": [], "plans": []}
         memory_client = get_memory_client()
-        if memory_client is None:
-            logger.error("Memory client is not initialized!")
-            print(f"{Colors.RED}Error: Memory client not initialized. Cannot retrieve evidence.{Colors.RESET}")
-            return evidence
-        
+        if not memory_client: return all_evidence
+
         agent_user_id = "vulcan_agent"
-        
         try:
-            logger.info("Attempting to retrieve memories for user_id: %s", agent_user_id)
+            logger.info("Retrieving all memories for user_id: %s for final report", agent_user_id)
             
-            memories_response = memory_client.get_all(user_id=agent_user_id)
-            
-            logger.debug("Memory response: %s", memories_response)
-            
-            if isinstance(memories_response, dict):
-                raw_memories = memories_response.get("memories", memories_response.get("results", []))
-            elif isinstance(memories_response, list):
-                raw_memories = memories_response
+            # Gọi API và lấy dữ liệu thô
+            raw_memory_output = memory_client.get_all(user_id=agent_user_id)
+
+            # 1. Kiểm tra xem output có phải là dictionary và có key 'results' không
+            if isinstance(raw_memory_output, dict) and 'results' in raw_memory_output:
+                # 2. Lấy danh sách thực sự từ key 'results'
+                memory_list = raw_memory_output['results']
+            elif isinstance(raw_memory_output, list):
+                # Dự phòng trường hợp API trả về list
+                memory_list = raw_memory_output
             else:
-                raw_memories = []
+                logger.warning(f"Unexpected memory format received: {type(raw_memory_output)}")
+                memory_list = []
 
-            logger.info("Found %d total memories", len(raw_memories))
-            
-            for mem in raw_memories:
+            # 3. Lặp qua danh sách ký ức đã được trích xuất chính xác
+            for mem in memory_list:
+                if not isinstance(mem, dict):
+                    logger.warning(f"Skipping non-dictionary memory item: {mem}")
+                    continue
+
                 metadata = mem.get('metadata', {})
-                if metadata and metadata.get('category') == 'finding':
-                    evidence.append({
-                        'category': metadata.get('category'),
-                        'content': mem.get('memory', 'N/A'),
-                        'id': mem.get('id', 'N/A')
-                    })
+                category = metadata.get('category')
+                
+                memory_to_store = {
+                    'content': mem.get('memory', 'N/A'),
+                    'metadata': metadata
+                }
+                
+                if category == 'finding':
+                    all_evidence["findings"].append(memory_to_store)
+                elif category == 'plan':
+                    all_evidence["plans"].append(memory_to_store)
 
-            print(
-                "%sRetrieved %d items from memory for final report.%s"
-                % (Colors.DIM, len(evidence), Colors.RESET)
-            )
-            
+            logger.info(f"Retrieved {len(all_evidence['findings'])} findings and {len(all_evidence['plans'])} plans.")
         except Exception as e:
             logger.error("Error retrieving evidence from mem0_memory: %s", str(e), exc_info=True)
-            print(
-                "%sWarning: Failed to retrieve evidence from memory (user_id: %s). Report may be incomplete.%s"
-                % (Colors.YELLOW, agent_user_id, Colors.RESET)
-            )
-            print(
-                "%sError details: %s%s" % (Colors.DIM, str(e), Colors.RESET)
-            )
-            evidence = [] # Ensure empty list on error
 
-        return evidence
+        return all_evidence
 
     def _display_no_evidence_message(self) -> None:
         """Display message when no evidence is available."""
@@ -846,58 +831,83 @@ class ReasoningHandler(PrintingCallbackHandler):
         )
 
     def _generate_llm_report(
-        self, agent, target: str, objective: str, evidence: List[Dict]
+        self, agent, target: str, objective: str, findings: List[Dict], plans: List[Dict]
     ) -> str:
         """Generate assessment report using LLM analysis."""
-        # Format evidence for LLM analysis
-        evidence_text = [
-            f"[{item['category'].upper()}] {item['content']}" for item in evidence
-        ]
+        
+        # Lấy kế hoạch cuối cùng (có version cao nhất) để thể hiện chiến lược cuối cùng
+        final_plan_str = "No final strategic plan was recorded in memory."
+        if plans:
+            try:
+                # Lọc ra các kế hoạch có version, chuyển content từ string sang dict
+                versioned_plans = []
+                for p in plans:
+                    try:
+                        plan_content = json.loads(p['content'])
+                        if 'version' in plan_content:
+                            versioned_plans.append(plan_content)
+                    except (json.JSONDecodeError, TypeError):
+                        continue # Bỏ qua các plan không hợp lệ
+                
+                if versioned_plans:
+                    # Sắp xếp các kế hoạch theo version để lấy cái mới nhất
+                    sorted_plans = sorted(versioned_plans, key=lambda p: p.get('version', 0), reverse=True)
+                    final_plan_str = json.dumps(sorted_plans[0], indent=2)
 
-        report_prompt = f"""Based on the evidence collected during this cyber security assessment, generate a comprehensive final report.
+            except Exception as e:
+                logger.error(f"Could not parse or sort plans for report: {e}")
+                final_plan_str = "Error parsing the final plan from memory."
 
-TARGET: {target}
-OBJECTIVE: {objective}
-EVIDENCE COLLECTED ({len(evidence)} items):
+        # Định dạng các phát hiện cho dễ đọc
+        findings_text = []
+        for i, item in enumerate(findings):
+            findings_text.append(f"{i+1}. {item['content']}")
+        findings_str = "\n".join(findings_text)
 
-{chr(10).join(evidence_text)}
 
-Please provide:
-1. Executive Summary of findings
-2. Critical vulnerabilities discovered
-3. Attack vectors identified
-4. Risk assessment
-5. Recommendations for remediation
-6. Overall security posture evaluation
+        report_prompt = f"""
+    As an expert cybersecurity analyst, your task is to synthesize the provided operational data into a professional penetration testing report.
 
-Format this as a professional penetration testing report."""
+    **MISSION CONTEXT:**
+    - **Target:** {target}
+    - **Initial Objective:** {objective}
 
-        print(
-            "%sAnalyzing collected evidence and generating insights...%s"
-            % (Colors.DIM, Colors.RESET)
-        )
+    **SUMMARY OF CRITICAL FINDINGS:**
+    The following discoveries were made during the operation:
+    {findings_str}
+
+    **FINAL STRATEGIC PLAN:**
+    The final version of the strategic plan that led to these findings was as follows. This reveals the agent's thought process and attack path.
+    ```json
+    {final_plan_str}
+    ```
+
+    **YOUR TASK:**
+    Based on ALL the information above (the findings AND the final plan), write a comprehensive and professional penetration testing report. The report MUST be structured with the following sections:
+    1.  **Executive Summary:** A high-level overview for management, summarizing the key risks and business impact.
+    2.  **Attack Narrative:** Tell the story of the penetration test from start to finish. Describe the strategic decisions made (referencing the plan), the tools used, the discoveries at each step, and how one finding led to the next.
+    3.  **Vulnerability Details:** For each critical finding, provide a detailed technical breakdown including the vulnerability type (e.g., LFI, RCE), location, and evidence.
+    4.  **Impact and Risk Assessment:** Explain the potential business and technical impact if these vulnerabilities were exploited by a real attacker.
+    5.  **Recommendations:** Provide clear, actionable steps for remediation, categorized into immediate, short-term, and long-term actions.
+    """
+        console.print("[cyan]Analyzing all evidence and generating final report...[/cyan]")
 
         if not (agent and callable(agent)):
-            raise ValueError("Agent not available for report generation")
+            raise ValueError("Agent instance is not available for report generation")
 
-        # Capture stdout to prevent duplicate display
-        original_stdout = sys.stdout
-        sys.stdout = io.StringIO()
-
+        # Logic để gọi một agent chuyên viết báo cáo
         try:
-            # Generate report 
             report_agent = Agent(
-                model=agent.model if hasattr(agent, 'model') else None,
+                model=agent.model, # Sử dụng cùng model với agent chính
                 tools=[],
-                system_prompt="You are a cybersecurity assessment report generator. Follow the exact structure and requirements provided in the prompt. Generate a professional penetration testing report that includes all six requested sections: Executive Summary, Critical Vulnerabilities, Attack Vectors, Risk Assessment, Recommendations, and Security Posture Evaluation."
+                system_prompt="You are a professional cybersecurity report writer. Your only task is to generate a report based on the provided data, strictly following the requested section format."
             )
             
             raw_report = report_agent(report_prompt)
-            report_text = str(raw_report)
-            return self._clean_duplicate_content(report_text)
-        finally:
-            # Restore stdout
-            sys.stdout = original_stdout
+            return str(raw_report)
+        except Exception as e:
+            logger.error(f"The report generation agent failed: {e}")
+            raise
 
     def _clean_duplicate_content(self, report_content: str) -> str:
         """Remove duplicate sections from LLM-generated content."""
@@ -941,17 +951,6 @@ Format this as a professional penetration testing report."""
 
         return "\n".join(clean_lines)
 
-    def _display_final_report(self, report_content: str) -> None:
-        """Display the final assessment report."""
-        self._print_separator()
-        print(
-            "📋 %s%sFINAL ASSESSMENT REPORT%s"
-            % (Colors.GREEN, Colors.BOLD, Colors.RESET)
-        )
-        self._print_separator()
-        print("\n%s" % report_content)
-        self._print_separator()
-
     def _save_report_to_file(
         self, report_content: str, target: str, objective: str
     ) -> None:
@@ -990,30 +989,28 @@ Format this as a professional penetration testing report."""
                 % (Colors.YELLOW, str(e), Colors.RESET)
             )
 
-    def _generate_no_evidence_report(self, target: str, objective: str) -> str:  # pylint: disable=unused-argument
+    
+    def _generate_no_evidence_report(self, target: str, objective: str, plans: List[Dict]) -> str:
         """Generate a report when no evidence was collected."""
         summary = self.get_summary()
+        
+        plan_summary = "No strategic plan was recorded."
+        if plans:
+            plan_summary = f"{len(plans)} plan versions were created during the operation."
+
         return f"""## Assessment Summary
 
-**Status:** No evidence collected during assessment
+    Status: No evidence (findings) collected during assessment.
+    Operation Details
+    Steps completed: {summary["total_steps"]}/{self.max_steps}
+    Memory operations: {summary["memory_operations"]}
+    Planning Activity: {plan_summary}
+    Possible Reasons
+    The target may not have been reachable or vulnerable.
+    The operation may have been interrupted before significant findings were made.
+    Review the execution log for tool errors or other issues.
+    """
 
-### Operation Details
-- Steps completed: {summary["total_steps"]}/{self.max_steps}
-- Tools created: {summary["tools_created"]}
-- Memory operations: {summary["memory_operations"]}
-
-### Possible Reasons
-- Target may not be reachable
-- No vulnerabilities found within step limit
-- Authentication or permission issues
-- Network connectivity problems
-
-### Recommendations
-- Verify target accessibility
-- Increase iteration limit if needed
-- Check network connectivity and permissions
-- Review target configuration and scope
-"""
 
     def _generate_fallback_report(
         self, target: str, objective: str, evidence: List[Dict]  # pylint: disable=unused-argument

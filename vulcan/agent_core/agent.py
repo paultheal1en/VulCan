@@ -117,7 +117,6 @@ def create_agent(
     session: Session,
     max_steps: int,
     available_tools: List[str],
-    has_persisted_plan: bool = False, 
     is_parallel_disabled: bool = False 
 ) -> Tuple[Agent, ReasoningHandler]:
     """
@@ -191,7 +190,6 @@ def create_agent(
         session=session,
         max_steps=max_steps,
         tools_context=", ".join(available_tools),
-        has_persisted_plan=has_persisted_plan, 
         is_parallel_disabled=is_parallel_disabled
     )
 

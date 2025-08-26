@@ -55,9 +55,6 @@ def _create_new_session(initial_mission_prompt: Optional[str] = None) -> Session
             
     session_data = Session(
         init_description=initial_mission_prompt.strip(),
-        current_role_name="",
-        current_planner_id="",
-        history_planner_ids=[]
     )
     
     # Lưu vào DB và nhận lại session đầy đủ

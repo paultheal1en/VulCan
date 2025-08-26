@@ -4,3 +4,4 @@ __pycache__
 evidence/
 tools/
 knowledge_base_data/
+logs/

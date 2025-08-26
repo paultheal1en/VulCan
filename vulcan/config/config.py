@@ -86,7 +86,8 @@ class KBConfig(BaseFileSettings):
     KB_ROOT_PATH: str = str(VULCAN_ROOT / "knowledge_base_data")
     default_vs_type: str = "milvus"
     milvus: dict = { "uri": "", "user": "", "password": "" }
-
+    ZILLIZ_CLOUD_URI: str = "" 
+    ZILLIZ_CLOUD_TOKEN: str = "" 
     # --- Cấu hình Embedding & Reranker ---
     embedding_model: str = "all-MiniLM-L6-v2"
     rerank_model_name: str = "maidalun1020/bce-reranker-base_v1"
@@ -105,7 +106,6 @@ class KBConfig(BaseFileSettings):
     }
     text_splitter_name: str = "RecursiveCharacterTextSplitter"
 
-# --- Container chính để truy cập tất cả cấu hình ---
 class ConfigsContainer:
     VULCAN_ROOT = VULCAN_ROOT
 

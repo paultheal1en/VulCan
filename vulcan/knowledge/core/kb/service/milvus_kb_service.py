@@ -14,8 +14,9 @@ class MilvusKBService(KBService):
 
     def do_init(self):
         try:
-            milvus_config = Configs.kb_config.milvus
-            self.client = MilvusClient(uri=milvus_config.get("uri"), token=milvus_config.get("password"))
+            uri = Configs.kb_config.ZILLIZ_CLOUD_URI or Configs.kb_config.milvus.get("uri")
+            token = Configs.kb_config.ZILLIZ_CLOUD_TOKEN or Configs.kb_config.milvus.get("password")
+            self.client = MilvusClient(uri=uri, token=token)
             logger.info("Successfully connected to Zilliz Cloud.")
         except Exception as e:
             logger.error(f"Failed to connect to Zilliz Cloud: {e}")
