@@ -27,13 +27,14 @@ from pathlib import Path
 
 warnings.filterwarnings("ignore", category=DeprecationWarning)
 
+
 def _create_remote_model(
     model_id: str,
     region_name: str,
     temperature: float,
     max_tokens: int = 4096,
 ) -> BedrockModel:
-    """Tạo AWS Bedrock model instance"""
+    """Create an AWS Bedrock model instance."""
     return BedrockModel(
         model_id=model_id,
         region_name=region_name,
@@ -41,61 +42,54 @@ def _create_remote_model(
         max_tokens=max_tokens,
     )
 
+
 def _create_local_model(
     model_id: str,
     host: str,
     temperature: float,
     max_tokens: int = 4096,
 ) -> OllamaModel:
-    """Tạo Ollama model instance"""
+    """Create an Ollama model instance."""
     return OllamaModel(
         host=host, model_id=model_id, temperature=temperature, max_tokens=max_tokens
     )
 
+
 def _validate_server_requirements() -> None:
-    """Kiểm tra yêu cầu server dựa trên cấu hình."""
+    """Validate server requirements based on configuration."""
     server_type = Configs.llm_config.server
 
     if server_type == "local":
         ollama_host = Configs.llm_config.ollama_host
         try:
             response = requests.get(f"{ollama_host}/api/version", timeout=5)
-            if response.status_code != 200:
-                raise ConnectionError("Ollama server not responding")
-        except Exception:
+            response.raise_for_status()
+        except Exception as e:
             raise ConnectionError(
                 f"Ollama server not accessible at {ollama_host}. Please ensure Ollama is running."
-            )
+            ) from e
         try:
             client = ollama.Client(host=ollama_host)
             models_response = client.list()
-            available_models = [m.get("model", m.get("name", "")) for m in models_response.get("models", [])]
+            available_models = [
+                m.get("model", m.get("name", "")) for m in models_response.get("models", [])
+            ]
             required_model = Configs.llm_config.ollama_model_id
             if not any(required_model in model for model in available_models):
                 raise ValueError(
                     f"Required model not found: {required_model}. "
                     f"Pull it with: ollama pull {required_model}"
                 )
+        except ValueError:
+            raise
         except Exception as e:
-            if "Required model not found" in str(e):
-                raise e
-            raise ConnectionError(f"Could not verify Ollama models: {e}")
+            raise ConnectionError(f"Could not verify Ollama models: {e}") from e
 
     elif server_type == "remote":
         aws_access_key = os.getenv("AWS_ACCESS_KEY_ID")
         aws_profile = os.getenv("AWS_PROFILE")
-        
-        # Kiểm tra sự tồn tại của file credentials mặc định
         aws_credentials_file = Path.home() / ".aws" / "credentials"
-        
-        credentials_found = False
-        if aws_access_key:
-            credentials_found = True
-        elif aws_profile:
-            credentials_found = True
-        elif aws_credentials_file.is_file():
-            credentials_found = True
-            
+        credentials_found = bool(aws_access_key or aws_profile or aws_credentials_file.is_file())
         if not credentials_found:
             raise EnvironmentError(
                 "AWS credentials not configured for remote mode. "
@@ -103,65 +97,46 @@ def _validate_server_requirements() -> None:
                 "or run 'aws configure' to set up a credentials file."
             )
 
+
 def _handle_model_creation_error(error: Exception) -> None:
-    """Cung cấp thông báo lỗi hữu ích."""
+    """Provide helpful error messages for model creation failures."""
     server_type = Configs.llm_config.server
     if server_type == "local":
         print(f"{Colors.RED}[!] Local model creation failed: {error}{Colors.RESET}")
         print("    Troubleshooting: Ensure Ollama is running and the required model is pulled.")
     else:
         print(f"{Colors.RED}[!] Remote model creation failed: {error}{Colors.RESET}")
-        print("    Troubleshooting: Check AWS credentials and Bedrock model access in region: {Configs.llm_config.aws_region}")
+        print(f"    Troubleshooting: Check AWS credentials and Bedrock model access in region: {Configs.llm_config.aws_region}")
 
-def create_agent(
-    session: Session,
-    max_steps: int,
-    available_tools: List[str],
-    is_parallel_disabled: bool = False 
-) -> Tuple[Agent, ReasoningHandler]:
-    """
-    Creates an autonomous agent based on a Session object and global configurations.
-    """
-    logger = logging.getLogger("VulCanAgent")
-    logger.debug(f"Creating agent for session ID: {session.id}")
-    
+
+def _build_memory_config(session_id: str) -> dict:
+    """Build memory system configuration based on LLM server type."""
     llm_config = Configs.llm_config
-    server_type = llm_config.server
-
-    _validate_server_requirements()
-
-    # Build Memory System Configuration and Initialize
     memory_config = {}
 
-    if llm_config.server == "local":
-        os.environ["OLLAMA_HOST"] = llm_config.ollama_host
-        print(f"[+] Setting OLLAMA_HOST for Mem0: {llm_config.ollama_host}")
-
-    # Build embedder config
+    # Embedder config
     if llm_config.server == "local":
         memory_config["embedder"] = {
             "provider": "ollama",
-            "config": {
-                "model": llm_config.ollama_embedding_model_id,
-            }
+            "config": {"model": llm_config.ollama_embedding_model_id},
         }
     else:  # remote
         memory_config["embedder"] = {
-            "provider": "aws_bedrock", 
+            "provider": "aws_bedrock",
             "config": {
                 "model": "amazon.titan-embed-text-v2:0",
-                "aws_region": llm_config.aws_region 
-            }
+                "aws_region": llm_config.aws_region,
+            },
         }
 
-    # Build internal LLM config for Mem0
+    # Internal LLM config for Mem0
     if llm_config.server == "local":
         memory_config["llm"] = {
             "provider": "ollama",
             "config": {
                 "model": llm_config.ollama_model_id,
                 "temperature": 0.1,
-            }
+            },
         }
     else:  # remote
         memory_config["llm"] = {
@@ -169,20 +144,45 @@ def create_agent(
             "config": {
                 "model": "us.anthropic.claude-3-5-sonnet-20241022-v2:0",
                 "temperature": 0.1,
-                "aws_region": llm_config.aws_region
-            }
+                "aws_region": llm_config.aws_region,
+            },
         }
 
-    # Build vector store config
-    faiss_path = f"./memory/mem0_faiss_{session.id or 'default'}"
+    # Vector store config
+    faiss_path = f"./memory/mem0_faiss_{session_id or 'default'}"
     memory_config["vector_store"] = {
         "provider": "faiss",
         "config": {
             "embedding_model_dims": 1024,
-            "path": faiss_path
-        }
+            "path": faiss_path,
+        },
     }
-    # Initialize the memory system with the built config
+
+    return memory_config
+
+
+def create_agent(
+    session: Session,
+    max_steps: int,
+    available_tools: List[str],
+    is_parallel_disabled: bool = False,
+) -> Tuple[Agent, ReasoningHandler]:
+    """
+    Create an autonomous agent based on a Session object and global configurations.
+    """
+    logger = logging.getLogger("VulCanAgent")
+    logger.debug(f"Creating agent for session ID: {session.id}")
+
+    llm_config = Configs.llm_config
+    server_type = llm_config.server
+
+    _validate_server_requirements()
+
+    if server_type == "local":
+        os.environ["OLLAMA_HOST"] = llm_config.ollama_host
+        print(f"[+] Setting OLLAMA_HOST for Mem0: {llm_config.ollama_host}")
+
+    memory_config = _build_memory_config(session.id)
     initialize_memory_system(config=memory_config, operation_id=session.id)
     logger.info(f"Memory system initialized for operation: {session.id}")
 
@@ -190,7 +190,7 @@ def create_agent(
         session=session,
         max_steps=max_steps,
         tools_context=", ".join(available_tools),
-        is_parallel_disabled=is_parallel_disabled
+        is_parallel_disabled=is_parallel_disabled,
     )
 
     callback_handler = ReasoningHandler(max_steps=max_steps, operation_id=session.id)
@@ -219,7 +219,7 @@ def create_agent(
     agent = Agent(
         model=model,
         tools=[
-            swarm, 
+            swarm,
             shell,
             editor,
             load_tool,
@@ -231,9 +231,8 @@ def create_agent(
         system_prompt=system_prompt,
         callback_handler=callback_handler,
         conversation_manager=SlidingWindowConversationManager(window_size=120),
-        load_tools_from_directory=True
+        load_tools_from_directory=True,
     )
 
     logger.debug("Agent initialized successfully")
     return agent, callback_handler
-    
