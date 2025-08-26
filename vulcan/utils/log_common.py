@@ -10,20 +10,16 @@ import loguru
 from memoization import cached, CachingAlgorithmFlag
 
 from vulcan.config.config import Configs
-from vulcan.agent_core.utils import Colors  # chỉnh lại path nếu cần
+from vulcan.agent_core.utils import Colors  
 
-# ===========================
-# RoleType enum
-# ===========================
+
 class RoleType(Enum):
     COLLECTOR = "Collection"
     SCANNER = "Scanning"
     EXPLOITER = "Exploitation"
 
 
-# ===========================
-# Log filter
-# ===========================
+
 def _filter_logs(record: dict) -> bool:
     # hide debug logs if Settings.basic_settings.log_verbose=False
     if record["level"].no <= 10 and not Configs.basic_config.log_verbose:
@@ -34,9 +30,7 @@ def _filter_logs(record: dict) -> bool:
     return True
 
 
-# ===========================
-# TeeOutput để redirect stdout/stderr
-# ===========================
+
 class TeeOutput:
     """
     Duplicate stdout/stderr to both terminal and log file.
@@ -75,16 +69,12 @@ class TeeOutput:
         return getattr(self.stream, name)
 
 
-# ===========================
-# Biến toàn cục
-# ===========================
+
 _CURRENT_LOG_FILE_PATH = None
 _LOGGING_INITIALIZED = False
 
 
-# ===========================
-# setup_logging
-# ===========================
+
 def setup_logging(log_file: str = "vulcan_run.log", verbose: bool = False):
     """Configure initial unified logging."""
     global _CURRENT_LOG_FILE_PATH, _LOGGING_INITIALIZED
@@ -115,9 +105,7 @@ def setup_logging(log_file: str = "vulcan_run.log", verbose: bool = False):
     _LOGGING_INITIALIZED = True
 
 
-# ===========================
-# finalize_logging_with_session_id
-# ===========================
+
 def finalize_logging_with_session_id(log_path: Path, session_id: str):
     """Renames the temporary log file to its final name using the session ID."""
     global _CURRENT_LOG_FILE_PATH
@@ -144,9 +132,7 @@ def finalize_logging_with_session_id(log_path: Path, session_id: str):
         print(f"{Colors.RED}Error finalizing log file: {e}{Colors.RESET}")
         sys.stdout = sys.__stdout__
         sys.stderr = sys.__stderr__
-# ===========================
-# Legacy helpers
-# ===========================
+
 def get_timestamp_ms():
     return int(round(time.time() * 1000))
 

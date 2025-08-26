@@ -3,4 +3,4 @@ mysql:
   port: 3306
   user: root
   password: rootpassword
-  database: vulnbot_db
+  database: vulcan_db

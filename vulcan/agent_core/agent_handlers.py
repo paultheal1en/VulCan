@@ -249,6 +249,25 @@ class ReasoningHandler(PrintingCallbackHandler):
 
     def _show_tool_execution(self, tool_use):
         """Display tool execution with clean formatting based on working implementation"""
+        # Kiểm tra xem có nội dung nào còn sót lại trong buffer không (chỉ cần không rỗng)
+        if self.current_reasoning_buffer:
+            # Lấy nội dung còn lại
+            remaining_line = self.current_reasoning_buffer
+            
+            # Xóa buffer ngay lập tức để tránh xử lý lại
+            self.current_reasoning_buffer = ""
+
+            # Mở khung nếu chưa mở (cho trường hợp suy nghĩ chỉ có 1 dòng)
+            if not self.reasoning_header_printed:
+                if self.last_was_tool:
+                    print()
+                print(f"{Colors.MAGENTA}╭─ 🤔 Agent Reasoning {'─' * (80 - 20)}{Colors.RESET}")
+                self.reasoning_header_printed = True
+                self.last_was_tool = False
+            
+            # In nốt phần còn lại, dọn dẹp lề trái
+            print(f"{Colors.MAGENTA}│{Colors.RESET}  {Colors.DIM}{remaining_line.lstrip()}{Colors.RESET}")
+            self.last_was_reasoning = True
         if self.reasoning_header_printed:
             print(f"{Colors.MAGENTA}╰{'─' * (80 - 1)}{Colors.RESET}")
         
@@ -898,7 +917,7 @@ class ReasoningHandler(PrintingCallbackHandler):
         # Logic để gọi một agent chuyên viết báo cáo
         try:
             report_agent = Agent(
-                model=agent.model, # Sử dụng cùng model với agent chính
+                model=agent.model, 
                 tools=[],
                 system_prompt="You are a professional cybersecurity report writer. Your only task is to generate a report based on the provided data, strictly following the requested section format."
             )

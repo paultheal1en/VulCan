@@ -1,0 +1,28 @@
+version: "3.8"
+
+services:
+  # 2. MySQL Container for storing session, plan, and task data
+  mysql:
+    image: mysql:8.0
+    container_name: mysql-for-vulcan
+    environment:
+      MYSQL_ROOT_PASSWORD: rootpassword
+      MYSQL_DATABASE: vulcan_db
+    ports:
+      - "3306:3306" 
+    volumes:
+      - mysql-data:/var/lib/mysql
+    networks:
+      - vulcan-net
+
+
+# Define the network for all services to communicate
+networks:
+  vulcan-net:
+    driver: bridge
+
+# Define the persistent volumes
+volumes:
+  mysql-data:
+
+

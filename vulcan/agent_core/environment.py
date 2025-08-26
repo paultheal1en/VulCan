@@ -170,7 +170,7 @@ def setup_logging(log_file: str = "cyber_operations.log", verbose: bool = False)
     console_handler.setFormatter(formatter)
 
     # Configure the logger specifically
-    cyber_logger = logging.getLogger("CyberAutoAgent")
+    cyber_logger = logging.getLogger("VulCan")
     cyber_logger.setLevel(logging.DEBUG)
     cyber_logger.addHandler(file_handler)
     if verbose:
