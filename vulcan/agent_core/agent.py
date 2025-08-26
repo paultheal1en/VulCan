@@ -174,7 +174,7 @@ def create_agent(
         }
 
     # Build vector store config
-    faiss_path = f"./mem0_faiss_{session.id or 'default'}"
+    faiss_path = f"./memory/mem0_faiss_{session.id or 'default'}"
     memory_config["vector_store"] = {
         "provider": "faiss",
         "config": {

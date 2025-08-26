@@ -245,7 +245,7 @@ class ReasoningHandler(PrintingCallbackHandler):
                 self.last_was_tool = False 
             
             print(f"{Colors.MAGENTA}│{Colors.RESET}  {Colors.DIM}{line.lstrip()}{Colors.RESET}")
-        self.last_was_reasoning = True
+            self.last_was_reasoning = True
 
     def _show_tool_execution(self, tool_use):
         """Display tool execution with clean formatting based on working implementation"""
