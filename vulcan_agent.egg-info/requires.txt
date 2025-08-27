@@ -4,6 +4,8 @@ PyPDF2
 pdfplumber
 tqdm
 chardet
+litellm
+mistralai
 mem0ai==0.1.110
 faiss-cpu
 pymilvus
@@ -15,6 +17,7 @@ langchain-milvus
 langchain-openai
 langchain-text-splitters
 sentence-transformers
+langchain_mistralai
 SQLAlchemy
 PyMySQL
 fastapi

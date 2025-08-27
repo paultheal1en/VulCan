@@ -14,6 +14,10 @@ from strands.agent.conversation_manager import SlidingWindowConversationManager
 from strands_tools import shell, editor, load_tool, stop, http_request
 from strands_tools.swarm import swarm
 from tenacity import retry, stop_after_attempt, wait_exponential, retry_if_exception_type
+from mistralai import Mistral, SDKError
+from langchain_mistralai import MistralAIEmbeddings
+from dotenv import load_dotenv
+load_dotenv()  
 
 # Import hệ thống Configs và Session
 from vulcan.config.config import Configs
@@ -98,38 +102,51 @@ def _validate_server_requirements() -> None:
                 "Please set AWS_ACCESS_KEY_ID/AWS_SECRET_ACCESS_KEY environment variables, "
                 "or run 'aws configure' to set up a credentials file."
             )
+    
     elif server_type == "mistral":
-        if not (Configs.llm_config.mistral_api_key or os.getenv("MISTRAL_API_KEY")):
+        api_key = Configs.llm_config.mistral_api_key or os.getenv("MISTRAL_API_KEY")
+        if not api_key:
             raise EnvironmentError(
-                "Mistral API key not configured..."
+                "Mistral API key not configured. Please set it in llm_config.yaml or as MISTRAL_API_KEY environment variable."
             )
+        
         @retry(
-            wait=wait_exponential(multiplier=1, min=5, max=60),
-            stop=stop_after_attempt(5),
-            retry=retry_if_exception_type(Exception) 
+            wait=wait_exponential(multiplier=1, min=2, max=30),
+            stop=stop_after_attempt(3),
+            retry=retry_if_exception_type(Exception)
         )
-        def create_mistral_with_retry():
-            return MistralModel(
-                api_key=Configs.llm_config.mistral_api_key,
-                model_id=Configs.llm_config.mistral_model_id,
-                max_tokens=Configs.llm_config.max_tokens,
-                temperature=Configs.llm_config.temperature,
-            )
-        model = create_mistral_with_retry()
-            
-        print(f"{Colors.GREEN}[+] Mistral AI model initialized: {Configs.llm_config.mistral_model_id}{Colors.RESET}")
+        def check_mistral_api():
+            try:
+                client = Mistral(api_key=api_key)
+                client.models.list()
+            except SDKError as e:
+                raise ConnectionError(f"Mistral API key is invalid or has insufficient permissions: {e}") from e
+            except Exception as e:
+                raise ConnectionError(f"Could not connect to Mistral API. Check your network connection. Error: {e}") from e
+
+        check_mistral_api()
 
 
 def _handle_model_creation_error(error: Exception) -> None:
     """Provide helpful error messages for model creation failures."""
     server_type = Configs.llm_config.server
-    if server_type == "local":
-        print(f"{Colors.RED}[!] Local model creation failed: {error}{Colors.RESET}")
+    if server_type == "ollama":
+        print(f"{Colors.RED}[!] Ollama model creation failed: {error}{Colors.RESET}")
         print("    Troubleshooting: Ensure Ollama is running and the required model is pulled.")
     else:
         print(f"{Colors.RED}[!] Remote model creation failed: {error}{Colors.RESET}")
-        print(f"    Troubleshooting: Check AWS credentials and Bedrock model access in region: {Configs.llm_config.aws_region}")
+        print(f"    Troubleshooting: Check your API keys/credentials and model access in region: {Configs.llm_config.aws_region}")
 
+def setup_hf_token():
+    """Setup HuggingFace token để tránh warning."""
+    hf_token = os.getenv("HUGGINGFACE_HUB_TOKEN") or os.getenv("HF_TOKEN")
+    
+    if not hf_token:
+        os.environ["HF_TOKEN"] = "hf_dummy_token_to_suppress_warning"
+        print("[+] Set dummy HF_TOKEN to reduce warnings")
+    else:
+        os.environ["HF_TOKEN"] = hf_token
+        print("[+] Using existing HF_TOKEN")
 
 def _build_memory_config(session_id: str) -> dict:
     """Build memory system configuration based on LLM server type."""
@@ -137,12 +154,28 @@ def _build_memory_config(session_id: str) -> dict:
     memory_config = {}
 
     # Embedder config
-    if llm_config.server == "local":
+    if llm_config.server == "ollama":
         memory_config["embedder"] = {
             "provider": "ollama",
             "config": {"model": llm_config.ollama_embedding_model_id},
         }
-    else:  # remote
+        
+    elif llm_config.server == "mistral":
+        setup_hf_token()
+        mistral_embeddings = MistralAIEmbeddings(
+            model="mistral-embed",
+            mistral_api_key=llm_config.mistral_api_key,
+            max_concurrent_requests=1, 
+            max_retries=3
+        )
+
+        memory_config["embedder"] = {
+            "provider": "langchain",
+            "config": {
+                "model": mistral_embeddings
+            }
+        }
+    elif llm_config.server == "bedrock": 
         memory_config["embedder"] = {
             "provider": "aws_bedrock",
             "config": {
@@ -150,9 +183,8 @@ def _build_memory_config(session_id: str) -> dict:
                 "aws_region": llm_config.aws_region,
             },
         }
-
     # Internal LLM config for Mem0
-    if llm_config.server == "local":
+    if llm_config.server == "ollama":
         memory_config["llm"] = {
             "provider": "ollama",
             "config": {
@@ -160,7 +192,15 @@ def _build_memory_config(session_id: str) -> dict:
                 "temperature": 0.1,
             },
         }
-    else:  # remote
+    elif llm_config.server == "mistral":
+        memory_config["llm"] = {
+            "provider": "litellm",
+            "config": {
+                "model": f"mistral/{llm_config.mistral_model_id}", 
+                "temperature": 0.1,
+            },
+        }
+    elif llm_config.server == "bedrock": 
         memory_config["llm"] = {
             "provider": "aws_bedrock",
             "config": {
@@ -170,7 +210,7 @@ def _build_memory_config(session_id: str) -> dict:
             },
         }
 
-    # Vector store config
+    # Vector store config with correct dimensions
     faiss_path = f"./memory/mem0_faiss_{session_id or 'default'}"
     memory_config["vector_store"] = {
         "provider": "faiss",
@@ -203,6 +243,11 @@ def create_agent(
     if server_type == "ollama":
         os.environ["OLLAMA_HOST"] = llm_config.ollama_host
         print(f"[+] Setting OLLAMA_HOST for Mem0: {llm_config.ollama_host}")
+    elif server_type == "mistral":
+        api_key = Configs.llm_config.mistral_api_key or os.getenv("MISTRAL_API_KEY")
+        if api_key:
+            os.environ["MISTRAL_API_KEY"] = api_key
+
 
     memory_config = _build_memory_config(session.id)
     initialize_memory_system(config=memory_config, operation_id=session.id)
@@ -224,24 +269,25 @@ def create_agent(
                 model_id=llm_config.ollama_model_id,
                 host=llm_config.ollama_host,
                 temperature=llm_config.temperature,
+                max_tokens=llm_config.max_tokens,
             )
             print(f"{Colors.GREEN}[+] Local model initialized: {llm_config.ollama_model_id}{Colors.RESET}")
         elif server_type == "mistral":
             logger.debug("Configuring MistralModel")
             model = MistralModel(
-                api_key=Configs.llm_config.mistral_api_key, 
-                model_id=Configs.llm_config.mistral_model_id,
-                max_tokens=Configs.llm_config.max_tokens,
-                temperature=Configs.llm_config.temperature,
-                # client_args={ "timeout": Configs.llm_config.timeout }
+                api_key=Configs.llm_config.mistral_api_key,
+                model_id=llm_config.mistral_model_id,
+                max_tokens=llm_config.max_tokens,
+                temperature=llm_config.temperature,
             )
-            print(f"{Colors.GREEN}[+] Mistral AI model initialized: {Configs.llm_config.mistral_model_id}{Colors.RESET}")
+            print(f"{Colors.GREEN}[+] Mistral AI model initialized: {llm_config.mistral_model_id}{Colors.RESET}")
         else:
             logger.debug("Configuring BedrockModel")
             model = _create_remote_model(
                 model_id=llm_config.bedrock_model_id,
                 region_name=llm_config.aws_region,
                 temperature=llm_config.temperature,
+                max_tokens=llm_config.max_tokens,
             )
             print(f"{Colors.GREEN}[+] Remote model initialized: {llm_config.bedrock_model_id}{Colors.RESET}")
     except Exception as e:

@@ -72,7 +72,7 @@ class LLMConfig(BaseFileSettings):
     ollama_model_id: str = "llama3.2:3b"
     ollama_embedding_model_id: str = "mxbai-embed-large"
     # --- Cấu hình Mistral ---
-    mistral_api_key: Optional[str] = None # Sẽ đọc từ biến môi trường
+    mistral_api_key: Optional[str] = None 
     mistral_model_id: str = "mistral-large-latest"
     temperature: float = 0.5
     max_tokens: Optional[int] = 4096

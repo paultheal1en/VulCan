@@ -23,7 +23,7 @@ classifiers = [
 ]
 requires-python = ">=3.11"
 dependencies = [
-    # Core Agent Framework (from CAA)
+    # Core Agent Framework 
     "strands-agents[ollama,mistral]>=1.0.0",
     "strands-agents-tools==0.2.0",
     # Document & PDF
@@ -32,7 +32,9 @@ dependencies = [
     "tqdm",
     "chardet",
 
-    # Memory Systems (CAA & VulnBot)
+    # Memory Systems 
+    "litellm",
+    "mistralai",
     "mem0ai==0.1.110",
     "faiss-cpu",
     "pymilvus",
@@ -44,12 +46,13 @@ dependencies = [
     "langchain-openai",
     "langchain-text-splitters",
     "sentence-transformers",
+    "langchain_mistralai",
 
-    # Database & Persistence (from VulnBot)
+    # Database & Persistence 
     "SQLAlchemy",
     "PyMySQL",
 
-    # API & Web Frameworks (from VulnBot)
+    # API & Web Frameworks
     "fastapi",
     "uvicorn[standard]",
     "streamlit",

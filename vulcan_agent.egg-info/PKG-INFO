@@ -20,6 +20,8 @@ Requires-Dist: PyPDF2
 Requires-Dist: pdfplumber
 Requires-Dist: tqdm
 Requires-Dist: chardet
+Requires-Dist: litellm
+Requires-Dist: mistralai
 Requires-Dist: mem0ai==0.1.110
 Requires-Dist: faiss-cpu
 Requires-Dist: pymilvus
@@ -31,6 +33,7 @@ Requires-Dist: langchain-milvus
 Requires-Dist: langchain-openai
 Requires-Dist: langchain-text-splitters
 Requires-Dist: sentence-transformers
+Requires-Dist: langchain_mistralai
 Requires-Dist: SQLAlchemy
 Requires-Dist: PyMySQL
 Requires-Dist: fastapi

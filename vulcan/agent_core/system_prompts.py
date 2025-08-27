@@ -18,13 +18,20 @@ def _get_ollama_host() -> str:
 def _get_swarm_model_guidance() -> str:
     """Generate swarm model configuration guidance."""
     server_type = Configs.llm_config.server
-    if server_type == "local":
+    if server_type == "ollama":
         ollama_host = _get_ollama_host()
         model_id = Configs.llm_config.ollama_model_id
         return f"""## SWARM MODEL CONFIGURATION (LOCAL MODE)
 When using swarm, always set:
 - model_provider: "ollama"
 - model_settings: {{"model_id": "{model_id}", "host": "{ollama_host}"}}
+"""
+    elif server_type == "mistral":
+        model_id = Configs.llm_config.mistral_model_id
+        return f"""## SWARM MODEL CONFIGURATION (MISTRAL)
+When using swarm, always set:
+- model_provider: "mistral"
+- model_settings: {{"model_id": "{model_id}", "max_tokens": 2000, "temperature": 0.7}}
 """
     else:
         model_id = "us.anthropic.claude-3-7-sonnet-20250219-v1:0"
