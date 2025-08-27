@@ -8,10 +8,11 @@ from vulcan.config.config import Configs
 from vulcan.persistence.session_manager import load_or_create_session, save_session
 from vulcan.agent_core.agent import create_agent
 from vulcan.agent_core.system_prompts import get_initial_prompt, get_continuation_prompt
-from vulcan.agent_core.utils import analyze_objective_completion
+from vulcan.utils.agent_utils import analyze_objective_completion, print_banner
 from vulcan.agent_core.environment import auto_setup
 from dotenv import load_dotenv
 
+load_dotenv()
 # Import logging helpers
 from vulcan.utils.log_common import setup_logging, finalize_logging_with_session_id
 
@@ -34,6 +35,7 @@ def main(mission: str, iterations: int, no_parallel: bool):
     log_path = Configs.basic_config.LOG_PATH
     temp_log_file = log_path / f"temp_log_{time.strftime('%Y%m%d-%H%M%S')}.log"
     setup_logging(log_file=str(temp_log_file), verbose=True)
+    print_banner()
 
     os.environ["BYPASS_TOOL_CONSENT"] = "true"
     if no_parallel:

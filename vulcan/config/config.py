@@ -1,21 +1,18 @@
 import os
 from strenum import StrEnum  
-from typing import Dict, Any
+from typing import List, Dict, Any, Union, Optional
 from pathlib import Path
 from functools import cached_property
 
-# Đảm bảo import từ đúng vị trí trong cấu trúc mới
 from .pydantic_settings_file import BaseFileSettings, SettingsConfigDict, settings_property
 
-# --- Định nghĩa đường dẫn gốc của dự án ---
-VULCAN_ROOT = Path(__file__).resolve().parents[2] # Trỏ ra ngoài thư mục vulcan/config/
+VULCAN_ROOT = Path(__file__).resolve().parents[2] 
 
 class Mode(StrEnum):
     Auto = "auto"
     Manual = "manual"
     SemiAuto = "semi"
 
-# --- Lớp Cấu hình Chung ---
 class BasicConfig(BaseFileSettings):
     model_config = SettingsConfigDict(yaml_file=VULCAN_ROOT / "config.yaml")
 
@@ -53,7 +50,6 @@ class BasicConfig(BaseFileSettings):
         for p in [self.LOG_PATH, self.EVIDENCE_PATH, self.TOOLS_PATH]:
             p.mkdir(parents=True, exist_ok=True)
 
-# --- Lớp Cấu hình Database ---
 class DBConfig(BaseFileSettings):
     model_config = SettingsConfigDict(yaml_file=VULCAN_ROOT / "db_config.yaml")
     mysql: dict = {
@@ -64,31 +60,34 @@ class DBConfig(BaseFileSettings):
         "database": "vulcan_db",
     }
 
-# --- Lớp Cấu hình Mô hình Ngôn ngữ ---
 class LLMConfig(BaseFileSettings):
     model_config = SettingsConfigDict(yaml_file=VULCAN_ROOT / "llm_config.yaml")
 
-    server: str = "remote"
+    server: str = "bedrock" # 'bedrock', 'ollama', hoặc 'mistral'
+     # --- Cấu hình Bedrock ---
     aws_region: str = "us-east-1"
     bedrock_model_id: str = "us.anthropic.claude-sonnet-4-20250514-v1:0"
+    # --- Cấu hình Ollama ---
     ollama_host: str = "http://localhost:11434"
     ollama_model_id: str = "llama3.2:3b"
     ollama_embedding_model_id: str = "mxbai-embed-large"
+    # --- Cấu hình Mistral ---
+    mistral_api_key: Optional[str] = None # Sẽ đọc từ biến môi trường
+    mistral_model_id: str = "mistral-large-latest"
     temperature: float = 0.5
+    max_tokens: Optional[int] = 4096
     history_len: int = 10
     timeout: int = 600
 
 class KBConfig(BaseFileSettings):
     model_config = SettingsConfigDict(yaml_file=VULCAN_ROOT / "kb_config.yaml")
     
-    # --- Cấu hình KB & Vector Store ---
     kb_name: str = "default_rag"
     KB_ROOT_PATH: str = str(VULCAN_ROOT / "knowledge_base_data")
     default_vs_type: str = "milvus"
     milvus: dict = { "uri": "", "user": "", "password": "" }
     ZILLIZ_CLOUD_URI: str = "" 
     ZILLIZ_CLOUD_TOKEN: str = "" 
-    # --- Cấu hình Embedding & Reranker ---
     embedding_model: str = "all-MiniLM-L6-v2"
     rerank_model_name: str = "maidalun1020/bce-reranker-base_v1"
     
@@ -120,6 +119,5 @@ class ConfigsContainer:
         self.db_config.create_template_file(write_file=True, file_format="yaml")
         self.llm_config.create_template_file(write_file=True, file_format="yaml")
         self.kb_config.create_template_file(write_file=True, file_format="yaml")
-        # Đổi tên các tệp mẫu cho đúng
 
 Configs = ConfigsContainer()

@@ -9,9 +9,11 @@ import ollama
 from strands import Agent
 from strands.models import BedrockModel
 from strands.models.ollama import OllamaModel
+from strands.models.mistral import MistralModel
 from strands.agent.conversation_manager import SlidingWindowConversationManager
 from strands_tools import shell, editor, load_tool, stop, http_request
 from strands_tools.swarm import swarm
+from tenacity import retry, stop_after_attempt, wait_exponential, retry_if_exception_type
 
 # Import hệ thống Configs và Session
 from vulcan.config.config import Configs
@@ -20,7 +22,7 @@ from vulcan.persistence.models.session_model import Session
 # Module nội bộ
 from .system_prompts import get_system_prompt
 from .agent_handlers import ReasoningHandler
-from .utils import Colors
+from vulcan.utils.agent_utils import Colors
 from .memory_tools import mem0_memory, initialize_memory_system
 from .tools.knowledge_tools import query_knowledge_base
 from pathlib import Path
@@ -59,7 +61,7 @@ def _validate_server_requirements() -> None:
     """Validate server requirements based on configuration."""
     server_type = Configs.llm_config.server
 
-    if server_type == "local":
+    if server_type == "ollama":
         ollama_host = Configs.llm_config.ollama_host
         try:
             response = requests.get(f"{ollama_host}/api/version", timeout=5)
@@ -85,7 +87,7 @@ def _validate_server_requirements() -> None:
         except Exception as e:
             raise ConnectionError(f"Could not verify Ollama models: {e}") from e
 
-    elif server_type == "remote":
+    elif server_type == "bedrock":
         aws_access_key = os.getenv("AWS_ACCESS_KEY_ID")
         aws_profile = os.getenv("AWS_PROFILE")
         aws_credentials_file = Path.home() / ".aws" / "credentials"
@@ -96,6 +98,26 @@ def _validate_server_requirements() -> None:
                 "Please set AWS_ACCESS_KEY_ID/AWS_SECRET_ACCESS_KEY environment variables, "
                 "or run 'aws configure' to set up a credentials file."
             )
+    elif server_type == "mistral":
+        if not (Configs.llm_config.mistral_api_key or os.getenv("MISTRAL_API_KEY")):
+            raise EnvironmentError(
+                "Mistral API key not configured..."
+            )
+        @retry(
+            wait=wait_exponential(multiplier=1, min=5, max=60),
+            stop=stop_after_attempt(5),
+            retry=retry_if_exception_type(Exception) 
+        )
+        def create_mistral_with_retry():
+            return MistralModel(
+                api_key=Configs.llm_config.mistral_api_key,
+                model_id=Configs.llm_config.mistral_model_id,
+                max_tokens=Configs.llm_config.max_tokens,
+                temperature=Configs.llm_config.temperature,
+            )
+        model = create_mistral_with_retry()
+            
+        print(f"{Colors.GREEN}[+] Mistral AI model initialized: {Configs.llm_config.mistral_model_id}{Colors.RESET}")
 
 
 def _handle_model_creation_error(error: Exception) -> None:
@@ -178,7 +200,7 @@ def create_agent(
 
     _validate_server_requirements()
 
-    if server_type == "local":
+    if server_type == "ollama":
         os.environ["OLLAMA_HOST"] = llm_config.ollama_host
         print(f"[+] Setting OLLAMA_HOST for Mem0: {llm_config.ollama_host}")
 
@@ -196,7 +218,7 @@ def create_agent(
     callback_handler = ReasoningHandler(max_steps=max_steps, operation_id=session.id)
 
     try:
-        if server_type == "local":
+        if server_type == "ollama":
             logger.debug("Configuring OllamaModel")
             model = _create_local_model(
                 model_id=llm_config.ollama_model_id,
@@ -204,6 +226,16 @@ def create_agent(
                 temperature=llm_config.temperature,
             )
             print(f"{Colors.GREEN}[+] Local model initialized: {llm_config.ollama_model_id}{Colors.RESET}")
+        elif server_type == "mistral":
+            logger.debug("Configuring MistralModel")
+            model = MistralModel(
+                api_key=Configs.llm_config.mistral_api_key, 
+                model_id=Configs.llm_config.mistral_model_id,
+                max_tokens=Configs.llm_config.max_tokens,
+                temperature=Configs.llm_config.temperature,
+                # client_args={ "timeout": Configs.llm_config.timeout }
+            )
+            print(f"{Colors.GREEN}[+] Mistral AI model initialized: {Configs.llm_config.mistral_model_id}{Colors.RESET}")
         else:
             logger.debug("Configuring BedrockModel")
             model = _create_remote_model(

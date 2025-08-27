@@ -10,7 +10,7 @@ import loguru
 from memoization import cached, CachingAlgorithmFlag
 
 from vulcan.config.config import Configs
-from vulcan.agent_core.utils import Colors  
+from vulcan.utils.agent_utils import Colors  
 
 
 class RoleType(Enum):

@@ -1,9 +1,12 @@
-server: remote 
+server: mistral
 aws_region: us-east-1
 bedrock_model_id: us.anthropic.claude-sonnet-4-20250514-v1:0
 ollama_host: https://8e85a95cc9a9.ngrok-free.app
 ollama_model_id: gpt-oss:latest
 ollama_embedding_model_id: mxbai-embed-large
+mistral_api_key: ${MISTRAL_API_KEY}
+mistral_model_id: mistral-large-latest
 temperature: 0.5
 history_len: 10
+max_tokens: 4096
 timeout: 600

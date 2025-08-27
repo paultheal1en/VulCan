@@ -10,7 +10,7 @@ from datetime import datetime
 from pathlib import Path
 from typing import List
 
-from .utils import Colors, get_data_path
+from vulcan.utils.agent_utils import Colors, get_data_path
 
 
 def clean_operation_memory(operation_id: str) -> None:

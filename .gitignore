@@ -5,3 +5,7 @@ evidence/*
 tools/*
 knowledge_base_data/*
 logs/*
+evidence/
+tools/
+knowledge_base_data/
+logs/

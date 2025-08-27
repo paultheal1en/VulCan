@@ -4,12 +4,21 @@ import os
 import re
 from typing import List, Dict, Tuple
 from datetime import datetime
+from pathlib import Path
 
 
 def get_data_path(subdir=""):
-    """Get the appropriate data path for current environment (Docker or local)"""
-    base = "/app" if os.path.exists("/app") else os.getcwd()
-    return os.path.join(base, subdir) if subdir else base
+    """
+    Gets the absolute path to a subdirectory within the project root.
+    This is robust against being called from different working directories.
+    """
+    project_root = Path(__file__).resolve().parents[2]
+    
+    base_path = project_root
+    
+    if subdir:
+        return os.path.join(base_path, subdir)
+    return str(base_path)
 
 
 # ANSI color codes for terminal output
@@ -25,38 +34,41 @@ class Colors:
     RESET = "\033[0m"
 
 
+
 def print_banner():
-    """Display operation banner with clean, centered ASCII art."""
+    """Displays the VulCan project banner."""
+    
+    # ASCII ART cho VulCan - thiết kế đẹp hơn
     banner_lines = [
-        r" ██████╗██╗   ██╗██████╗ ███████╗██████╗ ",
-        r"██╔════╝╚██╗ ██╔╝██╔══██╗██╔════╝██╔══██╗",
-        r"██║      ╚████╔╝ ██████╔╝█████╗  ██████╔╝",
-        r"██║       ╚██╔╝  ██╔══██╗██╔══╝  ██╔══██╗",
-        r"╚██████╗   ██║   ██████╔╝███████╗██║  ██║",
-        r" ╚═════╝   ╚═╝   ╚═════╝ ╚══════╝╚═╝  ╚═╝",
         r"",
-        r"█████╗ ██╗   ██╗████████╗ ██████╗  █████╗  ██████╗ ███████╗███╗   ██╗████████╗",
-        r"██╔══██╗██║   ██║╚══██╔══╝██╔═══██╗██╔══██╗██╔════╝ ██╔════╝████╗  ██║╚══██╔══╝",
-        r"███████║██║   ██║   ██║   ██║   ██║███████║██║  ███╗█████╗  ██╔██╗ ██║   ██║   ",
-        r"██╔══██║██║   ██║   ██║   ██║   ██║██╔══██║██║   ██║██╔══╝  ██║╚██╗██║   ██║   ",
-        r"██║  ██║╚██████╔╝   ██║   ╚██████╔╝██║  ██║╚██████╔╝███████╗██║ ╚████║   ██║   ",
-        r"╚═╝  ╚═╝ ╚═════╝    ╚═╝    ╚═════╝ ╚═╝  ╚═╝ ╚═════╝ ╚══════╝╚═╝  ╚═══╝   ╚═╝   ",
+        r"██╗   ██╗██╗   ██╗██╗      ██████╗ █████╗ ███╗   ██╗",
+        r"██║   ██║██║   ██║██║     ██╔════╝██╔══██╗████╗  ██║",
+        r"██║   ██║██║   ██║██║     ██║     ███████║██╔██╗ ██║",
+        r"╚██╗ ██╔╝██║   ██║██║     ██║     ██╔══██║██║╚██╗██║",
+        r" ╚████╔╝ ╚██████╔╝███████╗╚██████╗██║  ██║██║ ╚████║",
+        r"  ╚═══╝   ╚═════╝ ╚══════╝ ╚═════╝╚═╝  ╚═╝╚═╝  ╚═══╝",
+        r"",
     ]
 
-    subtitle = "-- Autonomous Cyber Agent --"
+    subtitle = "-- Metacognitive Autonomous Penetration Testing Agent --"
+    author = "Cybersecurity Research Tool"
 
+    # Tính độ rộng lớn nhất của ASCII để căn giữa
     banner_art_width = 0
     if banner_lines:
         banner_art_width = max(len(line.rstrip()) for line in banner_lines)
 
-    padding_length = (banner_art_width - len(subtitle)) // 2
-    centered_subtitle = (" " * max(0, padding_length)) + subtitle
+    # Căn giữa subtitle và author
+    padding_subtitle = (banner_art_width - len(subtitle)) // 2
+    padding_author = (banner_art_width - len(author)) // 2
+    
+    centered_subtitle = (" " * max(0, padding_subtitle)) + subtitle
+    centered_author = (" " * max(0, padding_author)) + author
 
-    # Construct the full banner string
-    full_banner = "\n".join(banner_lines) + "\n" + centered_subtitle
+    # Kết hợp banner, subtitle và author
+    full_banner = "\n".join(banner_lines) + "\n" + centered_subtitle + "\n" + centered_author + "\n"
 
-    # Print the banner with color
-    print("%s%s%s" % (Colors.CYAN, full_banner, Colors.RESET))
+    print("%s%s%s" % (Colors.RED, full_banner, Colors.RESET))
 
 
 def print_section(title, content, color=Colors.BLUE, emoji=""):

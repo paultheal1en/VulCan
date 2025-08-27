@@ -1,4 +1,4 @@
-strands-agents[ollama]>=1.0.0
+strands-agents[mistral,ollama]>=1.0.0
 strands-agents-tools==0.2.0
 PyPDF2
 pdfplumber

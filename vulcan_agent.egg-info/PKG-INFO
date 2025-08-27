@@ -14,7 +14,7 @@ Classifier: Programming Language :: Python :: 3.11
 Classifier: Topic :: Security
 Requires-Python: >=3.11
 Description-Content-Type: text/markdown
-Requires-Dist: strands-agents[ollama]>=1.0.0
+Requires-Dist: strands-agents[mistral,ollama]>=1.0.0
 Requires-Dist: strands-agents-tools==0.2.0
 Requires-Dist: PyPDF2
 Requires-Dist: pdfplumber
@@ -71,81 +71,166 @@ Requires-Dist: mypy; extra == "dev"
 Requires-Dist: jupyterlab; extra == "dev"
 
 
-# VulCan - Autonomous Penetration Testing Agent
 
-![Project Status](https://img.shields.io/badge/status-alpha-orange.svg)
-![GitHub License](https://img.shields.io/github/license/mashape/apistatus.svg)
-![Python Version](https://img.shields.io/badge/python-3.11+-blue.svg)
 
-**VulCan là một agent kiểm thử xâm nhập tự trị, được trang bị khả năng lập luận siêu nhận thức (metacognitive reasoning) và quản lý trạng thái bền bỉ, được thiết kế để tự động hóa các quy trình tấn công an ninh mạng phức tạp.**
+## Kiến trúc
 
-</div>
+VulCan hoạt động với một `Orchestrator` quản lý vòng đời của `Session`, và một `Agent` tự trị duy nhất thực hiện toàn bộ logic nghiệp vụ.
+
+```mermaid
+graph TD
+    subgraph "Application Layer"
+        A[User via CLI] --> B[Orchestrator];
+        B -- Manages Session --> C[MySQL Database];
+    end
+
+    subgraph "Agent Cognitive Core"
+        D[Autonomous Agent Instance];
+        E[Metacognitive System Prompt];
+        
+        D -- Guided by --> E;
+        D -- Interacts with --> F[Unified Memory (Mem0/FAISS)];
+        D -- Uses --> G[Toolbelt];
+    end
+    
+    B -- Initializes & Runs --> D;
+
+    subgraph "Agent Resources"
+        F -- Stores --> F1[Strategic Plans (JSON)];
+        F -- Stores --> F2[Technical Findings (Text)];
+        
+        G -- Includes --> G1[Execution Tools (shell, swarm)];
+        G -- Includes --> G2[Knowledge Tools (query_knowledge_base)];
+    end
+    
+    H[Knowledge Base (Zilliz Cloud)]
+    G2 --> H
+```
 
 ---
 
-### ⚠️ TUYÊN BỐ MIỄN TRỪ TRÁCH NHIỆM QUAN TRỌNG ⚠️
+## Hướng dẫn Cài đặt và Thiết lập
 
-**PHẦN MỀM NÀY CHỈ DÀNH CHO MỤC ĐÍCH GIÁO DỤC VÀ KIỂM THỬ BẢO MẬT ĐƯỢC ỦY QUYỀN.**
+### 1. Yêu cầu Hệ thống
 
--   **KHÔNG BAO GIỜ** sử dụng công cụ này trên các hệ thống mà bạn không có sự cho phép rõ ràng bằng văn bản.
--   Luôn triển khai trong một môi trường an toàn, được cô lập (sandboxed).
--   Người dùng hoàn toàn chịu trách nhiệm về việc sử dụng công cụ một cách hợp pháp và có đạo đức. Việc lạm dụng có thể dẫn đến hậu quả pháp lý nghiêm trọng.
+*   **Hệ điều hành:** Linux (khuyến nghị Kali Linux hoặc các bản phân phối Debian-based).
+*   **Python:** 3.11+
+*   **Conda (khuyến nghị):** Để quản lý môi trường.
+*   **Docker:** Để chạy các máy lab thử nghiệm.
+*   **MySQL Server:** Một server MySQL đang chạy (có thể là cục bộ hoặc trên Docker).
+*   **Zilliz Cloud Account:** Một tài khoản Zilliz Cloud (có gói miễn phí) để host Knowledge Base.
 
+### 2. Cài đặt Môi trường
+
+1.  **Sao chép Repository:**
+    ```bash
+    git clone <URL_CUA_REPOSITORY_VULCAN> VulCan-main
+    cd VulCan-main
+    ```
+
+2.  **Tạo và Kích hoạt Môi trường Conda:**
+    ```bash
+    conda create --name vulcanenv python=3.11 -y
+    conda activate vulcanenv
+    ```
+
+3.  **Cài đặt các Phụ thuộc Python:**
+    Lệnh này sẽ đọc `pyproject.toml` và cài đặt tất cả các thư viện cần thiết.
+    ```bash
+    pip install -e .[dev]
+    ```
+
+### 3. Thiết lập Cấu hình
+
+Bạn cần chỉnh sửa các tệp `.yaml` trong thư mục gốc của dự án.
+
+1.  **Database (`db_config.yaml`):**
+    Cung cấp thông tin kết nối đến MySQL server của bạn.
+    ```yaml
+    mysql:
+      host: 127.0.0.1
+      port: 3306
+      user: your_user
+      password: your_password
+      database: vulcan_db
+    ```
+Chạy lệnh để khởi tạo service DB
+```bash
+docker compose up -d
+```
+
+
+2.  **Mô hình Ngôn ngữ (`llm_config.yaml`):**
+    Chọn chế độ `local` (Ollama) hoặc `remote` (AWS Bedrock).
+    ```yaml
+    # Ví dụ cho chế độ local
+    server: local
+    ollama_host: http://localhost:11434
+    ollama_model_id: llama3 # Hoặc model khác bạn đã pull
+    
+    # Ví dụ cho chế độ remote
+    # server: remote
+    # aws_region: us-east-1
+    # bedrock_model_id: anthropic.claude-3-sonnet-20240229-v1:0
+    ```
+    *   Nếu dùng Ollama, đảm bảo bạn đã chạy `ollama pull <tên_model>`.
+    *   Nếu dùng Bedrock, đảm bảo bạn đã cấu hình AWS credentials (`aws configure`).
+    *  Nên ưu tiên sử dụng chế độ remote
+
+3.  **Knowledge Base (`kb_config.yaml`):**
+    Điền thông tin từ Zilliz Cloud của bạn.
+    ```yaml
+    kb_name: vulcan_rag # Tên collection bạn đã tạo
+    milvus:
+      uri: "https://your-zilliz-cloud-uri.com"
+      password: "your-zilliz-cloud-api-key"
+    embedding_model: "all-MiniLM-L6-v2" # Model dùng để nạp và truy vấn
+    # ... các cấu hình khác
+    ```
+
+### 4. Khởi tạo Dự án
+
+Sau khi đã cấu hình xong, chạy lệnh `init` một lần duy nhất. Lệnh này sẽ tạo các thư mục cần thiết và các bảng trong database.
+
+```bash
+python -m vulcan.cli init
+```
+hoặc 
+```bash
+vulcan init 
+```
 ---
 
-### ✨ Tính năng nổi bật
+## Cách chạy VulCan
 
-*   🧠 **Lập luận siêu nhận thức:** Agent tự đánh giá độ tin cậy, lựa chọn chiến lược và thích ứng với các tình huống mới.
-*   💾 **Trạng thái bền bỉ (Stateful):** Tích hợp sâu với cơ sở dữ liệu (MySQL) để lưu trữ **Sessions**, **Plans**, và **Tasks**. Cho phép tạm dừng và tiếp tục các nhiệm vụ phức tạp kéo dài.
-*   🤖 **Lập kế hoạch tự động:** Tự động phân rã các nhiệm vụ cấp cao thành các kế hoạch hành động chi tiết, có thể thực thi được.
-*   🛠️ **Kho vũ khí hiện đại:** Tích hợp các công cụ pentest hàng đầu như **Nuclei**, **Subfinder**, **httpx**, **ffuf**, và **sqlmap**.
-*   🌐 **Hỗ trợ Dual-LLM:** Dễ dàng chuyển đổi giữa các mô hình **Remote** (Amazon Bedrock) để có sức mạnh tối đa và **Local** (Ollama) để đảm bảo quyền riêng tư và tiết kiệm chi phí.
-*   🤝 **Giao diện dòng lệnh (CLI):** Giao diện mạnh mẽ và thân thiện với các lệnh `init` và `start` để quản lý.
-*   📊 **Báo cáo tự động:** Tự động tạo báo cáo cuối cùng dựa trên các bằng chứng (`findings`) đã thu thập.
-*   ⚙️ **Cấu hình linh hoạt:** Quản lý tất cả các thiết lập thông qua các file `.yaml` dễ đọc.
+### Chế độ Tương tác (Khuyến nghị)
 
-### 🚀 Demo hoạt động
+Chạy agent mà không cần tham số. Chương trình sẽ hỏi bạn muốn tiếp tục session cũ hay tạo mới.
 
-Đây là một ví dụ về cách VulCan suy nghĩ và hành động trong một nhiệm vụ:
+```bash
+python -m vulcan.cli start
+```
+hoặc 
+```bash
+vulcan start
+```
 
-```sh
-# Người dùng khởi động nhiệm vụ
-$ python -m vulcan.cli start -m "Find web vulnerabilities on example.com"
+### Chế độ Không tương tác (Dùng cho Kịch bản)
 
-# Output của VulCan
-...
-[+] Remote model initialized: anthropic.claude-3-sonnet...
-Agent Core initialized successfully.
-──────────────────────────────── Agent Execution Log ─────────────────────────────────
+Cung cấp nhiệm vụ trực tiếp qua cờ `-m` hoặc `--mission`.
 
-🤔 Agent Reasoning...
-────────────────────────────────────────────────────────────────────────────────
-   The mission is to find web vulnerabilities. The best modern workflow starts with comprehensive reconnaissance.
-   I will begin by finding subdomains, then checking for live web servers, and finally running a broad vulnerability scan with Nuclei.
-   Confidence in this initial plan is High (95%).
-────────────────────────────────────────────────────────────────────────────────
+```bash
+python -m vulcan.cli start --mission "Target: <IP>, Objective: <Mô tả nhiệm vụ>"
+```
 
-────────────────────────────────────────────────────────────────────────────────
-Step 1/100: shell
-────────────────────────────────────────────────────────────────────────────────
-↳ Running: subfinder -d example.com -silent | httpx -silent | nuclei -t vulnerabilities/
+### Các Tùy chọn Hữu ích
 
-[INF] Found 3 subdomains
-[INF] blog.example.com:443 [HTTPS, 200]
-[INF] api.example.com:443 [HTTPS, 200]
-[INF] [CVE-2021-44228] http-log4j-jndi-injection on https://api.example.com [high]
-...
+*   `--iterations <số>`: Ghi đè số bước tối đa được định nghĩa trong `config.yaml`.
+*   `--no-parallel`: Buộc agent không thực thi các lệnh `shell` song song (hữu ích cho việc gỡ lỗi).
 
-🤔 Agent Reasoning...
-────────────────────────────────────────────────────────────────────────────────
-   Nuclei has identified a potential Log4j vulnerability on api.example.com. This is a critical finding.
-   I must now store this evidence and then attempt to verify and exploit this vulnerability using curl and netcat.
-────────────────────────────────────────────────────────────────────────────────
+**Ví dụ một phiên chạy hoàn chỉnh:**
 
-────────────────────────────────────────────────────────────────────────────────
-Step 2/100: mem0_memory
-────────────────────────────────────────────────────────────────────────────────
-↳ Storing [finding]: [CVE-2021-44228] Log4j vulnerability found on https://api.example.com
-  Metadata: {'category': 'finding', 'severity': 'critical', 'confidence': '90%'}
-
-...
+```bash
+# Bắt đầu một cuộc pentest trên máy lab DVWA
+python -m vulcan.cli start --mission "Target: http://127.0.0.1:8080, Objective: Find and exploit SQL Injection and Command Injection vulnerabilities in DVWA at low security level."
+```

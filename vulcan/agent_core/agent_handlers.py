@@ -7,7 +7,7 @@ from datetime import datetime
 from typing import List, Dict
 from strands.handlers import PrintingCallbackHandler
 from strands import Agent
-from .utils import Colors, get_data_path
+from vulcan.utils.agent_utils import Colors, get_data_path
 from .memory_tools import get_memory_client
 from rich.console import Console
 import json
