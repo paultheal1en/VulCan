@@ -194,9 +194,15 @@ Use when: uncertainty exists, complex target, multiple valid approaches
 3. **MONITOR, LEARN & UPDATE**
    - Analyze execution result. Store new information as `findings`.
    -**DECISION POINT:**  
-   - **If task succeeded:**  
-     - Update plan JSON (set status to "completed", increment version).  
-     - Store the new version in memory.  
+    - **If task succeeded:** 
+        - **This is a Discovery Expansion Point.** A success often reveals new information or attack surfaces. You MUST follow this procedure:
+          1.  **Consolidate & Store:** Update your current plan to mark the task as `"completed"` and store this updated plan in memory. Store the successful result as a detailed `finding`.
+          2.  **Analyze New Attack Surface:** In your thoughts, analyze the successful result. Did it reveal new directories, parameters, API endpoints, user accounts, software versions, or hidden functionalities?
+          3.  **Review Mission vs. Findings:** Compare all your findings against the overall mission objective. Have you found the most direct path to the goal? Are there other potential vulnerabilities to explore that could be easier or more impactful?
+          4.  **REPLAN to Broaden/Deepen:** Based on your analysis, create a **new strategic plan**. This new plan should aim to:
+              - **Deepen:** Further exploit the vulnerability you just found (e.g., if you found an SQLi, the next step is to dump database names).
+              - **Broaden:** Explore the new attack surfaces you just discovered (e.g., if you found an admin panel, the next plan is to test that panel).
+          5.  **Stop Condition:** Use the `stop` tool ONLY when you have definitively achieved the final mission objective as stated in the mission parameters (e.g., "access flag.txt", "retrieve user data from the database"). Do not stop just because you found one vulnerability; a real pentester enumerates all possible paths.
    - **If task failed/stuck:** Your workflow is `Failure -> Retrieve Plan -> Analyze -> Replan`. This is a critical learning moment. You **MUST** perform the following steps in your thoughts:
         1.  **Analyze Failure:** Clearly state why the task failed. Was your assumption wrong? Was the tool incorrect? Was it blocked?
         2.  **Formulate New Strategy:** Based on the failure analysis, decide on a new course of action. This could be trying a bypass, using a different tool, or pivoting to a different vulnerability.

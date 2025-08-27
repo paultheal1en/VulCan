@@ -11,7 +11,7 @@ from strands.models import BedrockModel
 from strands.models.ollama import OllamaModel
 from strands.models.mistral import MistralModel
 from strands.agent.conversation_manager import SlidingWindowConversationManager
-from strands_tools import shell, editor, load_tool, stop, http_request
+from strands_tools import shell, editor, load_tool, stop, http_request, swarm
 from strands_tools.swarm import swarm
 from tenacity import retry, stop_after_attempt, wait_exponential, retry_if_exception_type
 from mistralai import Mistral, SDKError
@@ -146,7 +146,6 @@ def setup_hf_token():
         print("[+] Set dummy HF_TOKEN to reduce warnings")
     else:
         os.environ["HF_TOKEN"] = hf_token
-        print("[+] Using existing HF_TOKEN")
 
 def _build_memory_config(session_id: str) -> dict:
     """Build memory system configuration based on LLM server type."""
@@ -293,19 +292,19 @@ def create_agent(
     except Exception as e:
         _handle_model_creation_error(e)
         raise
-
+    core_tools = {
+        "shell": shell,
+        "editor": editor,
+        "load_tool": load_tool,
+        "stop": stop,
+        "mem0_memory": mem0_memory,
+        "query_knowledge_base": query_knowledge_base,
+        "swarm": swarm,
+        "http_request": http_request,
+    }   
     agent = Agent(
         model=model,
-        tools=[
-            swarm,
-            shell,
-            editor,
-            load_tool,
-            mem0_memory,
-            stop,
-            http_request,
-            query_knowledge_base,
-        ],
+        tools=[*core_tools.values()],
         system_prompt=system_prompt,
         callback_handler=callback_handler,
         conversation_manager=SlidingWindowConversationManager(window_size=120),
