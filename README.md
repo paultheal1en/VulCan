@@ -1,42 +1,3 @@
-
-
-
-## Kiến trúc
-
-VulCan hoạt động với một `Orchestrator` quản lý vòng đời của `Session`, và một `Agent` tự trị duy nhất thực hiện toàn bộ logic nghiệp vụ.
-
-```mermaid
-graph TD
-    subgraph "Application Layer"
-        A[User via CLI] --> B[Orchestrator];
-        B -- Manages Session --> C[MySQL Database];
-    end
-
-    subgraph "Agent Cognitive Core"
-        D[Autonomous Agent Instance];
-        E[Metacognitive System Prompt];
-        
-        D -- Guided by --> E;
-        D -- Interacts with --> F[Unified Memory (Mem0/FAISS)];
-        D -- Uses --> G[Toolbelt];
-    end
-    
-    B -- Initializes & Runs --> D;
-
-    subgraph "Agent Resources"
-        F -- Stores --> F1[Strategic Plans (JSON)];
-        F -- Stores --> F2[Technical Findings (Text)];
-        
-        G -- Includes --> G1[Execution Tools (shell, swarm)];
-        G -- Includes --> G2[Knowledge Tools (query_knowledge_base)];
-    end
-    
-    H[Knowledge Base (Zilliz Cloud)]
-    G2 --> H
-```
-
----
-
 ## Hướng dẫn Cài đặt và Thiết lập
 
 ### 1. Yêu cầu Hệ thống
@@ -44,15 +5,15 @@ graph TD
 *   **Hệ điều hành:** Linux (khuyến nghị Kali Linux hoặc các bản phân phối Debian-based).
 *   **Python:** 3.11+
 *   **Conda (khuyến nghị):** Để quản lý môi trường.
-*   **Docker:** Để chạy các máy lab thử nghiệm.
-*   **MySQL Server:** Một server MySQL đang chạy (có thể là cục bộ hoặc trên Docker).
-*   **Zilliz Cloud Account:** Một tài khoản Zilliz Cloud (có gói miễn phí) để host Knowledge Base.
+*   **Docker:** Để chạy MySQL server một cách dễ dàng.
+*   **MySQL Server:** Một server MySQL đang chạy (khuyến nghị chạy qua Docker).
+*   **Zilliz Cloud Account (Tùy chọn):** Một tài khoản Zilliz Cloud (có gói miễn phí) để host Knowledge Base nếu bạn muốn sử dụng tính năng này.
 
 ### 2. Cài đặt Môi trường
 
 1.  **Sao chép Repository:**
     ```bash
-    git clone <URL_CUA_REPOSITORY_VULCAN> VulCan-main
+    git clone https://github.com/your-repo/VulCan-main.git
     cd VulCan-main
     ```
 
@@ -63,14 +24,14 @@ graph TD
     ```
 
 3.  **Cài đặt các Phụ thuộc Python:**
-    Lệnh này sẽ đọc `pyproject.toml` và cài đặt tất cả các thư viện cần thiết.
+    Lệnh này sẽ đọc `pyproject.toml` và cài đặt tất cả các thư viện cần thiết, bao gồm cả các gói hỗ trợ cho Mistral.
     ```bash
     pip install -e .[dev]
     ```
 
 ### 3. Thiết lập Cấu hình
 
-Bạn cần chỉnh sửa các tệp `.yaml` trong thư mục gốc của dự án.
+Bạn cần tạo và chỉnh sửa các tệp `.yaml` trong thư mục gốc của dự án.
 
 1.  **Database (`db_config.yaml`):**
     Cung cấp thông tin kết nối đến MySQL server của bạn.
@@ -78,41 +39,52 @@ Bạn cần chỉnh sửa các tệp `.yaml` trong thư mục gốc của dự �
     mysql:
       host: 127.0.0.1
       port: 3306
-      user: your_user
-      password: your_password
+      user: root # User mặc định của Docker image
+      password: rootpassword # Password mặc định của Docker image
       database: vulcan_db
     ```
-Chạy lệnh để khởi tạo service DB
-```bash
-docker compose up -d
-```
-
+    Sau đó, chạy lệnh sau để khởi tạo service DB bằng Docker:
+    ```bash
+    docker compose up -d
+    ```
 
 2.  **Mô hình Ngôn ngữ (`llm_config.yaml`):**
-    Chọn chế độ `local` (Ollama) hoặc `remote` (AWS Bedrock).
+    Chọn nhà cung cấp LLM của bạn (`server`) và điền các thông số tương ứng. VulCan hỗ trợ **Ollama** (local), **Bedrock** (remote), và **Mistral AI** (remote).
+
     ```yaml
-    # Ví dụ cho chế độ local
-    server: local
+    # --- Lựa chọn 1: Chế độ Local (Ollama) ---
+    server: ollama
     ollama_host: http://localhost:11434
     ollama_model_id: llama3 # Hoặc model khác bạn đã pull
-    
-    # Ví dụ cho chế độ remote
-    # server: remote
+    ollama_embedding_model_id: mxbai-embed-large # Khuyến nghị cho embedding
+
+    # --- Lựa chọn 2: Chế độ Remote (AWS Bedrock) ---
+    # server: bedrock
     # aws_region: us-east-1
     # bedrock_model_id: anthropic.claude-3-sonnet-20240229-v1:0
-    ```
-    *   Nếu dùng Ollama, đảm bảo bạn đã chạy `ollama pull <tên_model>`.
-    *   Nếu dùng Bedrock, đảm bảo bạn đã cấu hình AWS credentials (`aws configure`).
-    *  Nên ưu tiên sử dụng chế độ remote
+    
+    # --- Lựa chọn 3: Chế độ Remote (Mistral AI) ---
+    # server: mistral
+    # mistral_model_id: mistral-large-latest # Hoặc một model khác của Mistral
+    # mistral_api_key: null # Để trống và đặt biến môi trường MISTRAL_API_KEY
+    
+    # Cấu hình chung
+    temperature: 0.5
+    max_tokens: 4096
+    ```    *   **Nếu dùng Ollama:** Đảm bảo bạn đã chạy `ollama pull llama3` và `ollama pull mxbai-embed-large`.
+    *   **Nếu dùng Bedrock:** Đảm bảo bạn đã cấu hình AWS credentials (`aws configure`).
+    *   **Nếu dùng Mistral AI:** Hãy đặt API key của bạn vào một biến môi trường để bảo mật.
+        ```bash
+        export MISTRAL_API_KEY="your_mistral_api_key_here"
+        ```
 
 3.  **Knowledge Base (`kb_config.yaml`):**
-    Điền thông tin từ Zilliz Cloud của bạn.
+    Điền thông tin từ Zilliz Cloud của bạn nếu bạn muốn sử dụng tính năng RAG.
     ```yaml
-    kb_name: vulcan_rag # Tên collection bạn đã tạo
-    milvus:
-      uri: "https://your-zilliz-cloud-uri.com"
-      password: "your-zilliz-cloud-api-key"
-    embedding_model: "all-MiniLM-L6-v2" # Model dùng để nạp và truy vấn
+    kb_name: vulcan_rag 
+    ZILLIZ_CLOUD_URI: "https://your-zilliz-cloud-uri.com"
+    ZILLIZ_CLOUD_TOKEN: "your-zilliz-cloud-api-key"
+    embedding_model: "all-MiniLM-L6-v2"
     # ... các cấu hình khác
     ```
 
@@ -121,12 +93,9 @@ docker compose up -d
 Sau khi đã cấu hình xong, chạy lệnh `init` một lần duy nhất. Lệnh này sẽ tạo các thư mục cần thiết và các bảng trong database.
 
 ```bash
-python -m vulcan.cli init
+vulcan init
 ```
-hoặc 
-```bash
-vulcan init 
-```
+
 ---
 
 ## Cách chạy VulCan
@@ -136,10 +105,6 @@ vulcan init
 Chạy agent mà không cần tham số. Chương trình sẽ hỏi bạn muốn tiếp tục session cũ hay tạo mới.
 
 ```bash
-python -m vulcan.cli start
-```
-hoặc 
-```bash
 vulcan start
 ```
 
@@ -148,7 +113,7 @@ vulcan start
 Cung cấp nhiệm vụ trực tiếp qua cờ `-m` hoặc `--mission`.
 
 ```bash
-python -m vulcan.cli start --mission "Target: <IP>, Objective: <Mô tả nhiệm vụ>"
+vulcan start --mission "Target: <địa chỉ mục tiêu>, Objective: <mô tả mục tiêu>"
 ```
 
 ### Các Tùy chọn Hữu ích
@@ -160,5 +125,5 @@ python -m vulcan.cli start --mission "Target: <IP>, Objective: <Mô tả nhiệm
 
 ```bash
 # Bắt đầu một cuộc pentest trên máy lab DVWA
-python -m vulcan.cli start --mission "Target: http://127.0.0.1:8080, Objective: Find and exploit SQL Injection and Command Injection vulnerabilities in DVWA at low security level."
+vulcan start --mission "Target: http://127.0.0.1:8080, Objective: Find and exploit SQL Injection and Command Injection vulnerabilities in DVWA at low security level."
 ```
