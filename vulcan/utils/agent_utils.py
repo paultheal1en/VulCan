@@ -2,9 +2,9 @@
 
 import os
 import re
-from typing import List, Dict, Tuple
 from datetime import datetime
 from pathlib import Path
+from typing import Dict, List, Tuple
 
 
 def get_data_path(subdir=""):
@@ -13,9 +13,9 @@ def get_data_path(subdir=""):
     This is robust against being called from different working directories.
     """
     project_root = Path(__file__).resolve().parents[2]
-    
+
     base_path = project_root
-    
+
     if subdir:
         return os.path.join(base_path, subdir)
     return str(base_path)
@@ -34,11 +34,10 @@ class Colors:
     RESET = "\033[0m"
 
 
-
 def print_banner():
     """Displays the VulCan project banner."""
-    
-    # ASCII ART cho VulCan - thiết kế đẹp hơn
+
+    # ASCII ART cho VulCan
     banner_lines = [
         r"",
         r"██╗   ██╗██╗   ██╗██╗      ██████╗ █████╗ ███╗   ██╗",
@@ -61,12 +60,19 @@ def print_banner():
     # Căn giữa subtitle và author
     padding_subtitle = (banner_art_width - len(subtitle)) // 2
     padding_author = (banner_art_width - len(author)) // 2
-    
+
     centered_subtitle = (" " * max(0, padding_subtitle)) + subtitle
     centered_author = (" " * max(0, padding_author)) + author
 
     # Kết hợp banner, subtitle và author
-    full_banner = "\n".join(banner_lines) + "\n" + centered_subtitle + "\n" + centered_author + "\n"
+    full_banner = (
+        "\n".join(banner_lines)
+        + "\n"
+        + centered_subtitle
+        + "\n"
+        + centered_author
+        + "\n"
+    )
 
     print("%s%s%s" % (Colors.RED, full_banner, Colors.RESET))
 

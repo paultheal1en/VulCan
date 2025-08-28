@@ -1,4 +1,3 @@
-
 import csv
 from io import TextIOWrapper
 from typing import Dict, List, Optional

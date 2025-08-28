@@ -50,9 +50,7 @@ class RapidOCRDocLoader(UnstructuredFileLoader):
                     images = block._element.xpath(".//pic:pic")
                     for image in images:
                         for img_id in image.xpath(".//a:blip/@r:embed"):
-                            part = doc.part.related_parts[
-                                img_id
-                            ]
+                            part = doc.part.related_parts[img_id]
                             if isinstance(part, ImagePart):
                                 image = Image.open(BytesIO(part._blob))
                                 result, _ = ocr(np.array(image))
@@ -71,4 +69,3 @@ class RapidOCRDocLoader(UnstructuredFileLoader):
         from unstructured.partition.text import partition_text
 
         return partition_text(text=text, **self.unstructured_kwargs)
-

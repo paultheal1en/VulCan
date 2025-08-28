@@ -25,7 +25,6 @@ class Session(BaseModel):
     id: str = Field(None)
     name: Optional[str] = ""
     init_description: str = Field(None)
-    
 
     class Config:
         from_attributes = True

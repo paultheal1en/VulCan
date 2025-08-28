@@ -51,9 +51,9 @@ class RapidOCRPDFLoader(UnstructuredFileLoader):
                     if xref := img.get("xref"):
                         bbox = img["bbox"]
 
-                        if (bbox[2] - bbox[0]) / (page.rect.width) < 0.6 or (bbox[3] - bbox[1]) / (
-                            page.rect.height
-                        ) < 0.6:
+                        if (bbox[2] - bbox[0]) / (page.rect.width) < 0.6 or (
+                            bbox[3] - bbox[1]
+                        ) / (page.rect.height) < 0.6:
                             continue
                         pix = fitz.Pixmap(doc, xref)
                         samples = pix.samples
@@ -82,4 +82,3 @@ class RapidOCRPDFLoader(UnstructuredFileLoader):
         from unstructured.partition.text import partition_text
 
         return partition_text(text=text, **self.unstructured_kwargs)
-

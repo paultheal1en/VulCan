@@ -24,7 +24,7 @@ classifiers = [
 requires-python = ">=3.11"
 dependencies = [
     # Core Agent Framework 
-    "strands-agents[ollama,mistral]>=1.0.0",
+    "strands-agents[ollama,mistral,openai,litellm]>=1.0.0",
     "strands-agents-tools==0.2.0",
     # Document & PDF
     "PyPDF2",

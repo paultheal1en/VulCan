@@ -1,12 +1,13 @@
 from typing import Optional
-from strands import tool
+
+from langchain_core.documents import Document
 from rich.console import Console
+from strands import tool
 
 # Import các thành phần cần thiết từ hệ thống RAG và Configs
 from vulcan.config.config import Configs
 from vulcan.knowledge.core.kb.base import KBServiceFactory
 from vulcan.knowledge.core.reranker.reranker import LangchainReranker
-from langchain_core.documents import Document
 
 console = Console()
 
@@ -54,14 +55,13 @@ def query_knowledge_base(
         docs = kb_service.search_docs(
             query=query,
             top_k=Configs.kb_config.top_k,
-            score_threshold=Configs.kb_config.score_threshold
+            score_threshold=Configs.kb_config.score_threshold,
+            context_window=2
         )
 
         if not docs:
             return f"No relevant information found in knowledge base '{kb_name}' for query: '{query}'"
         
-        console.print(f"  Found {len(docs)} initial documents.")
-
         # 3. Sắp xếp lại (Reranking) để tìm kết quả tốt nhất
         console.print(f"  Step 2: Reranking results to find top {Configs.kb_config.top_n}...")
         if _reranker_model_cache is None:

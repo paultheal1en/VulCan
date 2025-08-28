@@ -1,34 +1,35 @@
 import warnings
-
-from langchain.vectorstores import VectorStore
-from langchain_core.retrievers import BaseRetriever
-from langchain_core.vectorstores import VectorStoreRetriever
-
+from typing import List
 
 from langchain.docstore.document import Document
+from langchain.vectorstores import VectorStore
 from langchain_core.callbacks.manager import (
     AsyncCallbackManagerForRetrieverRun,
-    CallbackManagerForRetrieverRun
+    CallbackManagerForRetrieverRun,
 )
-
-from typing import List
+from langchain_core.retrievers import BaseRetriever
+from langchain_core.vectorstores import VectorStoreRetriever
 
 from vulcan.knowledge.core.retriever.base import BaseRetrieverService
 
 
 class MilvusRetriever(VectorStoreRetriever):
     def _get_relevant_documents(
-            self, query: str, *, run_manager: CallbackManagerForRetrieverRun
+        self, query: str, *, run_manager: CallbackManagerForRetrieverRun
     ) -> List[Document]:
         if self.search_type == "similarity":
             docs = self.vectorstore.similarity_search(query, **self.search_kwargs)
         elif self.search_type == "similarity_score_threshold":
-            docs_and_similarities = self.vectorstore.similarity_search_with_relevance_scores(query, **self.search_kwargs)
+            docs_and_similarities = (
+                self.vectorstore.similarity_search_with_relevance_scores(
+                    query, **self.search_kwargs
+                )
+            )
             score_threshold = self.search_kwargs.get("score_threshold", None)
 
             if any(
-                    similarity < 0.0 or similarity > 1.0
-                    for _, similarity in docs_and_similarities
+                similarity < 0.0 or similarity > 1.0
+                for _, similarity in docs_and_similarities
             ):
                 warnings.warn(
                     "Relevance scores must be between"
@@ -55,7 +56,7 @@ class MilvusRetriever(VectorStoreRetriever):
         return docs
 
     async def _aget_relevant_documents(
-            self, query: str, *, run_manager: AsyncCallbackManagerForRetrieverRun
+        self, query: str, *, run_manager: AsyncCallbackManagerForRetrieverRun
     ) -> List[Document]:
         if self.search_type == "similarity":
             docs = await self.vectorstore.asimilarity_search(
@@ -63,13 +64,15 @@ class MilvusRetriever(VectorStoreRetriever):
             )
         elif self.search_type == "similarity_score_threshold":
             docs_and_similarities = (
-                await self.vectorstore.asimilarity_search_with_score(query, **self.search_kwargs)
+                await self.vectorstore.asimilarity_search_with_score(
+                    query, **self.search_kwargs
+                )
             )
             score_threshold = self.search_kwargs.get("score_threshold", None)
 
             if any(
-                    similarity < 0.0 or similarity > 1.0
-                    for _, similarity in docs_and_similarities
+                similarity < 0.0 or similarity > 1.0
+                for _, similarity in docs_and_similarities
             ):
                 warnings.warn(
                     "Relevance scores must be between"
@@ -96,11 +99,12 @@ class MilvusRetriever(VectorStoreRetriever):
             raise ValueError(f"search_type of {self.search_type} not allowed.")
         return docs
 
+
 class MilvusVectorstoreRetrieverService(BaseRetrieverService):
     def do_init(
-            self,
-            retriever: BaseRetriever = None,
-            top_k: int = 5,
+        self,
+        retriever: BaseRetriever = None,
+        top_k: int = 5,
     ):
         self.vs = None
         self.top_k = top_k
@@ -108,14 +112,15 @@ class MilvusVectorstoreRetrieverService(BaseRetrieverService):
 
     @staticmethod
     def from_vectorstore(
-            vectorstore: VectorStore,
-            top_k: int,
-            score_threshold: int or float,
+        vectorstore: VectorStore,
+        top_k: int,
+        score_threshold: int or float,
     ):
-        retriever = MilvusRetriever(vectorstore=vectorstore,
-                                    search_type="similarity_score_threshold",
-                                    search_kwargs={"score_threshold": score_threshold}
-                                    )
+        retriever = MilvusRetriever(
+            vectorstore=vectorstore,
+            search_type="similarity_score_threshold",
+            search_kwargs={"score_threshold": score_threshold},
+        )
 
         return MilvusVectorstoreRetrieverService(retriever=retriever, top_k=top_k)
 

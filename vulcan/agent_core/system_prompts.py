@@ -1,65 +1,68 @@
 import os
-from typing import Dict, Any
+from dataclasses import dataclass
+from enum import Enum
+from typing import Any, Dict, Optional
 
 import requests
+
 from vulcan.config.config import Configs
 from vulcan.persistence.models.session_model import Session
 
-def _get_ollama_host() -> str:
-    """Determine the appropriate Ollama host."""
-    config_host = Configs.llm_config.ollama_host
-    if config_host and "localhost" not in config_host:
-        return config_host
-    env_host = os.getenv("OLLAMA_HOST")
-    if env_host:
-        return env_host
-    return Configs.llm_config.ollama_host
 
-def _get_swarm_model_guidance() -> str:
-    """Generate swarm model configuration guidance."""
-    server_type = Configs.llm_config.server
-    if server_type == "ollama":
-        ollama_host = _get_ollama_host()
-        model_id = Configs.llm_config.ollama_model_id
-        return f"""## SWARM MODEL CONFIGURATION (LOCAL MODE)
-When using swarm, always set:
-- model_provider: "ollama"
-- model_settings: {{"model_id": "{model_id}", "host": "{ollama_host}"}}
-"""
-    elif server_type == "mistral":
-        model_id = Configs.llm_config.mistral_model_id
-        return f"""## SWARM MODEL CONFIGURATION (MISTRAL)
-When using swarm, always set:
-- model_provider: "mistral"
-- model_settings: {{"model_id": "{model_id}", "max_tokens": 2000, "temperature": 0.7}}
-"""
-    else:
-        model_id = "us.anthropic.claude-3-7-sonnet-20250219-v1:0"
-        return f"""## SWARM MODEL CONFIGURATION (REMOTE MODE)
-When using swarm, always set:
-- model_provider: "bedrock"
-- model_settings: {{"model_id": "{model_id}", "params": {{"temperature": 0.7, "max_tokens": 2000}}}}
-"""
+class ServerType(Enum):
+    """Available LLM server types."""
 
-def get_system_prompt(
-    session: Session,
-    max_steps: int,
-    tools_context: str = "",
-    is_parallel_disabled: bool = False
-) -> str:
-    """Generate enhanced system prompt using metacognitive architecture."""
-    swarm_guidance = _get_swarm_model_guidance()
-    full_tools_context = f"{tools_context}\n{swarm_guidance}" if tools_context else swarm_guidance
-    
-    if is_parallel_disabled:
-        parallel_execution_protocol = """
-**[Protocol: Parallel Execution] - DISABLED BY USER**
-**CRITICAL RULE:** For this session, the parallel execution feature has been disabled. You **MUST NOT** attempt to run shell commands in parallel.
-All commands **MUST** be run sequentially, one at a time. Omit the `parallel=True` argument from all `shell` tool calls.
-"""
-    else:
-        parallel_execution_protocol = """
-**[Protocol: Parallel Execution]**
+    OLLAMA = "ollama"
+    MISTRAL = "mistral"
+    BEDROCK = "bedrock"
+    OPENAI = "openai"
+    GEMINI = "gemini"
+
+
+class UrgencyLevel(Enum):
+    """Operation urgency levels based on remaining budget."""
+
+    HIGH = "HIGH"
+    MEDIUM = "MEDIUM"
+    NORMAL = "NORMAL"
+
+
+@dataclass
+class SwarmModelConfig:
+    """Configuration for swarm model settings."""
+
+    provider: str
+    settings: Dict[str, Any]
+
+
+class PromptTemplates:
+    """Static template strings for system prompts."""
+
+    ROLE_DEFINITION = """<role>
+You are an advanced autonomous penetration testing system implementing metacognitive reasoning with continuous self-assessment and adaptation. You systematically identify and exploit vulnerabilities through intelligent tool selection, parallel execution, and dynamic strategy adjustment.
+</role>"""
+
+    COGNITIVE_ARCHITECTURE = """<cognitive_architecture>
+Working Memory: Current target state, active operations (last 120 messages).
+Episodic Memory (via mem0_memory, user_id: 'vulcan_agent'): 
+  - Strategic Plans (category="plan"): Evolving mission blueprint.
+  - Factual Findings (category="finding"): Evidence log.
+Semantic Memory: Vulnerability knowledge, attack patterns (LLM knowledge).
+Procedural Memory: Tool registry + dynamic tool creation capability.
+</cognitive_architecture>"""
+
+    METACOGNITIVE_FRAMEWORK = """<metacognitive_framework>
+Continuous Assessment: Before actions, evaluate confidence (High >80%, Medium 50-80%, Low <50%)
+Adaptive Execution: High confidence→specialized tools, Medium→swarm/parallel, Low→gather info
+
+Tool Hierarchy:
+1. Specialized tools: sqlmap for SQLi, nikto/wpscan for web, nmap for network, metasploit for exploits
+2. Swarm: When confidence <70% or need multiple perspectives
+3. Parallel shell: Up to 7 commands simultaneously
+4. Meta-tools: Only for novel exploits when no existing tool works
+</metacognitive_framework>"""
+
+    PARALLEL_ENABLED = """**[Protocol: Parallel Execution]**
 You can execute multiple shell commands in parallel to be more efficient, BUT you must be strategic about it.
 
 **- DO run in parallel:** Quick, non-interactive commands with concise output.
@@ -73,54 +76,141 @@ You can execute multiple shell commands in parallel to be more efficient, BUT yo
     - `sqlmap -u target ...`
     - Intensive `nmap` scans (e.g., `nmap -sV -p- target`)
 
-To ensure you can properly analyze the results, you **MUST run verbose tools sequentially** (one at a time, in separate steps). Failure to do so will result in useless, jumbled output.
-"""
+To ensure you can properly analyze the results, you **MUST run verbose tools sequentially** (one at a time, in separate steps). Failure to do so will result in useless, jumbled output."""
 
-    mission_details = session.init_description
-    operation_id = session.id
-    
-    memory_instruction = """
-- FIRST ACTION: Retrieve past findings with mem0_memory(action="list", user_id="vulcan_agent")
+    PARALLEL_DISABLED = """**[Protocol: Parallel Execution] - DISABLED BY USER**
+**CRITICAL RULE:** For this session, the parallel execution feature has been disabled. You **MUST NOT** attempt to run shell commands in parallel.
+All commands **MUST** be run sequentially, one at a time. Omit the `parallel=True` argument from all `shell` tool calls."""
+
+    MEMORY_INSTRUCTION = """- FIRST ACTION: Retrieve past findings with mem0_memory(action="list", user_id="vulcan_agent")
 - Build upon previous discoveries and avoid repeating completed work
 - Begin with reconnaissance - do NOT check memory on fresh operations
 - Focus first step on target information gathering"""
-    
-    return f"""<role>
-You are an advanced autonomous penetration testing system implementing metacognitive reasoning with continuous self-assessment and adaptation. You systematically identify and exploit vulnerabilities through intelligent tool selection, parallel execution, and dynamic strategy adjustment.
-</role>
 
-<cognitive_architecture>
-Working Memory: Current target state, active operations (last 120 messages).
-Episodic Memory (via mem0_memory, user_id: 'vulcan_agent'): 
-  - Strategic Plans (category="plan"): Evolving mission blueprint.
-  - Factual Findings (category="finding"): Evidence log.
-Semantic Memory: Vulnerability knowledge, attack patterns (LLM knowledge).
-Procedural Memory: Tool registry + dynamic tool creation capability.
-</cognitive_architecture>
+    FORBIDDEN_ACTIONS = """**FORBIDDEN ACTIONS:**
+- You **MUST NOT** run any commands related to system administration, container management, or network configuration unless it is directly part of a standard penetration testing procedure (like configuring a proxy with `iptables`).
+- **Forbidden commands include but are not limited to:** `docker`, `arp`, `ifconfig`, `route`, `iptables` (unless for proxying), `systemctl`, `service`, `reboot`, `shutdown`, `rm -rf`, `ping`.
+- Your focus is solely on using the approved penetration testing tools to assess the target."""
 
 
-<mission_parameters>
-- Mission Details: {mission_details}
-- Operation ID: {operation_id}
-- Budget: {max_steps} steps (Urgency: {'HIGH' if max_steps < 30 else 'MEDIUM'})
-- Approved Tools: {full_tools_context}
-- Package Installation: You can install packages without sudo:
-  - System: `apt-get install [package]` or `apt install [package]`
-  - Python: `pip install [package]` or `pip3 install [package]`
-</mission_parameters>
+class ModelConfigurationManager:
+    """Manages LLM model configuration for different server types."""
 
-<metacognitive_framework>
-Continuous Assessment: Before actions, evaluate confidence (High >80%, Medium 50-80%, Low <50%)
-Adaptive Execution: High confidence→specialized tools, Medium→swarm/parallel, Low→gather info
+    @staticmethod
+    def get_ollama_host() -> str:
+        """Determine the appropriate Ollama host."""
+        config_host = Configs.llm_config.ollama_host
+        if config_host and "localhost" not in config_host:
+            return config_host
 
-Tool Hierarchy:
-1. Specialized tools: sqlmap for SQLi, nikto/wpscan for web, nmap for network, metasploit for exploits
-2. Swarm: When confidence <70% or need multiple perspectives
-3. Parallel shell: Up to 7 commands simultaneously
-4. Meta-tools: Only for novel exploits when no existing tool works
-</metacognitive_framework>
+        env_host = os.getenv("OLLAMA_HOST")
+        if env_host:
+            return env_host
 
-<critical_protocols>
+        return Configs.llm_config.ollama_host
+
+    @classmethod
+    def get_swarm_model_config(cls) -> SwarmModelConfig:
+        """Generate swarm model configuration based on server type."""
+        server_type = Configs.llm_config.server
+
+        if server_type == ServerType.OLLAMA.value:
+            return SwarmModelConfig(
+                provider="ollama",
+                settings={
+                    "model_id": Configs.llm_config.ollama_model_id,
+                    "host": cls.get_ollama_host(),
+                },
+            )
+        elif server_type == ServerType.MISTRAL.value:
+            return SwarmModelConfig(
+                provider="mistral",
+                settings={
+                    "model_id": Configs.llm_config.mistral_model_id,
+                    "max_tokens": 2000,
+                    "temperature": 0.7,
+                },
+            )
+        elif server_type == ServerType.OPENAI.value:
+            return SwarmModelConfig(
+                provider="openai",
+                settings={
+                    "model_id": Configs.llm_config.openai_model_id,
+                    "max_tokens": 2000,
+                    "temperature": 0.7,
+                },
+            )
+        elif server_type == ServerType.GEMINI.value:
+            return SwarmModelConfig(
+                provider="gemini",
+                settings={
+                    "model_id": Configs.llm_config.gemini_model_id,
+                    "max_tokens": 2000,
+                    "temperature": 0.7,
+                },
+            )
+        else:  # Default to Bedrock
+            return SwarmModelConfig(
+                provider="bedrock",
+                settings={
+                    "model_id": "us.anthropic.claude-3-7-sonnet-20250219-v1:0",
+                    "params": {"temperature": 0.7, "max_tokens": 2000},
+                },
+            )
+
+    @classmethod
+    def get_swarm_model_guidance(cls) -> str:
+        """Generate swarm model configuration guidance string."""
+        config = cls.get_swarm_model_config()
+
+        if config.provider == "ollama":
+            return f"""## SWARM MODEL CONFIGURATION (LOCAL MODE)
+When using swarm, always set:
+- model_provider: "{config.provider}"
+- model_settings: {config.settings}
+"""
+        elif config.provider == "mistral":
+            return f"""## SWARM MODEL CONFIGURATION (MISTRAL)
+When using swarm, always set:
+- model_provider: "{config.provider}"
+- model_settings: {config.settings}
+"""
+        elif config.provider == "openai":
+            return f"""## SWARM MODEL CONFIGURATION (OPENAI)
+When using swarm, always set:
+- model_provider: "{config.provider}"
+- model_settings: {config.settings}
+"""
+        elif config.provider == "gemini":
+            return f"""## SWARM MODEL CONFIGURATION (GEMINI)
+When using swarm, always set:
+- model_provider: "{config.provider}"
+- model_settings: {config.settings}
+"""
+        else:
+            return f"""## SWARM MODEL CONFIGURATION (BEDROCK)
+When using swarm, always set:
+- model_provider: "{config.provider}"
+- model_settings: {config.settings}
+"""
+
+
+class ProtocolGenerator:
+    """Generates various protocol sections for the system prompt."""
+
+    @staticmethod
+    def get_parallel_execution_protocol(is_parallel_disabled: bool) -> str:
+        """Generate parallel execution protocol based on configuration."""
+        return (
+            PromptTemplates.PARALLEL_DISABLED
+            if is_parallel_disabled
+            else PromptTemplates.PARALLEL_ENABLED
+        )
+
+    @staticmethod
+    def get_critical_protocols(swarm_guidance: str, parallel_protocol: str) -> str:
+        """Generate the critical protocols section."""
+        return f"""<critical_protocols>
 **THE PLAN IS YOUR GUIDE (PLAN STORAGE)**
 - A plan is a JSON object stored in memory with:
   ```json
@@ -163,16 +253,15 @@ MANDATORY: Each agent MUST call mem0_memory first to retrieve past findings
 Always include: tools=["shell", "editor", "load_tool", "http_request", "mem0_memory"]
 Use when: uncertainty exists, complex target, multiple valid approaches
 
-{parallel_execution_protocol}
+{parallel_protocol}
 
+{PromptTemplates.FORBIDDEN_ACTIONS}
+</critical_protocols>"""
 
-**FORBIDDEN ACTIONS:**
-- You **MUST NOT** run any commands related to system administration, container management, or network configuration unless it is directly part of a standard penetration testing procedure (like configuring a proxy with `iptables`).
-- **Forbidden commands include but are not limited to:** `docker`, `arp`, `ifconfig`, `route`, `iptables` (unless for proxying), `systemctl`, `service`, `reboot`, `shutdown`, `rm -rf`.
-- Your focus is solely on using the approved penetration testing tools to assess the target.
-</critical_protocols>
-
-<dynamic_execution>
+    @staticmethod
+    def get_dynamic_execution(memory_instruction: str) -> str:
+        """Generate the dynamic execution section."""
+        return f"""<dynamic_execution>
 **YOUR WORKFLOW MUST FOLLOW THIS METACOGNITIVE CYCLE**
 
 1. **ASSESS & PLAN**
@@ -212,9 +301,12 @@ Use when: uncertainty exists, complex target, multiple valid approaches
 **Continuous Loop:** Assess → Plan with confidence → Execute → Reflect → Adapt  
 **Success Indicators:** Vulnerability confirmed, access achieved, data extracted, objective advanced  
 
-</dynamic_execution>
+</dynamic_execution>"""
 
-<reasoning_patterns>
+    @staticmethod
+    def get_reasoning_patterns() -> str:
+        """Generate the reasoning patterns section."""
+        return """<reasoning_patterns>
 
 **You MUST verbalize your thought process using this format.**
 
@@ -230,9 +322,12 @@ Use when: uncertainty exists, complex target, multiple valid approaches
 - Tool Selection: "[OBSERVATION] suggests [VULNERABILITY]. Tool: [TOOL]. Confidence: [X%]."  
 - Decision Making: "Options: [A]-X% confidence, [B]-Y% confidence. Selecting [CHOICE] because [REASON]."  
 - Exploitation Flow: Recon → Vulnerability Analysis → Tool Selection → Execution → Validation → Persistence  
-</reasoning_patterns>
+</reasoning_patterns>"""
 
-<tool_registry>
+    @staticmethod
+    def get_tool_registry() -> str:
+        """Generate the tool registry section."""
+        return """<tool_registry>
 This is a comprehensive list of tools available to you. Understand their purpose and optimal use cases.
 - **shell**: Execute commands with parallel support (up to 7). Example: `shell(commands=["nmap -sV {{target}}", "nikto -h {{target}}"], parallel=True)`
 - **mem0_memory**: Store findings with category="finding". Actions: store, retrieve, list
@@ -242,9 +337,12 @@ This is a comprehensive list of tools available to you. Understand their purpose
 - **http_request**: Web interaction and vulnerability testing
 - **stop**: Terminate when objective achieved or impossible
 - **query_knowledge_base**: Searches the knowledge base for technical information. Use this to research vulnerabilities, tools, or techniques.
-</tool_registry>
+</tool_registry>"""
 
-<operational_protocols>
+    @classmethod
+    def get_operational_protocols(cls, swarm_guidance: str) -> str:
+        """Generate the operational protocols section."""
+        return f"""<operational_protocols>
 
 **[Protocol: Error Handling]**
 On error: 1) Log error 2) Hypothesize cause 3) Verify with shell 4) Fix and retry 5) After 2-3 fails, pivot strategy
@@ -310,7 +408,6 @@ Remember: Debug before recreating, pip install without sudo, use existing tools 
 
 {swarm_guidance}
 
-
 **Task Format (KEEP CONCISE - Max 120 words):**
 ```
 FIRST ACTION: mem0_memory(action="list", user_id="vulcan_agent") to retrieve all past findings
@@ -351,9 +448,12 @@ stop(reason="Objective achieved: [SPECIFIC RESULT]")
 stop(reason="Budget exhausted. Stored [N] findings.")
 ```
 
-</operational_protocols>
+</operational_protocols>"""
 
-<final_guidance>
+    @staticmethod
+    def get_final_guidance() -> str:
+        """Generate the final guidance section."""
+        return """<final_guidance>
 Key Success Factors:
 - Right tool for job (sqlmap for SQLi, not curl)
 - Parallel execution and swarm for complexity
@@ -362,8 +462,109 @@ Key Success Factors:
 - Low confidence triggers adaptation, not blind execution
 
 Remember: Assess confidence→Select optimal tools→Execute→Learn→Adapt
-</final_guidance>
-"""
+</final_guidance>"""
+
+
+class SystemPromptGenerator:
+    """Main class for generating system prompts for penetration testing operations."""
+
+    def __init__(self):
+        self.model_config_manager = ModelConfigurationManager()
+        self.protocol_generator = ProtocolGenerator()
+
+    def generate_mission_parameters(
+        self, session: Session, max_steps: int, tools_context: str, swarm_guidance: str
+    ) -> str:
+        """Generate mission parameters section."""
+        urgency = self._determine_urgency(max_steps)
+        full_tools_context = (
+            f"{tools_context}\n{swarm_guidance}" if tools_context else swarm_guidance
+        )
+
+        return f"""<mission_parameters>
+- Mission Details: {session.init_description}
+- Operation ID: {session.id}
+- Budget: {max_steps} steps (Urgency: {urgency})
+- Approved Tools: {full_tools_context}
+- Package Installation: You can install packages without sudo:
+  - System: `apt-get install [package]` or `apt install [package]`
+  - Python: `pip install [package]` or `pip3 install [package]`
+</mission_parameters>"""
+
+    @staticmethod
+    def _determine_urgency(max_steps: int) -> str:
+        """Determine urgency level based on maximum steps."""
+        if max_steps < 30:
+            return UrgencyLevel.HIGH.value
+        else:
+            return UrgencyLevel.MEDIUM.value
+
+    def generate_system_prompt(
+        self,
+        session: Session,
+        max_steps: int,
+        tools_context: str = "",
+        is_parallel_disabled: bool = False,
+    ) -> str:
+        """Generate enhanced system prompt using metacognitive architecture."""
+
+        # Get configuration components
+        swarm_guidance = self.model_config_manager.get_swarm_model_guidance()
+        parallel_protocol = self.protocol_generator.get_parallel_execution_protocol(
+            is_parallel_disabled
+        )
+
+        # Generate sections
+        mission_params = self.generate_mission_parameters(
+            session, max_steps, tools_context, swarm_guidance
+        )
+        critical_protocols = self.protocol_generator.get_critical_protocols(
+            swarm_guidance, parallel_protocol
+        )
+        dynamic_execution = self.protocol_generator.get_dynamic_execution(
+            PromptTemplates.MEMORY_INSTRUCTION
+        )
+        reasoning_patterns = self.protocol_generator.get_reasoning_patterns()
+        tool_registry = self.protocol_generator.get_tool_registry()
+        operational_protocols = self.protocol_generator.get_operational_protocols(
+            swarm_guidance
+        )
+        final_guidance = self.protocol_generator.get_final_guidance()
+
+        # Combine all sections
+        return f"""{PromptTemplates.ROLE_DEFINITION}
+
+{PromptTemplates.COGNITIVE_ARCHITECTURE}
+
+{mission_params}
+
+{PromptTemplates.METACOGNITIVE_FRAMEWORK}
+
+{critical_protocols}
+
+{dynamic_execution}
+
+{reasoning_patterns}
+
+{tool_registry}
+
+{operational_protocols}
+
+{final_guidance}"""
+
+
+# Factory functions for backward compatibility
+def get_system_prompt(
+    session: Session,
+    max_steps: int,
+    tools_context: str = "",
+    is_parallel_disabled: bool = False,
+) -> str:
+    """Generate enhanced system prompt using metacognitive architecture."""
+    generator = SystemPromptGenerator()
+    return generator.generate_system_prompt(
+        session, max_steps, tools_context, is_parallel_disabled
+    )
 
 
 def get_initial_prompt(
@@ -383,8 +584,24 @@ def get_continuation_prompt(
     remaining: int, total: int, objective_status: Dict = None, next_task: str = None
 ) -> str:
     """Generate intelligent continuation prompts."""
-    urgency = "HIGH" if remaining < 10 else "MEDIUM" if remaining < 20 else "NORMAL"
-    
+    if remaining < 10:
+        urgency = UrgencyLevel.HIGH.value
+    elif remaining < 20:
+        urgency = UrgencyLevel.MEDIUM.value
+    else:
+        urgency = UrgencyLevel.NORMAL.value
+
     return f"""Step {total - remaining + 1}/{total} | Budget: {remaining} remaining | Urgency: {urgency}
 Reassessing strategy based on current knowledge and confidence levels.
 Continuing adaptive execution toward objective completion."""
+
+
+# Legacy function aliases for backward compatibility
+def _get_ollama_host() -> str:
+    """Legacy function - use ModelConfigurationManager.get_ollama_host() instead."""
+    return ModelConfigurationManager.get_ollama_host()
+
+
+def _get_swarm_model_guidance() -> str:
+    """Legacy function - use ModelConfigurationManager.get_swarm_model_guidance() instead."""
+    return ModelConfigurationManager.get_swarm_model_guidance()

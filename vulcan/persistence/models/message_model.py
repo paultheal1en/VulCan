@@ -1,9 +1,10 @@
 from datetime import datetime
-from typing import Optional, Dict
+from typing import Dict, Optional
 
-from sqlalchemy import Column, String, JSON, DateTime, func, TEXT
-from sqlalchemy.dialects.mysql import LONGTEXT
 from pydantic import *
+from sqlalchemy import JSON, TEXT, Column, DateTime, String, func
+from sqlalchemy.dialects.mysql import LONGTEXT
+
 from vulcan.persistence.db_session import Base
 
 
@@ -13,7 +14,7 @@ class MessageModel(Base):
     conversation_id = Column(String(32), index=True)
     chat_type = Column(String(50))
     query = Column(LONGTEXT)
-    response = Column(LONGTEXT)  
+    response = Column(LONGTEXT)
     meta_data = Column(JSON, default={})
     create_time = Column(DateTime, default=func.now())
 

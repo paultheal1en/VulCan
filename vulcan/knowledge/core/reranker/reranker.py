@@ -1,8 +1,11 @@
 import json
 from typing import Any, Sequence
-from pydantic import BaseModel
+
 from langchain_core.documents import Document
+from pydantic import BaseModel
 from sentence_transformers import CrossEncoder
+
+HF_token = "hf"
 
 
 class LangchainReranker:
@@ -16,16 +19,19 @@ class LangchainReranker:
     batch_size: int
 
     def __init__(
-            self,
-            name_or_path: str,
-            top_n: int = 1,
-            device: str = "cpu",
-            max_length: int = 512,
-            batch_size: int = 32,
+        self,
+        name_or_path: str,
+        top_n: int = 1,
+        device: str = "cpu",
+        max_length: int = 512,
+        batch_size: int = 32,
     ):
 
         self._model = CrossEncoder(
-            model_name_or_path=name_or_path, max_length=max_length, device=device
+            model_name_or_path=name_or_path,
+            max_length=max_length,
+            device=device,
+            token=HF_token,
         )
         self.top_n = top_n
         self.name_or_path = name_or_path
@@ -34,9 +40,9 @@ class LangchainReranker:
         self.batch_size = batch_size
 
     def compress_documents(
-            self,
-            documents: Sequence[Document],
-            query: str,
+        self,
+        documents: Sequence[Document],
+        query: str,
     ) -> Sequence[Document]:
         """
         Compress documents using Cohere's rerank API.

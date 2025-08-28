@@ -6,6 +6,11 @@ ollama_model_id: gpt-oss:latest
 ollama_embedding_model_id: mxbai-embed-large
 mistral_api_key: ${MISTRAL_API_KEY}
 mistral_model_id: mistral-large-latest
+openai_api_key: "" 
+openai_model_id: "gpt-4o"
+openai_base_url: "" 
+gemini_api_key: "" 
+gemini_model_id: "gemini/gemini-1.5-pro-latest"
 temperature: 0.5
 history_len: 10
 max_tokens: 4096

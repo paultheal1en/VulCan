@@ -1,9 +1,9 @@
-import uuid
 import time
+import uuid
 from typing import List
 
-from ..models.session_model import Session, SessionModel  
-from ..db_session import with_session  
+from ..db_session import with_session
+from ..models.session_model import Session, SessionModel
 
 
 @with_session
@@ -27,7 +27,7 @@ def add_session_to_db(session, session_data: Session) -> Session:
     )
 
     session.add(new_session_model)
-    session.commit()  
+    session.commit()
     return session_data
 
 
@@ -45,7 +45,7 @@ def fetch_all_sessions(session) -> List[Session]:
 def update_session_in_db(session, session_data: Session) -> Session:
     """
     Update an existing session in the database.
-    
+
     Args:
         session: SQLAlchemy session (injected by decorator)
         session_data: Session object to update
@@ -57,7 +57,9 @@ def update_session_in_db(session, session_data: Session) -> Session:
             init_description=session_data.init_description or "",
         )
 
-        existing_session = session.query(SessionModel).filter_by(id=session_data.id).first()
+        existing_session = (
+            session.query(SessionModel).filter_by(id=session_data.id).first()
+        )
 
         if existing_session:
             existing_session.name = session_model.name

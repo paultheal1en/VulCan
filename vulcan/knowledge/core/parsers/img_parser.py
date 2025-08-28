@@ -20,4 +20,3 @@ class RapidOCRLoader(UnstructuredFileLoader):
         from unstructured.partition.text import partition_text
 
         return partition_text(text=text, **self.unstructured_kwargs)
-

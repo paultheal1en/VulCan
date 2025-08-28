@@ -19,9 +19,13 @@ def clean_operation_memory(operation_id: str) -> None:
     if os.path.exists(mem0_path):
         try:
             shutil.rmtree(mem0_path)
-            print(f"{Colors.GREEN}[*] Cleaned up operation memory: {mem0_path}{Colors.RESET}")
+            print(
+                f"{Colors.GREEN}[*] Cleaned up operation memory: {mem0_path}{Colors.RESET}"
+            )
         except Exception as e:
-            print(f"{Colors.RED}[!] Failed to clean {mem0_path}: {str(e)}{Colors.RESET}")
+            print(
+                f"{Colors.RED}[!] Failed to clean {mem0_path}: {str(e)}{Colors.RESET}"
+            )
 
 
 def auto_setup(skip_mem0_cleanup: bool = False) -> List[str]:
@@ -63,10 +67,18 @@ def auto_setup(skip_mem0_cleanup: bool = False) -> List[str]:
             subprocess.run(check_cmd, capture_output=True, check=True, timeout=5)
             available_tools.append(tool_name)
             print(f"  {Colors.GREEN}✓{Colors.RESET} {tool_name:<12} - {description}")
-        except (subprocess.CalledProcessError, subprocess.TimeoutExpired, FileNotFoundError):
-            print(f"  {Colors.YELLOW}○{Colors.RESET} {tool_name:<12} - {description} {Colors.DIM}(not available){Colors.RESET}")
+        except (
+            subprocess.CalledProcessError,
+            subprocess.TimeoutExpired,
+            FileNotFoundError,
+        ):
+            print(
+                f"  {Colors.YELLOW}○{Colors.RESET} {tool_name:<12} - {description} {Colors.DIM}(not available){Colors.RESET}"
+            )
 
-    print(f"\n{Colors.GREEN}[+] Environment ready. {len(available_tools)} cyber tools available.{Colors.RESET}\n")
+    print(
+        f"\n{Colors.GREEN}[+] Environment ready. {len(available_tools)} cyber tools available.{Colors.RESET}\n"
+    )
 
     return available_tools
 
@@ -111,7 +123,9 @@ class TeeOutput:
         return self.terminal.isatty()
 
 
-def setup_logging(log_file: str = "cyber_operations.log", verbose: bool = False) -> logging.Logger:
+def setup_logging(
+    log_file: str = "cyber_operations.log", verbose: bool = False
+) -> logging.Logger:
     """Configure unified logging for all operations with complete terminal capture."""
     # Ensure the directory exists
     log_dir = os.path.dirname(log_file)
@@ -121,7 +135,9 @@ def setup_logging(log_file: str = "cyber_operations.log", verbose: bool = False)
     # Create header in log file
     with open(log_file, "a", encoding="utf-8") as f:
         f.write("\n" + "=" * 80 + "\n")
-        f.write(f"VulCan SESSION STARTED: {datetime.now().strftime('%Y-%m-%d %H:%M:%S')}\n")
+        f.write(
+            f"VulCan SESSION STARTED: {datetime.now().strftime('%Y-%m-%d %H:%M:%S')}\n"
+        )
         f.write("=" * 80 + "\n\n")
 
     # Set up stdout and stderr redirection
@@ -129,7 +145,9 @@ def setup_logging(log_file: str = "cyber_operations.log", verbose: bool = False)
     sys.stderr = TeeOutput(sys.stderr, log_file)
 
     # Formatter for logs
-    formatter = logging.Formatter("%(asctime)s - %(levelname)s - %(message)s", datefmt="%Y-%m-%d %H:%M:%S")
+    formatter = logging.Formatter(
+        "%(asctime)s - %(levelname)s - %(message)s", datefmt="%Y-%m-%d %H:%M:%S"
+    )
 
     # File handler - log everything to file
     file_handler = logging.FileHandler(log_file, mode="a")

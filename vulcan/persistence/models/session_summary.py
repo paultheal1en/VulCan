@@ -1,7 +1,9 @@
-from sqlalchemy.dialects.mysql import LONGTEXT
-from sqlalchemy import Column, String, DateTime, func
-from sqlalchemy.ext.declarative import declarative_base
 import datetime
+
+from sqlalchemy import Column, DateTime, String, func
+from sqlalchemy.dialects.mysql import LONGTEXT
+from sqlalchemy.ext.declarative import declarative_base
+
 from vulcan.persistence.db_session import Base
 
 

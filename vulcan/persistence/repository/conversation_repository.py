@@ -1,7 +1,7 @@
 import uuid
 
-from vulcan.persistence.models.conversation_model import Conversation
 from vulcan.persistence.db_session import with_session
+from vulcan.persistence.models.conversation_model import Conversation
 
 
 @with_session
@@ -13,4 +13,3 @@ def add_conversation_to_db(session, chat_type: str, conversation_id=None):
         session.add(conversation)
 
     return conversation_id
-

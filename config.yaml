@@ -1,10 +1,2 @@
 log_verbose: true
-mode: auto
 max_iterations: 100
-confirmations: false
-keep_memory: false
-target_shell:
-  hostname: 127.0.0.1
-  port: 22
-  username: root
-  password: password

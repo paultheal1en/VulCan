@@ -2,21 +2,21 @@ import importlib
 import json
 import os
 import sys
-from functools import lru_cache
 from concurrent.futures import ProcessPoolExecutor, ThreadPoolExecutor, as_completed
+from functools import lru_cache
 from pathlib import Path
+from typing import Callable, Dict, Generator, List, Tuple, Union
 
 import chardet
 from langchain.docstore.document import Document
 from langchain.text_splitter import TextSplitter
 from langchain_community.document_loaders import JSONLoader, TextLoader
+
 from vulcan.config.config import Configs
 
-from typing import Dict, List, Union, Generator, Callable, Tuple
+# from vulcan.utils.log_common import build_logger
 
-from vulcan.utils.log_common import build_logger
-
-logger = build_logger()
+# logger = build_logger()
 
 
 def validate_kb_name(knowledge_base_id: str) -> bool:
@@ -181,10 +181,9 @@ def get_loader(loader_name: str, file_path: str, loader_kwargs: Dict = None):
         DocumentLoader = getattr(document_loaders_module, loader_name)
     except Exception as e:
         msg = f"Failed to find loader {loader_name} for file {file_path}: {e}"
-        logger.error(f"{e.__class__.__name__}: {msg}")
-        document_loaders_module = importlib.import_module(
-            "langchain_unstructured"
-        )
+        # logger.error(f"{e.__class__.__name__}: {msg}")
+        print(f"{e.__class__.__name__}: {msg}\n")
+        document_loaders_module = importlib.import_module("langchain_unstructured")
         DocumentLoader = getattr(document_loaders_module, "UnstructuredLoader")
 
     if loader_name == "UnstructuredLoader":
@@ -216,54 +215,57 @@ def make_text_splitter(splitter_name, chunk_size, chunk_overlap):
     """
     splitter_name = splitter_name or "SpacyTextSplitter"
     try:
-            text_splitter_module = importlib.import_module(
-                    "langchain.text_splitter"
-                )
-            TextSplitter = getattr(text_splitter_module, splitter_name)
+        text_splitter_module = importlib.import_module("langchain.text_splitter")
+        TextSplitter = getattr(text_splitter_module, splitter_name)
 
-            if (
-                    Configs.kb_config.text_splitter_dict[splitter_name]["source"] == "tiktoken"
-            ):  # Load from tiktoken
-                try:
-                    text_splitter = TextSplitter.from_tiktoken_encoder(
-                        encoding_name=Configs.kb_config.text_splitter_dict[splitter_name][
-                            "tokenizer_name_or_path"
-                        ],
-                        pipeline="zh_core_web_sm",
-                        chunk_size=chunk_size,
-                        chunk_overlap=chunk_overlap,
-                    )
-                except:
-                    text_splitter = TextSplitter.from_tiktoken_encoder(
-                        encoding_name=Configs.kb_config.text_splitter_dict[splitter_name][
-                            "tokenizer_name_or_path"
-                        ],
-                        chunk_size=chunk_size,
-                        chunk_overlap=chunk_overlap,
-                    )
-            elif (
-                    Configs.kb_config.text_splitter_dict[splitter_name]["source"] == "huggingface"
-            ):  # Load from huggingface
-                if (
-                        Configs.kb_config.text_splitter_dict[splitter_name]["tokenizer_name_or_path"]
-                        == "gpt2"
-                ):
-                    from langchain.text_splitter import CharacterTextSplitter   
-                    from transformers import GPT2TokenizerFast
-
-                    tokenizer = GPT2TokenizerFast.from_pretrained("gpt2")
-                else:  # Character length loading
-                    from transformers import AutoTokenizer
-
-                    tokenizer = AutoTokenizer.from_pretrained(
-                        Configs.kb_config.text_splitter_dict[splitter_name]["tokenizer_name_or_path"],
-                        trust_remote_code=True,
-                    )
-                text_splitter = TextSplitter.from_huggingface_tokenizer(
-                    tokenizer=tokenizer,
+        if (
+            Configs.kb_config.text_splitter_dict[splitter_name]["source"] == "tiktoken"
+        ):  # Load from tiktoken
+            try:
+                text_splitter = TextSplitter.from_tiktoken_encoder(
+                    encoding_name=Configs.kb_config.text_splitter_dict[splitter_name][
+                        "tokenizer_name_or_path"
+                    ],
+                    pipeline="zh_core_web_sm",
                     chunk_size=chunk_size,
                     chunk_overlap=chunk_overlap,
                 )
+            except:
+                text_splitter = TextSplitter.from_tiktoken_encoder(
+                    encoding_name=Configs.kb_config.text_splitter_dict[splitter_name][
+                        "tokenizer_name_or_path"
+                    ],
+                    chunk_size=chunk_size,
+                    chunk_overlap=chunk_overlap,
+                )
+        elif (
+            Configs.kb_config.text_splitter_dict[splitter_name]["source"]
+            == "huggingface"
+        ):  # Load from huggingface
+            if (
+                Configs.kb_config.text_splitter_dict[splitter_name][
+                    "tokenizer_name_or_path"
+                ]
+                == "gpt2"
+            ):
+                from langchain.text_splitter import CharacterTextSplitter
+                from transformers import GPT2TokenizerFast
+
+                tokenizer = GPT2TokenizerFast.from_pretrained("gpt2")
+            else:  # Character length loading
+                from transformers import AutoTokenizer
+
+                tokenizer = AutoTokenizer.from_pretrained(
+                    Configs.kb_config.text_splitter_dict[splitter_name][
+                        "tokenizer_name_or_path"
+                    ],
+                    trust_remote_code=True,
+                )
+            text_splitter = TextSplitter.from_huggingface_tokenizer(
+                tokenizer=tokenizer,
+                chunk_size=chunk_size,
+                chunk_overlap=chunk_overlap,
+            )
 
     except Exception as e:
         print(e)
@@ -271,16 +273,15 @@ def make_text_splitter(splitter_name, chunk_size, chunk_overlap):
         TextSplitter = getattr(text_splitter_module, "RecursiveCharacterTextSplitter")
         text_splitter = TextSplitter(chunk_size=chunk_size, chunk_overlap=chunk_overlap)
 
-
     return text_splitter
 
 
 class KnowledgeFile:
     def __init__(
-            self,
-            filename: str,
-            knowledge_base_name: str,
-            loader_kwargs: Dict = {},
+        self,
+        filename: str,
+        knowledge_base_name: str,
+        loader_kwargs: Dict = {},
     ):
         """
         Corresponding knowledge base directory file, must exist on disk to perform vectorization and other operations.
@@ -299,7 +300,8 @@ class KnowledgeFile:
 
     def file2docs(self, refresh: bool = False):
         if self.docs is None or refresh:
-            logger.info(f"{self.document_loader_name} used for {self.filepath}")
+            # logger.info(f"{self.document_loader_name} used for {self.filepath}")
+            print(f"{self.document_loader_name} used for {self.filepath}\n")
             loader = get_loader(
                 loader_name=self.document_loader_name,
                 file_path=self.filepath,
@@ -313,12 +315,12 @@ class KnowledgeFile:
         return self.docs
 
     def docs2texts(
-            self,
-            docs: List[Document] = None,
-            refresh: bool = False,
-            chunk_size: int = Configs.kb_config.chunk_size,
-            chunk_overlap: int = Configs.kb_config.overlap_size,
-            text_splitter: TextSplitter = None,
+        self,
+        docs: List[Document] = None,
+        refresh: bool = False,
+        chunk_size: int = Configs.kb_config.chunk_size,
+        chunk_overlap: int = Configs.kb_config.overlap_size,
+        text_splitter: TextSplitter = None,
     ):
         docs = docs or self.file2docs(refresh=refresh)
         if not docs:
@@ -340,11 +342,11 @@ class KnowledgeFile:
         return self.splited_docs
 
     def file2text(
-            self,
-            refresh: bool = False,
-            chunk_size: int = Configs.kb_config.chunk_size,
-            chunk_overlap: int = Configs.kb_config.overlap_size,
-            text_splitter: TextSplitter = None,
+        self,
+        refresh: bool = False,
+        chunk_size: int = Configs.kb_config.chunk_size,
+        chunk_overlap: int = Configs.kb_config.overlap_size,
+        text_splitter: TextSplitter = None,
     ):
         if self.splited_docs is None or refresh:
             docs = self.file2docs()
@@ -368,20 +370,21 @@ class KnowledgeFile:
 
 
 def files2docs_in_thread_file2docs(
-        *, file: KnowledgeFile, **kwargs
+    *, file: KnowledgeFile, **kwargs
 ) -> Tuple[bool, Tuple[str, str, List[Document]]]:
     try:
         return True, (file.kb_name, file.filename, file.file2text(**kwargs))
     except Exception as e:
         msg = f"Failed to load document from file {file.kb_name}/{file.filename}: {e}"
-        logger.error(f"{e.__class__.__name__}: {msg}")
+        # logger.error(f"{e.__class__.__name__}: {msg}")
+        print(f"{e.__class__.__name__}: {msg}\n")
         return False, (file.kb_name, file.filename, msg)
 
 
 def files2docs_in_thread(
-        files: List[Union[KnowledgeFile, Tuple[str, str], Dict]],
-        chunk_size: int = Configs.kb_config.chunk_size,
-        chunk_overlap: int = Configs.kb_config.overlap_size,
+    files: List[Union[KnowledgeFile, Tuple[str, str], Dict]],
+    chunk_size: int = Configs.kb_config.chunk_size,
+    chunk_overlap: int = Configs.kb_config.overlap_size,
 ) -> Generator:
     """
     Utilize multi-threading to batch convert disk files into langchain Document.
@@ -410,15 +413,14 @@ def files2docs_in_thread(
             yield False, (kb_name, filename, str(e))
 
     for result in run_in_thread_pool(
-            func=files2docs_in_thread_file2docs, params=kwargs_list
+        func=files2docs_in_thread_file2docs, params=kwargs_list
     ):
         yield result
 
 
-
 def run_in_thread_pool(
-        func: Callable,
-        params: List[Dict] = [],
+    func: Callable,
+    params: List[Dict] = [],
 ) -> Generator:
     """
     Run tasks in thread pool and return results as a generator.
@@ -433,5 +435,5 @@ def run_in_thread_pool(
             try:
                 yield obj.result()
             except Exception as e:
-                logger.exception(f"error in sub thread: {e}")
-
+                print(f"error in sub thread: {e}\n")
+                # logger.exception(f"error in sub thread: {e}")

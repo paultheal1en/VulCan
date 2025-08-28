@@ -46,9 +46,7 @@ class RapidOCRPPTLoader(UnstructuredFileLoader):
                     "RapidOCRPPTLoader slide index: {}".format(slide_number)
                 )
                 b_unit.refresh()
-                sorted_shapes = sorted(
-                    slide.shapes, key=lambda x: (x.top, x.left)
-                )
+                sorted_shapes = sorted(slide.shapes, key=lambda x: (x.top, x.left))
                 for shape in sorted_shapes:
                     extract_text(shape)
                 b_unit.update(1)
@@ -58,4 +56,3 @@ class RapidOCRPPTLoader(UnstructuredFileLoader):
         from unstructured.partition.text import partition_text
 
         return partition_text(text=text, **self.unstructured_kwargs)
-

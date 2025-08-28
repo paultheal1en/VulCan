@@ -1,23 +1,16 @@
-import sys
-import os
-import time
-import threading
 import logging
+import os
+import sys
+import threading
+import time
 from enum import Enum
 from pathlib import Path
 
 import loguru
-from memoization import cached, CachingAlgorithmFlag
+from memoization import CachingAlgorithmFlag, cached
 
 from vulcan.config.config import Configs
-from vulcan.utils.agent_utils import Colors  
-
-
-class RoleType(Enum):
-    COLLECTOR = "Collection"
-    SCANNER = "Scanning"
-    EXPLOITER = "Exploitation"
-
+from vulcan.utils.agent_utils import Colors
 
 
 def _filter_logs(record: dict) -> bool:
@@ -30,12 +23,12 @@ def _filter_logs(record: dict) -> bool:
     return True
 
 
-
 class TeeOutput:
     """
     Duplicate stdout/stderr to both terminal and log file.
     Preserves isatty() for libs like rich and prompt_toolkit.
     """
+
     def __init__(self, stream, log_file_path):
         self.stream = stream  # original stream (sys.__stdout__ / sys.__stderr__)
         self.log_file = open(log_file_path, "a", encoding="utf-8", buffering=1)
@@ -69,10 +62,8 @@ class TeeOutput:
         return getattr(self.stream, name)
 
 
-
 _CURRENT_LOG_FILE_PATH = None
 _LOGGING_INITIALIZED = False
-
 
 
 def setup_logging(log_file: str = "vulcan_run.log", verbose: bool = False):
@@ -105,7 +96,6 @@ def setup_logging(log_file: str = "vulcan_run.log", verbose: bool = False):
     _LOGGING_INITIALIZED = True
 
 
-
 def finalize_logging_with_session_id(log_path: Path, session_id: str):
     """Renames the temporary log file to its final name using the session ID."""
     global _CURRENT_LOG_FILE_PATH
@@ -127,79 +117,10 @@ def finalize_logging_with_session_id(log_path: Path, session_id: str):
         sys.stdout = TeeOutput(sys.__stdout__, _CURRENT_LOG_FILE_PATH)
         sys.stderr = TeeOutput(sys.__stderr__, _CURRENT_LOG_FILE_PATH)
 
-        print(f"{Colors.GREEN}Logging session to: {_CURRENT_LOG_FILE_PATH}{Colors.RESET}")
+        print(
+            f"{Colors.GREEN}Logging session to: {_CURRENT_LOG_FILE_PATH}{Colors.RESET}"
+        )
     except Exception as e:
         print(f"{Colors.RED}Error finalizing log file: {e}{Colors.RESET}")
         sys.stdout = sys.__stdout__
         sys.stderr = sys.__stderr__
-
-def get_timestamp_ms():
-    return int(round(time.time() * 1000))
-
-
-def get_log_file(log_path: str, sub_dir: str):
-    """sub_dir should contain a timestamp."""
-    log_dir = os.path.join(log_path, sub_dir)
-    os.makedirs(log_dir, exist_ok=False)
-    return os.path.join(log_dir, f"{sub_dir}.log")
-
-
-class LoggerNameFilter(logging.Filter):
-    def filter(self, record):
-        return True
-
-
-def get_config_dict(
-    log_level: str, log_file_path: str, log_backup_count: int, log_max_bytes: int
-) -> dict:
-    log_file_path = (
-        log_file_path.encode("unicode-escape").decode()
-        if os.name == "nt"
-        else log_file_path
-    )
-    log_level = log_level.upper()
-    config_dict = {
-        "version": 1,
-        "disable_existing_loggers": False,
-        "formatters": {
-            "formatter": {
-                "format": (
-                    "%(asctime)s %(name)-12s %(process)d %(levelname)-8s %(message)s"
-                )
-            },
-        },
-        "filters": {
-            "logger_name_filter": {
-                "()": __name__ + ".LoggerNameFilter",
-            },
-        },
-        "handlers": {
-            "stream_handler": {
-                "class": "logging.StreamHandler",
-                "formatter": "formatter",
-                "level": log_level,
-            },
-            "file_handler": {
-                "class": "logging.handlers.RotatingFileHandler",
-                "formatter": "formatter",
-                "level": log_level,
-                "filename": log_file_path,
-                "mode": "a",
-                "maxBytes": log_max_bytes,
-                "backupCount": log_backup_count,
-                "encoding": "utf8",
-            },
-        },
-        "loggers": {
-            "chatchat_core": {
-                "handlers": ["stream_handler", "file_handler"],
-                "level": log_level,
-                "propagate": False,
-            }
-        },
-        "root": {
-            "level": log_level,
-            "handlers": ["stream_handler", "file_handler"],
-        },
-    }
-    return config_dict
