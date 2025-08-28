@@ -72,6 +72,7 @@ class KBService(ABC):
         query: str,
         top_k: int,
         score_threshold: float,
+        context_window: int
     ) -> List[Document]:
         """
         Public interface for searching documents
@@ -84,7 +85,7 @@ class KBService(ABC):
         Returns:
             List of relevant Document objects
         """
-        return self.do_search(query, top_k, score_threshold)
+        return self.do_search(query, top_k, score_threshold,context_window)
 
     @abstractmethod
     def vs_type(self) -> str:
@@ -142,7 +143,6 @@ class KBServiceFactory:
             "embed_model": embed_model,
             "kb_info": kb_info,
         }
-        
         if SupportedVSType.MILVUS == vector_store_type:
             from vulcan.knowledge.core.kb.service.milvus_kb_service import MilvusKBService
             return MilvusKBService(**params)

@@ -14,9 +14,9 @@ from vulcan.config.config import Configs
 
 from typing import Dict, List, Union, Generator, Callable, Tuple
 
-from vulcan.utils.log_common import build_logger
+#from vulcan.utils.log_common import build_logger
 
-logger = build_logger()
+#logger = build_logger()
 
 
 def validate_kb_name(knowledge_base_id: str) -> bool:
@@ -181,7 +181,8 @@ def get_loader(loader_name: str, file_path: str, loader_kwargs: Dict = None):
         DocumentLoader = getattr(document_loaders_module, loader_name)
     except Exception as e:
         msg = f"Failed to find loader {loader_name} for file {file_path}: {e}"
-        logger.error(f"{e.__class__.__name__}: {msg}")
+        #logger.error(f"{e.__class__.__name__}: {msg}")
+        print(f"{e.__class__.__name__}: {msg}\n")
         document_loaders_module = importlib.import_module(
             "langchain_unstructured"
         )
@@ -299,7 +300,8 @@ class KnowledgeFile:
 
     def file2docs(self, refresh: bool = False):
         if self.docs is None or refresh:
-            logger.info(f"{self.document_loader_name} used for {self.filepath}")
+            #logger.info(f"{self.document_loader_name} used for {self.filepath}")
+            print(f"{self.document_loader_name} used for {self.filepath}\n")
             loader = get_loader(
                 loader_name=self.document_loader_name,
                 file_path=self.filepath,
@@ -374,7 +376,8 @@ def files2docs_in_thread_file2docs(
         return True, (file.kb_name, file.filename, file.file2text(**kwargs))
     except Exception as e:
         msg = f"Failed to load document from file {file.kb_name}/{file.filename}: {e}"
-        logger.error(f"{e.__class__.__name__}: {msg}")
+        #logger.error(f"{e.__class__.__name__}: {msg}")
+        print(f"{e.__class__.__name__}: {msg}\n")
         return False, (file.kb_name, file.filename, msg)
 
 
@@ -433,5 +436,6 @@ def run_in_thread_pool(
             try:
                 yield obj.result()
             except Exception as e:
-                logger.exception(f"error in sub thread: {e}")
+                print(f"error in sub thread: {e}\n")
+                #logger.exception(f"error in sub thread: {e}")
 

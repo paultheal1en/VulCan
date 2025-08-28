@@ -54,13 +54,12 @@ def query_knowledge_base(
         docs = kb_service.search_docs(
             query=query,
             top_k=Configs.kb_config.top_k,
-            score_threshold=Configs.kb_config.score_threshold
+            score_threshold=Configs.kb_config.score_threshold,
+            context_window=2
         )
 
         if not docs:
-            return f"No relevant information found in knowledge base '{kb_name}' for query: '{query}'"
-        
-        console.print(f"  Found {len(docs)} initial documents.")
+            return f"No relevant information found in knowledge base '{kb_name}' for query: '{query}'"        
 
         # 3. Sắp xếp lại (Reranking) để tìm kết quả tốt nhất
         console.print(f"  Step 2: Reranking results to find top {Configs.kb_config.top_n}...")
@@ -70,7 +69,7 @@ def query_knowledge_base(
                 name_or_path=Configs.kb_config.rerank_model_name,
                 top_n=Configs.kb_config.top_n
             )
-
+        #print(F"--LOOK here nigga: {docs}--look here\n")
         # Chuyển đổi docs nhận được từ Milvus thành định dạng Langchain Document
         docs_for_reranker = [Document(page_content=doc.page_content, metadata=doc.metadata) for doc in docs]
         reranked_docs = _reranker_model_cache.compress_documents(documents=docs_for_reranker, query=query)
