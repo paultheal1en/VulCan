@@ -4,7 +4,7 @@ from pydantic import BaseModel
 from langchain_core.documents import Document
 from sentence_transformers import CrossEncoder
 
-HF_token = "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"
+HF_token = "hf"
 
 class LangchainReranker:
     """Document compressor that uses `Cohere Rerank API`."""
