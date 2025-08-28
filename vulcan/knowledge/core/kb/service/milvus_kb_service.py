@@ -5,11 +5,8 @@ from pymilvus import MilvusClient
 
 from vulcan.config.config import Configs
 from vulcan.knowledge.core.embedding.embedding import get_embeddings
-from vulcan.knowledge.core.kb.base import KBService, SupportedVSType  # Thêm import
+from vulcan.knowledge.core.kb.base import KBService, SupportedVSType  
 
-# from vulcan.utils.log_common import build_logger
-
-# logger = build_logger("MilvusKBService")
 
 
 class MilvusKBService(KBService):
@@ -26,10 +23,8 @@ class MilvusKBService(KBService):
             )
             print(f"URI: {uri}\n TOKEN:{token}\n")
             self.client = MilvusClient(uri=uri, token=token)
-            # logger.info("Successfully connected to Zilliz Cloud.")
             print("Successfully connected to Zilliz Cloud.\n")
         except Exception as e:
-            # logger.error(f"Failed to connect to Zilliz Cloud: {e}")
             print(f"Failed to connect to Zilliz Cloud: {e}\n")
             raise
 
@@ -40,7 +35,7 @@ class MilvusKBService(KBService):
         self, query: str, top_k: int, score_threshold: float, context_window: int = 2
     ) -> List[Document]:
         try:
-            embedding_func = get_embeddings()  # Không cần truyền tên model nữa
+            embedding_func = get_embeddings()
             query_vector = embedding_func.encode(
                 [query], convert_to_tensor=False
             ).tolist()
@@ -108,18 +103,13 @@ class MilvusKBService(KBService):
                                 Document(page_content=full_context, metadata=metadata)
                             )
                     except Exception as e:
-                        # logger.error(f"Error processing a Milvus search hit: {e}")
                         print(f"Error processing a Milvus search hit: {e}\n")
-                        continue  # Bỏ qua hit bị lỗi và tiếp tục
+                        continue 
 
-            # logger.info(f"Found {len(docs)} relevant documents after filtering.")
-            print(f"--llok here--{docs}---")
             return docs
         except Exception as e:
-            # logger.error(f"Error during Milvus search: {e}")
             print(f"Error during Milvus search: {e}")
             if "not loaded" in str(e):
-                # logger.info(f"Attempting to load collection '{self.kb_name}'...")
                 print(f"Attempting to load collection '{self.kb_name}'...\n")
                 self.client.load_collection(self.kb_name)
                 return self.do_search(query, top_k, score_threshold)

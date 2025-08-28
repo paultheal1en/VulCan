@@ -1,12 +1,10 @@
 from langchain_core.embeddings import Embeddings
 from langchain_huggingface import HuggingFaceEmbeddings
 
-# from vulcan.utils.log_common import build_logger
 from sentence_transformers import SentenceTransformer
 
 from vulcan.config.config import Configs
 
-# logger = build_logger("RAGEmbedding")
 
 
 def get_embeddings(embed_model_name: str = None) -> Embeddings:

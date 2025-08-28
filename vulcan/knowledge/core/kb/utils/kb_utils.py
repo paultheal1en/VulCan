@@ -14,9 +14,6 @@ from langchain_community.document_loaders import JSONLoader, TextLoader
 
 from vulcan.config.config import Configs
 
-# from vulcan.utils.log_common import build_logger
-
-# logger = build_logger()
 
 
 def validate_kb_name(knowledge_base_id: str) -> bool:
