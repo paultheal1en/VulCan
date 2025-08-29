@@ -15,7 +15,6 @@ from langchain_community.document_loaders import JSONLoader, TextLoader
 from vulcan.config.config import Configs
 
 
-
 def validate_kb_name(knowledge_base_id: str) -> bool:
     # Check for unexpected characters or path attack keywords
     if "../" in knowledge_base_id:

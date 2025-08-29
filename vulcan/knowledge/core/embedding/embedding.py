@@ -1,10 +1,8 @@
 from langchain_core.embeddings import Embeddings
 from langchain_huggingface import HuggingFaceEmbeddings
-
 from sentence_transformers import SentenceTransformer
 
 from vulcan.config.config import Configs
-
 
 
 def get_embeddings(embed_model_name: str = None) -> Embeddings:

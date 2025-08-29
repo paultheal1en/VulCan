@@ -21,6 +21,8 @@ Requires-Dist: pdfplumber
 Requires-Dist: tqdm
 Requires-Dist: chardet
 Requires-Dist: litellm
+Requires-Dist: google-generativeai
+Requires-Dist: google-genai
 Requires-Dist: mistralai
 Requires-Dist: mem0ai==0.1.110
 Requires-Dist: faiss-cpu
@@ -31,6 +33,7 @@ Requires-Dist: langchain-core
 Requires-Dist: langchain-huggingface
 Requires-Dist: langchain-milvus
 Requires-Dist: langchain-openai
+Requires-Dist: langchain_google_genai
 Requires-Dist: langchain-text-splitters
 Requires-Dist: sentence-transformers
 Requires-Dist: langchain_mistralai

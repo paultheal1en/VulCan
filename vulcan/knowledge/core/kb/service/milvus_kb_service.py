@@ -5,8 +5,7 @@ from pymilvus import MilvusClient
 
 from vulcan.config.config import Configs
 from vulcan.knowledge.core.embedding.embedding import get_embeddings
-from vulcan.knowledge.core.kb.base import KBService, SupportedVSType  
-
+from vulcan.knowledge.core.kb.base import KBService, SupportedVSType
 
 
 class MilvusKBService(KBService):
@@ -104,7 +103,7 @@ class MilvusKBService(KBService):
                             )
                     except Exception as e:
                         print(f"Error processing a Milvus search hit: {e}\n")
-                        continue 
+                        continue
 
             return docs
         except Exception as e:

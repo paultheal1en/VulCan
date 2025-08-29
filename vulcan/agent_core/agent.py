@@ -211,18 +211,22 @@ def _build_memory_config(session_id: str) -> dict:
         }
     elif llm_config.server == "openai":
         memory_config["embedder"] = {
-            "provider": "litellm",
+            "provider": "openai",
             "config": {
-                "model": "text-embedding-ada-002",
+                "model": "text-embedding-3-small",
             },
         }
 
     elif llm_config.server == "gemini":
+        from langchain_google_genai import GoogleGenerativeAIEmbeddings
+
+        gemini_embeddings = GoogleGenerativeAIEmbeddings(
+            model="models/text-embedding-004", google_api_key=llm_config.gemini_api_key
+        )
+
         memory_config["embedder"] = {
-            "provider": "litellm",
-            "config": {
-                "model": "gemini/embedding-001",
-            },
+            "provider": "langchain",
+            "config": {"model": gemini_embeddings},
         }
     # Internal LLM config for Mem0
     if llm_config.server == "ollama":
@@ -273,8 +277,8 @@ def _build_memory_config(session_id: str) -> dict:
     memory_config["vector_store"] = {
         "provider": "faiss",
         "config": {
-            "embedding_model_dims": 1024,
             "path": faiss_path,
+            "embedding_model_dims": 1024,
         },
     }
 
@@ -363,15 +367,15 @@ def create_agent(
         elif server_type == "gemini":
             logger.debug("Configuring LiteLLMModel for Gemini")
             model = LiteLLMModel(
+                model_id= Configs.llm_config.gemini_model_id,
                 client_args={"api_key": Configs.llm_config.gemini_api_key},
-                model_id=Configs.llm_config.gemini_model_id,
                 params={
                     "max_tokens": Configs.llm_config.max_tokens,
                     "temperature": Configs.llm_config.temperature,
                 },
             )
             print(
-                f"{Colors.GREEN}[+] Gemini (via LiteLLM) initialized: {Configs.llm_config.gemini_model_id}{Colors.RESET}"
+                f"{Colors.GREEN}[+] Gemini initialized: {Configs.llm_config.gemini_model_id}{Colors.RESET}"
             )
         else:
             logger.debug("Configuring BedrockModel")
@@ -399,7 +403,7 @@ def create_agent(
     }
     agent = Agent(
         model=model,
-        tools=[*core_tools.values()],
+        tools=list(core_tools.values()),
         system_prompt=system_prompt,
         callback_handler=callback_handler,
         conversation_manager=SlidingWindowConversationManager(window_size=120),

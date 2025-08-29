@@ -34,6 +34,8 @@ dependencies = [
 
     # Memory Systems 
     "litellm",
+    "google-generativeai",
+    "google-genai",
     "mistralai",
     "mem0ai==0.1.110",
     "faiss-cpu",
@@ -44,6 +46,7 @@ dependencies = [
     "langchain-huggingface",
     "langchain-milvus",
     "langchain-openai",
+    "langchain_google_genai",
     "langchain-text-splitters",
     "sentence-transformers",
     "langchain_mistralai",
