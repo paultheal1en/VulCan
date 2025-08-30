@@ -15,7 +15,7 @@ Classifier: Topic :: Security
 Requires-Python: >=3.11
 Description-Content-Type: text/markdown
 Requires-Dist: strands-agents[litellm,mistral,ollama,openai]>=1.0.0
-Requires-Dist: strands-agents-tools==0.2.0
+Requires-Dist: strands-agents-tools==0.2.5
 Requires-Dist: PyPDF2
 Requires-Dist: pdfplumber
 Requires-Dist: tqdm

@@ -16,7 +16,7 @@ from strands.models.litellm import LiteLLMModel
 from strands.models.mistral import MistralModel
 from strands.models.ollama import OllamaModel
 from strands.models.openai import OpenAIModel
-from strands_tools import editor, http_request, load_tool, shell, stop, swarm
+from strands_tools import editor, http_request, load_tool, shell, stop 
 from strands_tools.swarm import swarm
 from tenacity import (
     retry,
