@@ -1,4 +1,4 @@
-server: ollama
+server: mistral
 aws_region: us-east-1
 bedrock_model_id: us.anthropic.claude-sonnet-4-20250514-v1:0
 ollama_host: "https://b863ebd427dd.ngrok-free.app"

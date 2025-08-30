@@ -6,6 +6,7 @@ import os
 import sys
 from datetime import datetime
 from typing import Dict, List
+from pathlib import Path
 
 from rich.console import Console
 from strands import Agent
@@ -664,7 +665,7 @@ class ReasoningHandler(PrintingCallbackHandler):
         """Get evidence summary from mem0_memory tool."""
         return []
 
-    def generate_final_report(self, agent: Agent, target: str, objective: str) -> None:
+    def generate_final_report(self, agent: Agent, target: str, objective: str, session_output_dir: Path) -> None:
         """Generates a comprehensive final assessment report using LLM analysis."""
         if self.report_generated:
             return
@@ -691,7 +692,7 @@ class ReasoningHandler(PrintingCallbackHandler):
                     target, objective, findings
                 )
 
-        self._save_report_to_file(report_content, target, objective)
+        self._save_report_to_file(report_content, target, objective, session_output_dir)
 
     def _retrieve_evidence(self) -> Dict[str, List[Dict]]:
         """Retrieves all collected evidence (findings and plans) from the memory system."""
@@ -855,17 +856,16 @@ Based on ALL the information above (the findings AND the final plan), write a co
         return "\n".join(clean_lines)
 
     def _save_report_to_file(
-        self, report_content: str, target: str, objective: str
+        self, report_content: str, target: str, objective: str, session_output_dir: Path
     ) -> None:
         """Save report to file in evidence directory."""
         try:
-            evidence_dir = os.path.join(
-                get_data_path("evidence"), f"evidence_{self.operation_id}"
-            )
-            os.makedirs(evidence_dir, exist_ok=True)
+            evidence_dir = session_output_dir / "evidence"
+            evidence_dir.mkdir(exist_ok=True)
+
             timestamp = datetime.now().strftime("%Y%m%d_%H%M%S")
             report_filename = f"final_report_{timestamp}.md"
-            report_path = os.path.join(evidence_dir, report_filename)
+            report_path = evidence_dir / report_filename
 
             with open(report_path, "w", encoding="utf-8") as f:
                 f.write("# Cybersecurity Assessment Report\n\n")

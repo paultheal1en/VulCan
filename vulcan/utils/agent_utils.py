@@ -203,3 +203,38 @@ def analyze_objective_completion(messages: List[Dict]) -> Tuple[bool, str, Dict]
                     )
 
     return False, "", {}
+
+def sanitize_session_name(name: str) -> str:
+    """
+    Làm sạch tên session để sử dụng làm một phần của tên thư mục.
+    - Chuyển thành chữ thường.
+    - Thay thế khoảng trắng và các ký tự không an toàn bằng dấu gạch dưới.
+    - Loại bỏ các dấu gạch dưới liên tiếp.
+    """
+    if not name:
+        return "unnamed_session"
+    
+    sanitized = name.lower()
+    sanitized = re.sub(r'[^\w\-_]', '_', sanitized)
+    sanitized = re.sub(r'__+', '_', sanitized)
+    sanitized = sanitized.strip('_')
+    
+    if not sanitized:
+        return "sanitized_session"
+        
+    return sanitized
+
+def create_session_dir_name(session_name: str, session_id: str) -> str:
+    """
+    Tạo một tên thư mục DUY NHẤT và dễ đọc bằng cách kết hợp
+    tên session đã được làm sạch và một phần của ID session.
+    """
+    sanitized_name = sanitize_session_name(session_name)
+    
+    short_id = session_id
+    
+    # Kết hợp chúng lại, ví dụ: "my_pentest_dbe78e3e"
+    final_dir_name = f"{sanitized_name}_{short_id}"
+    
+    # Cắt ngắn nếu tên kết hợp quá dài
+    return final_dir_name

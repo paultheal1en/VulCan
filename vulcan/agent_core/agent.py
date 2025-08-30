@@ -176,7 +176,7 @@ def setup_hf_token():
         os.environ["HF_TOKEN"] = hf_token
 
 
-def _build_memory_config(session_id: str) -> dict:
+def _build_memory_config(session_id: str, session_output_dir: Path) -> dict:
     """Build memory system configuration based on LLM server type."""
     llm_config = Configs.llm_config
     memory_config = {}
@@ -273,11 +273,12 @@ def _build_memory_config(session_id: str) -> dict:
         }
 
     # Vector store config with correct dimensions
-    faiss_path = f"./memory/mem0_faiss_{session_id or 'default'}"
+    faiss_path = session_output_dir / "memory" / f"mem0_faiss_{session_id}"
+    
     memory_config["vector_store"] = {
         "provider": "faiss",
         "config": {
-            "path": faiss_path,
+            "path": str(faiss_path),
             "embedding_model_dims": 1024,
         },
     }
@@ -289,6 +290,7 @@ def create_agent(
     session: Session,
     max_steps: int,
     available_tools: List[str],
+    session_output_dir: Path,
     is_parallel_disabled: bool = False,
 ) -> Tuple[Agent, ReasoningHandler]:
     """
@@ -310,7 +312,7 @@ def create_agent(
         if api_key:
             os.environ["MISTRAL_API_KEY"] = api_key
 
-    memory_config = _build_memory_config(session.id)
+    memory_config = _build_memory_config(session.id, session_output_dir)
     initialize_memory_system(config=memory_config, operation_id=session.id)
     logger.info(f"Memory system initialized for operation: {session.id}")
 

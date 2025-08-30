@@ -96,31 +96,35 @@ def setup_logging(log_file: str = "vulcan_run.log", verbose: bool = False):
     _LOGGING_INITIALIZED = True
 
 
-def finalize_logging_with_session_id(log_path: Path, session_id: str):
-    """Renames the temporary log file to its final name using the session ID."""
+def finalize_logging_with_session_id(temp_log_path: Path, final_session_dir: Path):
+    """Di chuyển và đổi tên file log tạm thời vào thư mục session cuối cùng."""
     global _CURRENT_LOG_FILE_PATH
     if not _LOGGING_INITIALIZED or not _CURRENT_LOG_FILE_PATH:
         return
 
+    # Đóng file log tạm thời hiện tại
     if isinstance(sys.stdout, TeeOutput):
         sys.stdout.close()
     if isinstance(sys.stderr, TeeOutput):
         sys.stderr.close()
 
-    final_log_file_name = f"session_{session_id}.log"
-    final_log_file_path = log_path / final_log_file_name
+    # Đặt tên cố định cho file log cuối cùng để dễ tìm
+    final_log_file_name = "session_activity.log"
+    final_log_file_path = final_session_dir / final_log_file_name
 
     try:
-        os.rename(_CURRENT_LOG_FILE_PATH, final_log_file_path)
+        # Di chuyển file log tạm (nếu nó tồn tại)
+        if temp_log_path.exists():
+            os.rename(temp_log_path, final_log_file_path)
+        
         _CURRENT_LOG_FILE_PATH = str(final_log_file_path)
 
+        # Mở lại stdout/stderr để trỏ đến file log cuối cùng
         sys.stdout = TeeOutput(sys.__stdout__, _CURRENT_LOG_FILE_PATH)
         sys.stderr = TeeOutput(sys.__stderr__, _CURRENT_LOG_FILE_PATH)
-
-        print(
-            f"{Colors.GREEN}Logging session to: {_CURRENT_LOG_FILE_PATH}{Colors.RESET}"
-        )
+        
     except Exception as e:
-        print(f"{Colors.RED}Error finalizing log file: {e}{Colors.RESET}")
+        # Nếu có lỗi, quay lại stdout/stderr gốc để tránh mất log
         sys.stdout = sys.__stdout__
         sys.stderr = sys.__stderr__
+        print(f"{Colors.RED}Error finalizing log file: {e}{Colors.RESET}")

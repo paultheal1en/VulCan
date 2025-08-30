@@ -11,7 +11,7 @@ from vulcan.agent_core.environment import auto_setup
 from vulcan.agent_core.system_prompts import get_continuation_prompt, get_initial_prompt
 from vulcan.config.config import Configs
 from vulcan.persistence.session_manager import load_or_create_session, save_session
-from vulcan.utils.agent_utils import analyze_objective_completion, print_banner
+from vulcan.utils.agent_utils import analyze_objective_completion, print_banner, create_session_dir_name
 from vulcan.utils.log_common import finalize_logging_with_session_id, setup_logging
 
 load_dotenv()
@@ -31,12 +31,16 @@ console = Console()
     default=False,
     help="Forcefully disable parallel execution for all tools.",
 )
-def main(mission: str, iterations: int, no_parallel: bool):
-    """Hàm chính điều phối hoạt động của VulCan."""
-
-    # --- GIAI ĐOẠN 1: LOGGING TẠM THỜI ---
-    log_path = Configs.basic_config.LOG_PATH
-    temp_log_file = log_path / f"temp_log_{time.strftime('%Y%m%d-%H%M%S')}.log"
+@click.option(
+    '--name',
+    '--session-name',
+    'session_name', 
+    default=None,
+    help='Assign a memorable name to this session for easy identification.'
+)
+def main(mission: str, iterations: int, no_parallel: bool, session_name: str | None):
+    log_path_root = Configs.basic_config.LOG_PATH
+    temp_log_file = log_path_root / f"temp_log_{int(time.time())}.log"
     setup_logging(log_file=str(temp_log_file), verbose=True)
     print_banner()
 
@@ -51,19 +55,27 @@ def main(mission: str, iterations: int, no_parallel: bool):
 
     console.rule("[bold red]VulCan Autonomous Agent[/bold red]")
 
-    # 1. Tải hoặc tạo session, truyền vào lời nhắc từ CLI
-    session = load_or_create_session(initial_mission_prompt=mission)
+    session = load_or_create_session(
+        initial_mission_prompt=mission,
+        session_name=session_name
+    )
     if not session:
         console.print("[red]Could not start a session. Exiting.[/red]")
-        # Dọn dẹp file log tạm nếu không tạo được session
-        if os.path.exists(temp_log_file):
-            os.remove(temp_log_file)
+        if temp_log_file.exists():
+            temp_log_file.unlink()
         return
 
-    # --- GIAI ĐOẠN 2: HOÀN THIỆN LOGGING VỚI SESSION ID ---
-    finalize_logging_with_session_id(log_path=log_path, session_id=session.id)
+    session_dir_name = create_session_dir_name(session.name, session.id)
+    session_output_dir = Path("sessions_output") / session_dir_name
+    session_output_dir.mkdir(parents=True, exist_ok=True)
 
-    console.print(f"\n[bold]Starting Session:[/bold] [cyan]{session.id}[/cyan]")
+    finalize_logging_with_session_id(
+        temp_log_path=temp_log_file,
+        final_session_dir=session_output_dir
+    )
+
+    console.print(f"\n[bold]Starting Session:[/bold] [cyan]{session.name}[/cyan] (ID: [dim]{session.id}[/dim])")
+    console.print(f"[bold]All outputs for this session will be saved in:[/bold] [yellow]{session_output_dir.resolve()}[/yellow]")
     console.print(f"[bold]Mission:[/bold] [yellow]{session.init_description}[/yellow]")
 
     max_iterations = (
@@ -79,6 +91,7 @@ def main(mission: str, iterations: int, no_parallel: bool):
             session=session,
             max_steps=max_iterations,
             available_tools=available_tools,
+            session_output_dir=session_output_dir
         )
         console.print("[green]Agent Core initialized successfully.[/green]")
 
@@ -93,7 +106,6 @@ def main(mission: str, iterations: int, no_parallel: bool):
         console.rule("[bold blue]Agent Execution Log[/bold blue]")
 
         while True:
-            # Logic gọi agent để phân biệt lần đầu và các lần sau
             if not messages:
                 result = agent(current_message)
             else:
@@ -136,7 +148,12 @@ def main(mission: str, iterations: int, no_parallel: bool):
     finally:
         if agent and "callback_handler" in locals() and callback_handler is not None:
             console.rule("[bold blue]Generating Final Report[/bold blue]")
-            callback_handler.generate_final_report(agent, session.init_description, "")
+            callback_handler.generate_final_report(
+                agent=agent,
+                target=session.init_description,
+                objective="",
+                session_output_dir=session_output_dir
+            )
 
         if session:
             save_session(session)
